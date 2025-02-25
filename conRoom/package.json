@@ -9,13 +9,16 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "install-backend": "npm install express mssql",
-    "install-helpers": "npm install react-router-dom, dotenv, cors"
+    "install-helpers": "npm install react-router-dom dotenv cors"
   },
   "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "mssql": "^11.0.1",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
