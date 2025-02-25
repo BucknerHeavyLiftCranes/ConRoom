@@ -7,9 +7,13 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "install-backend": "npm install express mssql",
+    "install-helpers": "npm install react-router-dom, dotenv, cors"
   },
   "dependencies": {
+    "express": "^4.21.2",
+    "mssql": "^11.0.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
