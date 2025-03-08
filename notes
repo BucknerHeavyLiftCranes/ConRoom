@@ -10,12 +10,12 @@ const dbConfig = {
     },
 }
 
-vjefvljef
+//manage users vs admins
 
 function authorizeRoles(...allowedRoles) {
     return (req, res, next) => {
         if (!allowedRoles.includes(req.user.role) && req.user.role !== 'admin') {
-            res.status(403).
+            res.status(403)
             throw new Error('You do not have permission to access this resource.');
         }
         next();
