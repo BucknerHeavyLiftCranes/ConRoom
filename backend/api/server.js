@@ -4,12 +4,14 @@ import dotenv from "dotenv"
 import express from "express"
 import { router as adminRouter } from "./routes/adminRoutes.js";
 import { router as userRouter } from "./routes/userRoutes.js";
+import errorHandler from "./middleware/errorHandler.js";
 
 dotenv.config({ path: './backend/.env' }); // loads in env variables - to be used via the process object
 const app = express();
 app.use(cors())
+app.use(errorHandler)
 app.use("/api/users", userRouter);
-app.use("/api/admin", adminRouter);
+app.use("/api/admins", adminRouter);
 
 
 
