@@ -1,0 +1,8 @@
+export const statusCodes = {
+    VALIDATION_ERROR: 400,
+    UNAUTHORIZED: 401,
+    FORBIDDEN: 403,
+    NOT_FOUND: 404,
+    REQUEST_CONFLICT: 409,
+    SERVER_ERROR: 500
+}
