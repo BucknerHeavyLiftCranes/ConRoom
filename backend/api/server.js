@@ -2,11 +2,10 @@
 import cors from "cors"
 import dotenv from "dotenv"
 import express from "express"
-import userRouter from "./routes/userRoutes";
-import adminRouter from "./routes/adminRoutes";
+import { router as adminRouter } from "./routes/adminRoutes";
+import { router as userRouter } from "./routes/userRoutes";
 
-
-dotenv.config(); // let's us use the process object to read env variables
+dotenv.config(); // loads in env variables - to be used via the process object
 const app = express();
 app.use(cors())
 app.use("/api/users", userRouter);
@@ -25,4 +24,6 @@ app.get("/", (req, res) => {
 })
 
 
-app.listen(PORT);
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
