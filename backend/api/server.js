@@ -2,9 +2,12 @@
 import cors from "cors"
 import dotenv from "dotenv"
 import express from "express"
+import { connectToDatabase } from "../config/dbConnection.js";
 import { router as adminRouter } from "./routes/adminRoutes.js";
 import { router as userRouter } from "./routes/userRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
+
+// connectToDatabase()
 
 dotenv.config({ path: './backend/.env' }); // loads in env variables - to be used via the process object
 const app = express();

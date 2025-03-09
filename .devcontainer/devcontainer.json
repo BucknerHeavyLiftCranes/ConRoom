@@ -1,13 +1,13 @@
 {
-    "name": "conRoom-container",
-    "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
-    "features": {}, 
-    "customizations": {
-      "vscode": {
-        "extensions": [
-          "dbaeumer.vscode-eslint",
-          "esbenp.prettier-vscode"
-        ]
-      }
+  "name": "conroom-container",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+  "features": {}, 
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode"
+      ]
     }
   }
+}
