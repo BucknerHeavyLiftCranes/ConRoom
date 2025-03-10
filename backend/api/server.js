@@ -7,7 +7,7 @@ import { router as adminRouter } from "./routes/adminRoutes.js";
 import { router as userRouter } from "./routes/userRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 
-// connectToDatabase()
+connectToDatabase()
 
 dotenv.config({ path: './backend/.env' }); // loads in env variables - to be used via the process object
 const app = express();
@@ -21,7 +21,7 @@ app.use("/api/admins", adminRouter);
 app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
-console.log(process.env.PORT)
+// console.log(process.env.PORT)
 
 app.get("/", (req, res) => {
     res.json({message: "Hello World",
@@ -31,5 +31,5 @@ app.get("/", (req, res) => {
 
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server is running on port ${PORT}\n`);
 });
