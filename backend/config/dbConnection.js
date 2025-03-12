@@ -39,27 +39,3 @@ export async function connectToDatabase() {
       throw err;
     }
   }
-
-//   # Use the official Node.js image
-// FROM node:16
-
-// # Set the working directory inside the container
-// WORKDIR /workspace/ConRoom
-
-// # # Ensure the 'node' user has permissions on the work directory
-// # RUN chown -R node:node /workspace/ConRoom
-
-// # Switch to the non-root 'node' user
-// USER root
-
-// # Copy package.json and package-lock.json into the container from the root of the project
-// COPY ../package.json ../package-lock.json ./
-
-// # Install dependencies inside the container
-// RUN npm install
-
-// # Copy the rest of the project files into the container
-// COPY ../ ./
-
-// # Set the command to run the app
-// CMD ["npm", "run", "devStart"]
