@@ -7,29 +7,44 @@ import { router as adminRouter } from "./routes/adminRoutes.js";
 import { router as userRouter } from "./routes/userRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 
-connectToDatabase()
-
 dotenv.config({ path: './backend/.env' }); // loads in env variables - to be used via the process object
+dotenv.config();
+let pool = await connectToDatabase()
+try { 
+    // await pool.request().query('CREATE DATABASE [Buckner_Conroom]');
+    // console.log(pool);
+    const result = await pool.request().query("SELECT name FROM sys.databases WHERE name = 'Buckner_Conroom'");
+    console.log(result.recordset);
+    
+} catch (err) {
+    console.log(`DATABASE ERROR: ${err}`);
+    
+}
+
 const app = express();
 app.use(cors())
 app.use(errorHandler)
 app.use("/api/users", userRouter);
 app.use("/api/admins", adminRouter);
-
-
-
 app.use(express.json());
 
+
+console.log("TEST_VAR:", process.env.TEST_VAR);
+
+
 const PORT = process.env.PORT || 3000;
-// console.log(process.env.PORT)
+
 
 app.get("/", (req, res) => {
-    res.json({message: "Hello World",
+    res.json({Database: `${pool.config.database}`,
         port: PORT 
     })
+    // res.json({message: `Hello World`,
+    //     port: PORT 
+    // })
 })
 
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}\n`);
+    console.log(`Server is running on port ${PORT}`);
 });

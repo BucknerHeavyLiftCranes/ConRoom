@@ -1,0 +1,35 @@
+version: '3.9'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "M79xydch@633s%6B"
+    ports:
+      - "1433:1433"
+    networks:
+      - app_network
+    volumes:
+      - sql_data:/var/opt/mssql
+      - ./backend/.env:/workspace/backend/.env
+
+  conroom_app:
+    build: .
+    container_name: conroom_app
+    ports:
+      - "5173:5173"
+    networks:
+      - app_network
+    depends_on:
+      - sqlserver
+    volumes:
+      - .:/workspace
+      - ./backend/.env:/workspace/backend/.env
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  sql_data:

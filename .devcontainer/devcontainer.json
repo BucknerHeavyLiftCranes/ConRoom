@@ -1,13 +1,21 @@
 {
-  "name": "conroom-container",
-  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
-  "features": {}, 
+  "name": "buckner_conroom",
+  "dockerComposeFile": "../docker-compose.yml",
+  "workspaceFolder": "/workspace",
+  "service": "conroom_app",
   "customizations": {
     "vscode": {
       "extensions": [
         "dbaeumer.vscode-eslint",
-        "esbenp.prettier-vscode"
-      ]
+        "ms-mssql.mssql",
+        "pkief.material-icon-theme",
+        "ms-azuretools.vscode-docker",
+        "esbenp.prettier-vscode",
+      ],
+      "settings": {
+        "eslint.enable": true,
+        "prettier.requireConfig": true
+      }
     }
   }
 }

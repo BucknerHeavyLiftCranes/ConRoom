@@ -21,17 +21,18 @@ export let pool;
  * @returns pool - a connection to the database
  */
 export async function connectToDatabase() {
+  // console.log(dbConfig)
     try {
       if (!pool) { // pool has never been initialized
         pool = await mssql.connect(dbConfig);  // Initialize the pool connection
         console.log(`Initialized new database: ${pool.config.database}`);
       }
       console.log(`Connected to the database: ${pool.config.database}`);
-      const result = await pool.request().query(
-        "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'"
-      );
+      // const result = await pool.request().query(
+      //   "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'"
+      // );
     
-      console.log(result.recordset); // will print names of all tables in the database
+      // console.log(result.recordset); // will print names of all tables in the database
       return pool;
     } catch (err) {
       console.error(`Database connection failed: ${err}`);
