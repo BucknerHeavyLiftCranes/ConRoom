@@ -15,17 +15,17 @@ const dbConfig = {
     },
 }
 
-export let pool;
+let pool;
 
 /**
- * @returns pool - a connection to the database
+ * @returns pool - a connection to the database (used for perform database operations).
  */
 export async function connectToDatabase() {
   // console.log(dbConfig)
     try {
       if (!pool) { // pool has never been initialized
         pool = await mssql.connect(dbConfig);  // Initialize the pool connection
-        console.log(`Initialized new database: ${pool.config.database}`);
+        console.log(`Initialized new database connection: ${pool.config.database}`);
       }
       console.log(`Connected to the database: ${pool.config.database}`);
       // const result = await pool.request().query(
@@ -39,3 +39,19 @@ export async function connectToDatabase() {
       throw err;
     }
   }
+
+  // export async function connectToDatabase() {
+  //   // console.log(dbConfig)
+  //   if (!pool) { // pool has never been initialized
+  //     try {
+  //       pool = await mssql.connect(dbConfig);  // Initialize the pool connection
+  //       console.log(`Initialized new database: ${pool.config.database}`);
+  //     } catch (err) {
+  //       console.error(`Database connection failed: ${err}`);
+  //       throw err;
+  //     }
+  //   }else{
+  //     console.log(`Connected to the database: ${pool.config.database}`);
+  //   }
+  //   return pool
+  // }

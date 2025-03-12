@@ -7,8 +7,8 @@ import { router as adminRouter } from "./routes/adminRoutes.js";
 import { router as userRouter } from "./routes/userRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 
-dotenv.config({ path: './backend/.env' }); // loads in env variables - to be used via the process object
-dotenv.config();
+// dotenv.config({ path: './backend/.env' }); // loads in env variables - to be used via the process object // container already loads env vars so this is not needed
+// dotenv.config();
 let pool = await connectToDatabase()
 try { 
     // await pool.request().query('CREATE DATABASE [Buckner_Conroom]');
@@ -18,7 +18,6 @@ try {
     
 } catch (err) {
     console.log(`DATABASE ERROR: ${err}`);
-    
 }
 
 const app = express();
