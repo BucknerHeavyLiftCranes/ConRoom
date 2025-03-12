@@ -1,3 +1,6 @@
+/**
+ * Enum of various HTTP status codes for error checking.
+ */
 export const httpStatusCodes = {
     VALIDATION_ERROR: 400,
     UNAUTHORIZED: 401,
