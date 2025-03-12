@@ -1,6 +1,6 @@
 /* Library I */
 import cors from "cors"
-import dotenv from "dotenv"
+// import dotenv from "dotenv"
 import express from "express"
 import { connectToDatabase } from "../config/dbConnection.js";
 import { router as adminRouter } from "./routes/adminRoutes.js";
