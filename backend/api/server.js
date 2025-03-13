@@ -2,7 +2,7 @@
 import cors from "cors"
 // import dotenv from "dotenv"
 import express from "express"
-import { connectToDatabase } from "../config/dbConnection.js";
+import { connectToDatabase } from "../../dist/backend/config/dbConnection.js"
 import { router as adminRouter } from "./routes/adminRoutes.js";
 import { router as userRouter } from "./routes/userRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
@@ -28,7 +28,7 @@ app.use("/api/admins", adminRouter);
 app.use(express.json());
 
 
-console.log("TEST_VAR:", process.env.TEST_VAR);
+// console.log("TEST_VAR:", process.env.TEST_VAR);
 
 
 const PORT = process.env.PORT || 3000;
