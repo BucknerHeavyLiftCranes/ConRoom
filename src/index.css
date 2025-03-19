@@ -33,7 +33,7 @@ body {
 /* Different bodys for diff pages */
 
 .home-background{
-  background-color: orangered;
+  background-color: rgb(180, 180, 180);
   margin: 0;
   display: flex;
   place-items: center;
