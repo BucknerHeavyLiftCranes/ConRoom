@@ -5,7 +5,7 @@ import styles from './ActionButton.module.css'
 function ActionButton({ title, action }) {
   
   const handleOnClick = (fn) => {
-    if( typeof fn == "function" && fn){
+    if(fn &&typeof fn == "function"){
       fn()
     }
   }
