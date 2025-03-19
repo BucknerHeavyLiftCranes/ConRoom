@@ -9,3 +9,5 @@ export const httpStatusCodes = {
     REQUEST_CONFLICT: 409,
     SERVER_ERROR: 500
 }
+
+export const dbCommands = {}

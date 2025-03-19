@@ -1,4 +1,4 @@
-import { httpStatusCodes } from "../../../enums/httpStatusCodes.js"
+import { httpStatusCodes } from "../../../constants/constants.js"
 
 const errorHandler = (err, req, res, next) => { // could include "next" but in this case will only be used when an error is thrown and execution stopped.
     const statusCode = res.statusCode ? res.statusCode: 500;
