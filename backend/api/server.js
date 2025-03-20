@@ -16,29 +16,6 @@ try {
 }
 
 
-// try{
-//     const newRoom = {
-//         room_name: 'Conference Room B',
-//         building: 'Main Building',
-//         room_number: 102,
-//         seats: 10,
-//         projector: 0, // true (Bit)
-//         summary: 'A small, quiet conference room made for brief yet important meetings.',
-//         open_hour: "08:00:00",
-//         close_hour: "17:00:00"
-//       };
-//     await testRoomsTableDataInsert(newRoom)
-
-// }catch (err) {
-//     console.log(err)
-// }
-
-// try {
-//     await viewRoomsTable()
-// } catch (err) {
-//     console.log(err)
-// }
-
 const app = express();
 app.use(cors())
 app.use(errorHandler)
