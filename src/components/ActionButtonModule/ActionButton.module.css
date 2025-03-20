@@ -1,6 +1,16 @@
 .actionButton{
-    background-color: brown;
+    background-color: hsl(357, 70%, 41%);
+    border: none;
     border-radius: 100px;
     padding: 10px 40px;
     margin: 5px;
+    transition: background-color 0.2s ease;
+}
+
+.actionButton:hover{
+    background-color: hsl(357, 70%, 51%);
+}
+
+.actionButton:active{
+    transform: scale(0.95);
 }

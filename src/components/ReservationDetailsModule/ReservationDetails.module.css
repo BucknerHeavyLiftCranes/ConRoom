@@ -1,0 +1,54 @@
+.detailsContainer{
+    background-color: hsl(228, 19%, 95%);
+    color: black;
+    /* padding: 50px; */
+    border: 1.5px solid black;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-width: 400px;
+    margin: 15px;
+}
+
+.meetingLabel{
+    color: black;
+    font-size: 20px;
+    margin-bottom: 0;
+}
+
+.roomLabel{
+    color: black;
+    font-size: 18px;
+    margin-bottom: 0;
+
+}
+
+.timeLabel{
+    color: black;
+    font-size: 18px;
+    margin-bottom: 0;
+    
+}
+
+.durationLabel{
+    color: black;
+    font-size: 18px;
+    margin-bottom: 0;
+    
+}
+
+.statusLabel{
+    color: black;
+    font-size: 18px;
+    margin-bottom: 0;
+    
+}
+
+.buttonControls{
+    display: flex;
+    gap: 1.5em;
+    /* flex-direction: column; */
+    margin-bottom: 20px;
+}
