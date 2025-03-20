@@ -24,9 +24,9 @@ export async function connectToDatabase() {
     try {
       if (!pool) { // pool has never been initialized
         pool = await mssql.connect(dbConfig);  // Initialize the pool connection
-        console.log(`Initialized new database connection: ${pool.config.database}`);
+        console.log(`Initialized new database connection`);
       }
-      console.log(`Connected to the database: ${pool.config.database}`);
+      console.log(`Connected to the database: ${pool.connected}`);
       // const result = await pool.request().query(
       //   "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'"
       // );

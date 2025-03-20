@@ -41,7 +41,7 @@ async function createUsersTable() {
  */
 async function createRoomsTable() {
     try {
-        // Create a request and execute the SQL command stored in DB_COMMANDS.createUsersTable
+        // Create a request and execute the SQL command stored in DB_COMMANDS.createRoomsTable
         await pool.request().query(DB_COMMANDS.createRoomsTable);
         console.log("Rooms table created successfully.");
     } catch (err) {
@@ -50,11 +50,11 @@ async function createRoomsTable() {
 }
 
 /**
- * Create Reservations table in the database (with appropriate indexes).
+ * Create Reservations table in the database (with the appropriate indexes).
  */
 async function createReservationsTable() {
     try {
-      // Create a request and execute the SQL command stored in DB_COMMANDS.createUsersTable
+      // Create a request and execute the SQL command stored in DB_COMMANDS.createReservationsTable
         await pool.request().query(DB_COMMANDS.createReservationsTable);
         await pool.request().query(DB_COMMANDS.createIndexReservationsDate);
         await pool.request().query(DB_COMMANDS.createIndexReservationsRoomTime);
@@ -66,6 +66,9 @@ async function createReservationsTable() {
     }
 }
 
+/**
+ * Initialize database and setup all the tables.
+ */
 export async function databaseSetup(){
     try {
         createBucknerConroomDatabase()
