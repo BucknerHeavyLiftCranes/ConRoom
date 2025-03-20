@@ -88,49 +88,49 @@ export async function databaseSetup(){
     }
 }
 
-// export const testRoomsTableDataInsert = async (roomData) => {
-//   const { room_name, building, room_number, seats, projector, summary, open_hour, close_hour } = roomData;
-//   console.log("DEBUG: open_hour ->", open_hour);
-//   console.log("DEBUG: close_hour ->", close_hour);
+export const testRoomsTableDataInsert = async (roomData) => {
+  const { room_name, building, room_number, seats, projector, summary, open_hour, close_hour } = roomData;
+  console.log("DEBUG: open_hour ->", open_hour);
+  console.log("DEBUG: close_hour ->", close_hour);
 
-//   try{
-//     const result = await pool.request()
-//     .input('room_name', mssql.VarChar(255), room_name)
-//     .input('building', mssql.VarChar(255), building)
-//     .input('room_number', mssql.SmallInt, room_number)
-//     .input('seats', mssql.SmallInt, seats)
-//     .input('projector', mssql.Bit, projector)
-//     .input('summary', mssql.VarChar(255), summary)
-//     .input('open_hour', mssql.VarChar, open_hour)
-//     .input('close_hour', mssql.VarChar, close_hour)
-//     .query(`
-//       IF NOT EXISTS (SELECT 1 FROM rooms WHERE room_name = @room_name OR room_number = @room_number)
-//       BEGIN
-//           INSERT INTO rooms (room_name, building, room_number, seats, projector, summary, open_hour, close_hour) 
-//           VALUES (@room_name, @building, @room_number, @seats, @projector, @summary, @open_hour, @close_hour);
-//       END;
-//     `)
+  try{
+    const result = await pool.request()
+    .input('room_name', mssql.VarChar(255), room_name)
+    .input('building', mssql.VarChar(255), building)
+    .input('room_number', mssql.SmallInt, room_number)
+    .input('seats', mssql.SmallInt, seats)
+    .input('projector', mssql.Bit, projector)
+    .input('summary', mssql.VarChar(255), summary)
+    .input('open_hour', mssql.VarChar, open_hour)
+    .input('close_hour', mssql.VarChar, close_hour)
+    .query(`
+      IF NOT EXISTS (SELECT 1 FROM rooms WHERE room_name = @room_name OR room_number = @room_number)
+      BEGIN
+          INSERT INTO rooms (room_name, building, room_number, seats, projector, summary, open_hour, close_hour) 
+          VALUES (@room_name, @building, @room_number, @seats, @projector, @summary, @open_hour, @close_hour);
+      END;
+    `)
     
-//     const rowsAffected = result.rowsAffected == 0 ? 0 : result.rowsAffected
-//     console.log("==================================================================")
-//     console.log(`Room inserted successfully: ${rowsAffected} row(s) added.`);
-//     console.log("==================================================================")
-//     return result;
-//   }catch(err){
-//     console.log(`ROOM DATA INSERTION ERROR: ${err}`)
-//   }
-// }
+    const rowsAffected = result.rowsAffected == 0 ? 0 : result.rowsAffected
+    console.log("==================================================================")
+    console.log(`Room inserted successfully: ${rowsAffected} row(s) added.`);
+    console.log("==================================================================")
+    return result;
+  }catch(err){
+    console.log(`ROOM DATA INSERTION ERROR: ${err}`)
+  }
+}
 
-// export const viewRoomsTable = async () => {
-//   try {
-//     const result = await pool.request().query(DB_COMMANDS.viewRoomsTable);
+export const viewRoomsTable = async () => {
+  try {
+    const result = await pool.request().query(DB_COMMANDS.viewRoomsTable);
 
-//     console.log(result.recordset); // Logs the result from the query
-//     return result.recordset;
-//   } catch (err) {
-//     console.log(`ROOMS TABLE VIEW ERROR: ${err}`);
-//   }
-// }
+    console.log(result.recordset); // Logs the result from the query
+    return result.recordset;
+  } catch (err) {
+    console.log(`ROOMS TABLE VIEW ERROR: ${err}`);
+  }
+}
 
 
 

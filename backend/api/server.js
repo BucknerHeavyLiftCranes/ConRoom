@@ -5,7 +5,7 @@ import express from "express"
 import { router as adminRouter } from "./routes/adminRoutes.js";
 import { router as userRouter } from "./routes/userRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
-import { databaseSetup } from "../database/database.js";
+import { databaseSetup, testRoomsTableDataInsert, viewRoomsTable } from "../database/database.js";
 
 // dotenv.config({ path: './backend/.env' }); // loads in env variables - to be used via the process object // container already loads env vars so this is not needed
 
@@ -16,28 +16,28 @@ try {
 }
 
 
-// try{
-//     const newRoom = {
-//         room_name: 'Conference Room B',
-//         building: 'Main Building',
-//         room_number: 102,
-//         seats: 10,
-//         projector: 0, // true (Bit)
-//         summary: 'A small, quiet conference room made for brief yet important meetings.',
-//         open_hour: "08:00:00",
-//         close_hour: "17:00:00"
-//       };
-//     await testRoomsTableDataInsert(newRoom)
+try{
+    const newRoom = {
+        room_name: 'Conference Room B',
+        building: 'Main Building',
+        room_number: 102,
+        seats: 10,
+        projector: 0, // true (Bit)
+        summary: 'A small, quiet conference room made for brief yet important meetings.',
+        open_hour: "08:00:00",
+        close_hour: "17:00:00"
+      };
+    await testRoomsTableDataInsert(newRoom)
 
-// }catch (err) {
-//     console.log(err)
-// }
+}catch (err) {
+    console.log(err)
+}
 
-// try {
-//     await viewRoomsTable()
-// } catch (err) {
-//     console.log(err)
-// }
+try {
+    await viewRoomsTable()
+} catch (err) {
+    console.log(err)
+}
 
 const app = express();
 app.use(cors())
