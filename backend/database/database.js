@@ -5,10 +5,10 @@ import { DB_COMMANDS } from "../../constants/constants.js"
 let pool
 
 try{
-    pool = await connectToDatabase()
+    pool = await connectToDatabase();
 }catch (err) {
-    console.log(`DATABASE ERROR: ${err}`)
-}
+    console.log(`DATABASE ERROR: ${err}`);
+};
 
 /**
  * Create application database.
