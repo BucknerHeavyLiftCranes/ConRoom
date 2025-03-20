@@ -5,7 +5,7 @@ import express from "express"
 import { router as adminRouter } from "./routes/adminRoutes.js";
 import { router as userRouter } from "./routes/userRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
-import { databaseSetup, testRoomsTableDataInsert, viewRoomsTable } from "../database/database.js";
+import { databaseSetup } from "../database/database.js";
 
 // dotenv.config({ path: './backend/.env' }); // loads in env variables - to be used via the process object // container already loads env vars so this is not needed
 
