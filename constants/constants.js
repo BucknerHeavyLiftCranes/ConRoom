@@ -137,5 +137,27 @@ export const DB_COMMANDS = {
         BEGIN
             DROP TABLE reservations;
         END
-    `
+    `,
+
+    /* VIEW TABLE COMMANDS*/
+    viewUsersTable: `
+        IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'users')
+        BEGIN
+            SELECT * FROM users;
+        END
+    `,
+
+    viewRoomsTable: `
+        IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'rooms')
+        BEGIN
+            SELECT * FROM rooms;
+        END
+    `,
+
+    viewReservationsTable: `
+        IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'reservations')
+        BEGIN
+            SELECT * FROM reservations;
+        END
+    `,
 }
