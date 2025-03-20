@@ -1,3 +1,4 @@
+import { baseKey } from '../../../keys/keys.js'
 import ActionButton from '../../components/ActionButtonModule/ActionButton'
 import ReservationDetails from '../../components/ReservationDetailsModule/ReservationDetails'
 import { MeetingDetails } from '../../models/MeetingDetails.js'
@@ -5,8 +6,20 @@ import styles from './Home.module.css'
 
 function Home() {
 
-  const startExternalLogin = () => {
-    console.log("Start log in!")
+  const startExternalLogin = async () => {
+    try {
+      console.log("Start log in!")
+      const response = await fetch(baseKey)
+
+      if(response.ok){
+        const testData = await response.json()
+        console.log(testData)
+      }
+    } catch (error) {
+      console.log(error)
+      
+    }
+
   }
 
   const fakeMeetingDetails1 = new MeetingDetails(1, "All-Hands Meeting", "Tarheel", "09:00 AM - 10:30 AM", "01:30:00", "Complete")
