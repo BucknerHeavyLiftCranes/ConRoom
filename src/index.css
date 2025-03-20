@@ -30,6 +30,19 @@ body {
   min-height: 100vh;
 }
 
+/* Different bodys for diff pages */
+
+.home-background{
+  background-color: rgb(255, 255, 255);
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+/* Different bodys for diff pages */
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
