@@ -21,7 +21,6 @@ let pool;
  * @returns pool - a connection to the database (used for perform database operations).
  */
 export async function connectToDatabase() {
-  // console.log(dbConfig)
     try {
       if (!pool) { // pool has never been initialized
         pool = await mssql.connect(dbConfig);  // Initialize the pool connection
