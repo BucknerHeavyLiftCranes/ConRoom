@@ -10,21 +10,28 @@ export const HTTP_STATUS_CODES = {
     SERVER_ERROR: 500
 }
 
-const STATUS_MAP = {
-    1: "Scheduled",
-    2: "Ongoing",
-    3: "Completed",
-    4: "Cancelled",
-}
+// const STATUS_MAP = {
+//     1: "Scheduled",
+//     2: "Ongoing",
+//     3: "Completed",
+//     4: "Cancelled",
+// }
 
+
+/**
+ * Commands to manipulate MSSQL Database.
+ */
 export const DB_COMMANDS = {
+    /* CREATE DATABASE COMMAND*/
     createBucknerConroomDatabase: `
         IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'Buckner_Conroom')
         BEGIN
             CREATE DATABASE [Buckner_Conroom];
         END
     `,
-    
+
+
+    /* CREATE TABLE COMMANDS*/
     createUsersTable: `
         IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'users')
         BEGIN
@@ -37,10 +44,43 @@ export const DB_COMMANDS = {
     `,
 
     createRoomsTable: `
-    CREATE TABLE IF NOT EXISTS rooms ()
+        IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'rooms')
+        BEGIN
+            CREATE TABLE rooms (
+                
+            );
+        END;
     `,
 
     createReservationsTable: `
-    CREATE TABLE IF NOT EXISTS reservations ()
+        IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'reservations')
+        BEGIN
+            CREATE TABLE reservations (
+                
+            );
+        END;
+    `,
+
+
+    /* DROP TABLE COMMANDS*/
+    dropUsersTable: `
+        IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'users')
+        BEGIN
+            DROP TABLE users;
+        END
+    `,
+
+    dropRoomsTable: `
+        IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'rooms')
+        BEGIN
+            DROP TABLE rooms;
+        END
+    `,
+
+    dropReservationsTable: `
+        IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'reservations')
+        BEGIN
+            DROP TABLE reservations;
+        END
     `
 }
