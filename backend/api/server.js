@@ -19,14 +19,14 @@ try {
 
 try {
     const roomToUpdate = new Room(
-        1,
+        2,
         'Scrum Room B',
         'Main Building',
         102,
-        10,
+        12,
         0, 
         'A small, quiet conference room made for brief yet important meetings.',
-        '10:00:00',
+        '09:00:00',
         '15:00:00'
     )
     
