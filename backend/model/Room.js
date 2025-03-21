@@ -32,15 +32,15 @@ export class Room {
     */
     static toModel(roomData) {
         return new Room(
-          roomData.roomId,
-          roomData.roomName,
+          roomData.room_id,
+          roomData.room_name,
           roomData.building,
-          roomData.roomNumber,
+          roomData.room_number,
           roomData.seats,
           roomData.projector,
           roomData.summary,
-          roomData.openHour,
-          roomData.closeHour
+          roomData.open_hour,
+          roomData.close_hour
         );
       }
 
@@ -48,7 +48,7 @@ export class Room {
     * Converts a Room instance back to a plain object (for API responses or DB insertion).
     * @returns an object containing the room data.
     */
-    static fromModel() {
+    fromModel() {
         return {
             roomId: this.roomId,
             roomName: this.roomName,
@@ -57,20 +57,42 @@ export class Room {
             seats: this.seats,
             projector: this.projector ? 1 : 0, // Convert boolean to BIT (0 or 1) for MSSQL
             summary: this.summary,
-            openHour: this.openHour,
-            closeHour: this.closeHour
+            openHour: this.openHour,// this.convertToISO(this.openHour),
+            closeHour: this.closeHour// this.convertToISO(this.closeHour)
         };
     }
 
     /**
+     * Convert dateTime string to Time string.
      * @param {string} dateTime Date object with the time to be spliced and extracted.
      * @returns {string} time portion of the Date object.
      */
     extractTime(dateTime) {
+        const timeRegex = /^\d{2}:\d{2}:\d{2}$/; // Matches HH:MM:SS
+        if(timeRegex.test(dateTime)){ // if dateTime is already in a valid format, just return it
+            return dateTime
+        }
         // If dateTime is a valid string, extract the time part
         if (dateTime) {
           return new Date(dateTime).toTimeString().split(' ')[0]; // Returns 'HH:mm:ss'
         }
+
         return '00:00:00'; // Default if the dateTime is invalid or missing
     }
+
+    /**
+     * Convert Time string to dateTime string.
+     * @param {string} timeString string representation of time (HH:MM:SS)
+     * @returns {string} ISO formatted time string
+     */
+    convertToISO(timeString) {
+        console.log(timeString)
+        if (!timeString || !/^\d{2}:\d{2}:\d{2}$/.test(timeString)) {
+            throw new Error(`Invalid time format. Expected HH:MM:SS, but got ${timeString}`);
+        }
+        
+        const date = new Date(`1970-01-01T${timeString}Z`);
+        return date.toISOString();
+    }
 }
+
