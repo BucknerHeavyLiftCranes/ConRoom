@@ -78,7 +78,7 @@ export async function setupDatabase(){
         // await pool.request().query(DB_COMMANDS.dropRoomsTable);
         console.log("Database setup completed!")
     } catch (err) {
-        console.log(err)   
+        console.error({ message: err.message, stack: err.stack });   
     }
 }
 
