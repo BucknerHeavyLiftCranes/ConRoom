@@ -2,16 +2,16 @@
  * Object representating a meeting room.
  */
 export class Room {
-    constructor(room_id, room_name, building, room_number, seats, projector, summary, open_hour, close_hour) {
-      this.room_id = room_id;
-      this.room_name = room_name;
+    constructor(roomId, roomName, building, roomNumber, seats, projector, summary, openHour, closeHour) {
+      this.roomId = roomId;
+      this.roomName = roomName;
       this.building = building;
-      this.room_number = room_number;
+      this.roomNumber = roomNumber;
       this.seats = seats;
       this.projector = Boolean(projector); // Ensure it's a boolean
       this.summary = summary;
-      this.open_hour = this.extractTime(open_hour); // Keep as string or convert to Date if needed
-      this.close_hour = this.extractTime(close_hour);
+      this.openHour = this.extractTime(openHour); // Keep as string or convert to Date if needed
+      this.closeHour = this.extractTime(closeHour);
     }
 
     /**
@@ -21,7 +21,7 @@ export class Room {
      * @returns {boolean} whether the room is or isn't available.
      */
     isAvailable(meetingStartTime, meetingEndTime) {
-        return meetingStartTime >= this.open_hour && meetingEndTime <= this.close_hour;
+        return meetingStartTime >= this.openHour && meetingEndTime <= this.closeHour;
       }
 
 
@@ -32,15 +32,15 @@ export class Room {
     */
     static toModel(roomData) {
         return new Room(
-          roomData.room_id,
-          roomData.room_name,
+          roomData.roomId,
+          roomData.roomName,
           roomData.building,
-          roomData.room_number,
+          roomData.roomNumber,
           roomData.seats,
           roomData.projector,
           roomData.summary,
-          roomData.open_hour,
-          roomData.close_hour
+          roomData.openHour,
+          roomData.closeHour
         );
       }
 
@@ -50,15 +50,15 @@ export class Room {
     */
     static fromModel() {
         return {
-            room_id: this.room_id,
-            room_name: this.room_name,
+            roomId: this.roomId,
+            roomName: this.roomName,
             building: this.building,
-            room_number: this.room_number,
+            roomNumber: this.roomNumber,
             seats: this.seats,
             projector: this.projector ? 1 : 0, // Convert boolean to BIT (0 or 1) for MSSQL
             summary: this.summary,
-            open_hour: this.open_hour,
-            close_hour: this.close_hour
+            openHour: this.openHour,
+            closeHour: this.closeHour
         };
     }
 
