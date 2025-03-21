@@ -6,39 +6,41 @@ import { router as adminRouter } from "./routes/adminRoutes.js";
 import { router as userRouter } from "./routes/userRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 import { setupDatabase } from "../database/dbSetup.js";
-import { getAllRooms } from "../database/roomsTable.js";
+import { getAllRooms, updateRoom } from "../database/roomsTable.js";
+import { Room } from "../model/Room.js";
 
 // dotenv.config({ path: './backend/.env' }); // loads in env variables - to be used via the process object // container already loads env vars so this is not needed
 
 try {
     await setupDatabase()
 } catch (err) {
-    console.log(err)
+    console.error({ message: err.message, stack: err.stack });
+}
+
+try {
+    const roomToUpdate = new Room(
+        1,
+        'Scrum Room B',
+        'Main Building',
+        102,
+        10,
+        0, 
+        'A small, quiet conference room made for brief yet important meetings.',
+        '10:00:00',
+        '15:00:00'
+    )
+    
+    await updateRoom(roomToUpdate.roomId, roomToUpdate)
+} catch (err) {
+    console.error({ message: err.message, stack: err.stack });
 }
 
 
-// try{
-//     const newRoom = {
-//         room_name: 'Conference Room B',
-//         building: 'Main Building',
-//         room_number: 102,
-//         seats: 10,
-//         projector: 0, // true (Bit)
-//         summary: 'A small, quiet conference room made for brief yet important meetings.',
-//         open_hour: "08:00:00",
-//         close_hour: "17:00:00"
-//       };
-//     await testRoomsTableDataInsert(newRoom)
-
-// }catch (err) {
-//     console.log(err)
-// }
-
-// try {
-//     console.log(await getAllRooms())
-// } catch (err) {
-//     console.log(err)
-// }
+try {
+    console.log(await getAllRooms())
+} catch (err) {
+    console.error({ message: err.message, stack: err.stack });
+}
 
 const app = express();
 app.use(cors())
