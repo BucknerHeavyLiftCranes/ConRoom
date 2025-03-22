@@ -5,7 +5,7 @@ import express from "express"
 import { router as adminRouter } from "./routes/adminRoutes.js";
 import { router as userRouter } from "./routes/userRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
-import { /*clearDatabase,*/ setupDatabase } from "../database/dbSetup.js";
+import { clearDatabase, setupDatabase } from "../database/dbSetup.js";
 import { getAllRooms, createRoom, updateRoom, deleteRoom, getRoomByNameAndEmail } from "../database/roomsTable.js";
 import { getAllReservations } from "../database/reservationsTable.js";
 import { Room } from "../model/Room.js";
@@ -13,8 +13,7 @@ import { Room } from "../model/Room.js";
 // dotenv.config({ path: './backend/.env' }); // loads in env variables - to be used via the process object // container already loads env vars so this is not needed
 
 try {
-    await setupDatabase()
-    // console.log("Database setup completed!") // 🚨 🚨 🚨
+    // await setupDatabase()
     // await clearDatabase()
 } catch (err) {
     console.error({ message: err.message, stack: err.stack });
@@ -45,16 +44,15 @@ try {
 
 
 // try {
-//     const newRoom = new Room(
-//         undefined,
-//         'Twinnings',
-//         'TwinningsRoom@bucknerheavylift.com',
-//         2,
-//         0, 
-//         'Small room designed for pair scrum meetings (includes dual monitors)',
-//         '10:00:00',
-//         '11:00:00'
-//     )
+//     const newRoom = new Room({
+//         roomName: 'Mindscape',
+//         roomEmail: 'MindscapeRoom@bucknerheavylift.com',
+//         seats: 500,
+//         projector: 1, 
+//         summary: 'Large lecture hall designed for symposiums and presentaions',
+//         openHour: '08:00:00',
+//         closeHour: '16:00:00'
+//     })
     
 //     await createRoom(newRoom)
 // } catch (err) {
@@ -63,16 +61,19 @@ try {
 
 
 // try {
-//     const roomToUpdate = new Room(
-//         3,
-//         'Mindscape',
-//         'MindscapeRoom@bucknerheavylift.com',
-//         1000,
-//         1, 
-//         'Large hall for conferences, equipped with projectors, full speaker system, and dual monitor podium setup',
-//         '08:00:00',
-//         '20:00:00'
-//     )
+//     const roomToUpdate = new Room({
+//         roomId: 1,
+//         roomName: 'Twinnings',
+//         roomEmail: 'TwinningsRoom@bucknerheavylift.com',
+//         roomStatus: 1,
+//         seats: 2,
+//         projector: 0, 
+//         summary: 'Small room designed for pair scrum meetings (includes dual monitors)',
+//         openHour: '10:00:00',
+//         closeHour: '17:00:00'
+//     })
+
+//     console.log("roomStatus: ", roomToUpdate.roomStatus)
     
 //     await updateRoom(roomToUpdate.roomId, roomToUpdate)
 // } catch (err) {
