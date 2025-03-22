@@ -1,7 +1,7 @@
 import mssql from "mssql"
 import { connectToDatabase } from "../config/dbConnection.js"
 import { DB_COMMANDS } from "../../constants/dbCommands.js"
-import { Room } from "../model/Room.js"
+import  Room  from "../model/Room.js"
 import InvalidTimeError from "../../errors/InvalidTimeError.js"
 
 let pool

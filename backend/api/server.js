@@ -8,7 +8,7 @@ import errorHandler from "./middleware/errorHandler.js";
 import { clearDatabase, setupDatabase } from "../database/dbSetup.js";
 import { getAllRooms, createRoom, updateRoom, deleteRoom, getRoomByNameAndEmail } from "../database/roomsTable.js";
 import { getAllReservations } from "../database/reservationsTable.js";
-import { Room } from "../model/Room.js";
+import  Room  from "../model/Room.js";
 
 // dotenv.config({ path: './backend/.env' }); // loads in env variables - to be used via the process object // container already loads env vars so this is not needed
 

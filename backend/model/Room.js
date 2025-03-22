@@ -1,7 +1,7 @@
 /**
  * Object representating a meeting room.
  */
-export class Room {
+export default class Room {
     constructor({
         roomId = undefined, 
         roomName, 
