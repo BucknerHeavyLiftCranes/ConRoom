@@ -2,6 +2,7 @@ import mssql from "mssql"
 import { connectToDatabase } from "../config/dbConnection.js"
 import { DB_COMMANDS } from "../../constants/dbCommands.js"
 import { Room } from "../model/Room.js"
+import { InvalidTimeError } from "../../errors/InvalidTimeError.js"
 
 let pool
 
@@ -58,7 +59,6 @@ export const getAllRooms = async () => {
       } catch (err) {
           console.error({ message: err.message, stack: err.stack });
           throw new Error(`Failed to retrieve rooms: ${err.message}`);
-          
       }
  };
 
@@ -117,6 +117,10 @@ export const getAllRooms = async () => {
  * @returns {promise<Room>} the newly created room (converted to a Room object).
  */
 export const createRoom = async (roomData) => {
+    if(!roomData.hasValidHours()){
+        throw new InvalidTimeError("This room's opening and closing hours are invalid")
+    }
+
     const roomDetails = roomData.fromModel()
 
     const roomAlreadyExists = await getRoomByNameAndEmail(roomData.roomName, roomData.roomEmail)
