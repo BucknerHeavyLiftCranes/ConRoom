@@ -23,7 +23,7 @@ export class Reservation{
      * @param {Reservation} otherReservation possibly conflicting reservation.
      * @returns {boolean} whether this reservation conflicts with the other one.
      */
-    conflicts(otherReservation){
+    conflictsWith(otherReservation){
         if(this.date !== otherReservation.date || this.roomId !== otherReservation.roomId){
             return false
         }
