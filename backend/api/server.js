@@ -6,13 +6,15 @@ import { router as adminRouter } from "./routes/adminRoutes.js";
 import { router as userRouter } from "./routes/userRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 import { /*clearDatabase,*/ setupDatabase } from "../database/dbSetup.js";
-import { getAllRooms, /*createRoom, updateRoom, deleteRoom, getRoomByNameAndEmail*/ } from "../database/roomsTable.js";
-// import { Room } from "../model/Room.js";
+import { getAllRooms, createRoom, updateRoom, deleteRoom, getRoomByNameAndEmail } from "../database/roomsTable.js";
+import { getAllReservations } from "../database/reservationsTable.js";
+import { Room } from "../model/Room.js";
 
 // dotenv.config({ path: './backend/.env' }); // loads in env variables - to be used via the process object // container already loads env vars so this is not needed
 
 try {
     await setupDatabase()
+    // console.log("Database setup completed!") // 🚨 🚨 🚨
     // await clearDatabase()
 } catch (err) {
     console.error({ message: err.message, stack: err.stack });
@@ -51,7 +53,7 @@ try {
 //         0, 
 //         'Small room designed for pair scrum meetings (includes dual monitors)',
 //         '10:00:00',
-//         '15:00:00'
+//         '11:00:00'
 //     )
     
 //     await createRoom(newRoom)
@@ -96,16 +98,27 @@ try {
 // }
 
 
-try {
-    const allRooms = await getAllRooms()
-    if(allRooms.length !== 0){
-        console.log(allRooms)
-    }else{
-        console.log("There are no rooms in this database")
-    }
-} catch (err) {
-    console.error({ message: err.message, stack: err.stack });
-}
+// try {
+//     const allRooms = await getAllRooms()
+//     if(allRooms.length !== 0){
+//         console.log(allRooms)
+//     }else{
+//         console.log("There are no rooms in this database")
+//     }
+// } catch (err) {
+//     console.error({ message: err.message, stack: err.stack });
+// }
+
+// try {
+//     const allReservations = await getAllReservations()
+//     if(allReservations.length !== 0){
+//         console.log(allReservations)
+//     }else{
+//         console.log("There are no reservations in this database")
+//     }
+// } catch (err) {
+//     console.error({ message: err.message, stack: err.stack });
+// }
 
 const app = express();
 app.use(cors())
