@@ -134,13 +134,6 @@ export const DB_COMMANDS = {
     //     END
     // `,
 
-    getReservationsTable: `
-        IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'reservations')
-        BEGIN
-            SELECT * FROM reservations;
-        END
-    `,
-
     /* ROOMS TABLE CRUD COMMANDS */
     getAllRooms: `
         IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'rooms')
@@ -206,5 +199,14 @@ export const DB_COMMANDS = {
         BEGIN
             DELETE FROM rooms WHERE room_id = @room_id;
         END
-    `
+    `,
+
+    /* RESERVATIONS TABLE CRUD COMMANDS */
+    getAllReservations: `
+        IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'reservations')
+        BEGIN
+            SELECT * FROM reservations;
+        END
+    `,
+    
 }
