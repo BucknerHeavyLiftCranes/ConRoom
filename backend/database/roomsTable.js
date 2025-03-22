@@ -6,10 +6,43 @@ import { Room } from "../model/Room.js"
 let pool
 
 try{
-    pool = await connectToDatabase()
+    if(!pool){
+        pool = await connectToDatabase()
+    }
 }catch (err) {
     console.log(`Failed to connect to database: ${err}`)
 }
+
+// export const checkForRoomConstraints = async () => {
+//     const result = await pool.request().query(`
+//         SELECT name, type_desc 
+//         FROM sys.objects 
+//         WHERE type_desc LIKE '%CONSTRAINT%' AND name LIKE '%rooms%';
+//     `)
+
+//     if(result){
+//         console.log(result.recordset)
+//     }else{
+//         console.log("There are no constraints on the 'rooms' table")
+//     }
+// }
+
+// export const getRoomByName = async (roomName) => {
+//     const result = await pool.request()
+//                              .input('room_name', mssql.VarChar(255), roomName)
+//                              .query(`
+//                         IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'rooms')
+//                         BEGIN
+//                             SELECT * FROM rooms WHERE room_name = '@room_name';
+//                         END
+//                     `)
+
+//                     if(result.recordset.length !== 0){
+//                         console.log("Room:", result.recordset)
+//                     }else{
+//                         console.log("There is no room named:", roomName)
+//                     }
+// }
 
 /**
  * Fetch all rooms from the database.
@@ -31,7 +64,7 @@ export const getAllRooms = async () => {
 
  
 /**
- * Fetch a specific room from the database.
+ * Fetch a specific room from the database by its unique id.
  * @returns {Promise<Room> | undefined} a room in the database.
  */
  export const getRoomById = async (roomId) => { 
@@ -53,20 +86,49 @@ export const getAllRooms = async () => {
       }
  };
 
+ /**
+ * Fetch a specific room from the database by its room name and email.
+ * @returns {Promise<Room> | undefined} a room in the database.
+ */
+ export const getRoomByNameAndEmail = async (roomName, roomEmail) => { 
+    try {
+        const result = await pool.request()
+        .input('room_name', mssql.VarChar, roomName)
+        .input('room_email', mssql.VarChar, roomEmail)
+        .query(DB_COMMANDS.getRoomByNameAndEmail);
+
+        const roomData = result.recordset?.[0];
+
+        if(roomData){
+            return Room.toModel(roomData) // convert each database record to a Room object
+        }else{
+            return undefined
+        }
+      } catch (err) {
+          console.error({ message: err.message, stack: err.stack });
+          throw new Error(`Failed to retrieve room: ${err.message}`);
+      }
+ };
+
 
 /**
  * Create a new room in the database.
  * @param {Room} roomData the details of the new room.
- * @returns {Room} the newly created room (converted to a Room object).
+ * @returns {promise<Room>} the newly created room (converted to a Room object).
  */
 export const createRoom = async (roomData) => {
     const roomDetails = roomData.fromModel()
+
+    const roomAlreadyExists = await getRoomByNameAndEmail(roomData.roomName, roomData.roomEmail)
+
+    if(roomAlreadyExists){
+        throw new Error("A room with this name and email already exists")
+    }
   
     try{
       const result = await pool.request()
       .input('room_name', mssql.VarChar(255), roomDetails.roomName)
-      .input('building', mssql.VarChar(255), roomDetails.building)
-      .input('room_number', mssql.SmallInt, roomDetails.roomNumber)
+      .input('room_email', mssql.VarChar(255), roomDetails.roomEmail)
       .input('seats', mssql.SmallInt, roomDetails.seats)
       .input('projector', mssql.Bit, roomDetails.projector)
       .input('summary', mssql.VarChar(255), roomDetails.summary)
@@ -111,8 +173,7 @@ export const updateRoom = async (roomId, roomData) => {
       const result = await pool.request()
       .input('room_id', mssql.Int, roomId)
       .input('room_name', mssql.VarChar(255), roomDetails.roomName)
-      .input('building', mssql.VarChar(255), roomDetails.building)
-      .input('room_number', mssql.SmallInt, roomDetails.roomNumber)
+      .input('room_email', mssql.VarChar(255), roomDetails.roomEmail)
       .input('seats', mssql.SmallInt, roomDetails.seats)
       .input('projector', mssql.Bit, roomDetails.projector)
       .input('summary', mssql.VarChar(255), roomDetails.summary)
@@ -144,7 +205,7 @@ export const updateRoom = async (roomId, roomData) => {
 /**
  * Delete a room from the database.
  * @param {number} roomId id of the room to delete.
- * @returns {Room} the deleted room.
+ * @returns {Promise<Room>} the deleted room.
  */
 export const deleteRoom = async (roomId) => { 
 try{
