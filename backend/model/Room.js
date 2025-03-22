@@ -2,10 +2,21 @@
  * Object representating a meeting room.
  */
 export class Room {
-    constructor(roomId = undefined, roomName, roomEmail, seats, projector, summary, openHour, closeHour) {
-      this.roomId = roomId
+    constructor({
+        roomId = undefined, 
+        roomName, 
+        roomEmail, 
+        roomStatus = true, 
+        seats, 
+        projector, 
+        summary, 
+        openHour, 
+        closeHour
+    }) {
+      this.roomId = roomId;
       this.roomName = roomName;
       this.roomEmail = roomEmail;
+      this.roomStatus = roomStatus ?? true; // Ensure it's a boolean
       this.seats = seats;
       this.projector = Boolean(projector); // Ensure it's a boolean
       this.summary = summary;
@@ -14,14 +25,18 @@ export class Room {
     }
 
     /**
-     * Check if the room is available between the given meeting duration.
+     * Check if the room is open and available between the given meeting duration.
      * @param {string} meetingStartTime meeting start time.
      * @param {string} meetingEndTime meeting end time
      * @returns {boolean} whether the room is or isn't available.
      */
     isOpen(meetingStartTime, meetingEndTime) {
+        if(!this.roomStatus){
+            return false
+        }
+
         return meetingStartTime >= this.openHour && meetingEndTime <= this.closeHour;
-      }
+    }
 
     /**
      * Check if the room's open hours are valid (its open hour is before its close hour).
@@ -33,21 +48,31 @@ export class Room {
 
 
     /**
-    * Converts a database record or API response object into a Room instance.
-    * @param roomData record from the database.
-    * @returns {Room} a Room object.
+    * Converts a database record or API object into a Room instance.
+    * @param {Object} roomData - Record from the database or API response.
+    * @param {number} [roomData.room_id] - Unique ID of the room.
+    * @param {string} roomData.room_name - Name of the room.
+    * @param {string} roomData.room_email - Email associated with the room.
+    * @param {boolean} [roomData.room_status] - Whether the room is open or closed (default: true).
+    * @param {number} roomData.seats - Number of seats in the room.
+    * @param {boolean|number} roomData.projector - Whether the room has a projector (1 or 0 from the database, converted to boolean).
+    * @param {string} roomData.summary - Description of the room.
+    * @param {string} roomData.open_hour - Opening time (format: "HH:MM:SS").
+    * @param {string} roomData.close_hour - Closing time (format: "HH:MM:SS").
+    * @returns {Room} A Room object.
     */
     static toModel(roomData) {
-        return new Room(
-          roomData.room_id,
-          roomData.room_name,
-          roomData.room_email,
-          roomData.seats,
-          roomData.projector,
-          roomData.summary,
-          roomData.open_hour,
-          roomData.close_hour
-        );
+        return new Room({
+          roomId: roomData.room_id,
+          roomName: roomData.room_name,
+          roomEmail: roomData.room_email,
+          roomStatus: roomData.room_status,
+          seats: roomData.seats,
+          projector: roomData.projector,
+          summary: roomData.summary,
+          openHour: roomData.open_hour,
+          closeHour: roomData.close_hour
+        });
       }
 
    /**
@@ -59,11 +84,12 @@ export class Room {
             roomId: this.roomId,
             roomName: this.roomName,
             roomEmail: this.roomEmail,
+            roomStatus: this.roomStatus ? 1 : 0,
             seats: this.seats,
             projector: this.projector ? 1 : 0, // Convert boolean to BIT (0 or 1) for MSSQL
             summary: this.summary,
-            openHour: this.openHour,// this.convertToISO(this.openHour),
-            closeHour: this.closeHour// this.convertToISO(this.closeHour)
+            openHour: this.openHour, // this.convertToISO(this.openHour),
+            closeHour: this.closeHour // this.convertToISO(this.closeHour)
         };
     }
 
@@ -100,4 +126,3 @@ export class Room {
         return date.toISOString();
     }
 }
-

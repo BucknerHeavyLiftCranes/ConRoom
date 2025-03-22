@@ -47,7 +47,7 @@ try{
 
 /**
  * Fetch all rooms from the database.
- * @returns {Promise<Array<Room>>} an array of all rooms in the database.
+ * @returns {Promise<Room[]>} an array of all rooms in the database.
  */
 export const getAllRooms = async () => { 
     try {
@@ -130,28 +130,29 @@ export const createRoom = async (roomData) => {
     }
   
     try{
-      const result = await pool.request()
-      .input('room_name', mssql.VarChar(255), roomDetails.roomName)
-      .input('room_email', mssql.VarChar(255), roomDetails.roomEmail)
-      .input('seats', mssql.SmallInt, roomDetails.seats)
-      .input('projector', mssql.Bit, roomDetails.projector)
-      .input('summary', mssql.VarChar(255), roomDetails.summary)
-      .input('open_hour', mssql.VarChar, roomDetails.openHour)
-      .input('close_hour', mssql.VarChar, roomDetails.closeHour)
-      .query(DB_COMMANDS.createNewRoom)
+        const result = await pool.request()
+        .input('room_name', mssql.VarChar(255), roomDetails.roomName)
+        .input('room_email', mssql.VarChar(255), roomDetails.roomEmail)
+        .input('room_status', mssql.Bit, roomDetails.roomStatus)
+        .input('seats', mssql.SmallInt, roomDetails.seats)
+        .input('projector', mssql.Bit, roomDetails.projector)
+        .input('summary', mssql.VarChar(255), roomDetails.summary)
+        .input('open_hour', mssql.VarChar, roomDetails.openHour)
+        .input('close_hour', mssql.VarChar, roomDetails.closeHour)
+        .query(DB_COMMANDS.createNewRoom)
       
-      console.log("==================================================================")
-      console.log(`Room created successfully: ${result.rowsAffected} row(s) added.`);
-      console.log("==================================================================")
+        console.log("==================================================================")
+        console.log(`Room created successfully: ${result.rowsAffected} row(s) added.`);
+        console.log("==================================================================")
 
-      
-      const newRoomData = result.recordset?.[0]
-      if(!newRoomData){
-        throw new Error("Failed to retrieve new room data")
-      }
-      const newRoom = Room.toModel(newRoomData)
+        
+        const newRoomData = result.recordset?.[0]
+        if(!newRoomData){
+            throw new Error("Failed to retrieve new room data")
+        }
+        const newRoom = Room.toModel(newRoomData)
 
-      return newRoom;
+        return newRoom;
     }catch(err){
         console.error({ message: err.message, stack: err.stack });
         throw new Error(`Failed to create new room: ${err.message}`);
@@ -174,29 +175,30 @@ export const updateRoom = async (roomId, roomData) => {
     const roomDetails = roomData.fromModel()
   
     try{
-      const result = await pool.request()
-      .input('room_id', mssql.Int, roomId)
-      .input('room_name', mssql.VarChar(255), roomDetails.roomName)
-      .input('room_email', mssql.VarChar(255), roomDetails.roomEmail)
-      .input('seats', mssql.SmallInt, roomDetails.seats)
-      .input('projector', mssql.Bit, roomDetails.projector)
-      .input('summary', mssql.VarChar(255), roomDetails.summary)
-      .input('open_hour', mssql.VarChar, roomDetails.openHour)
-      .input('close_hour', mssql.VarChar, roomDetails.closeHour)
-      .query(DB_COMMANDS.updateRoom)
+        const result = await pool.request()
+        .input('room_id', mssql.Int, roomDetails.roomId)
+        .input('room_name', mssql.VarChar(255), roomDetails.roomName)
+        .input('room_email', mssql.VarChar(255), roomDetails.roomEmail)
+        .input('room_status', mssql.Bit, roomDetails.roomStatus)
+        .input('seats', mssql.SmallInt, roomDetails.seats)
+        .input('projector', mssql.Bit, roomDetails.projector)
+        .input('summary', mssql.VarChar(255), roomDetails.summary)
+        .input('open_hour', mssql.VarChar, roomDetails.openHour)
+        .input('close_hour', mssql.VarChar, roomDetails.closeHour)
+        .query(DB_COMMANDS.updateRoom)
       
-      console.log("==================================================================")
-      console.log(`Room updated successfully: ${result.rowsAffected} row(s) updated.`);
-      console.log("==================================================================")
+        console.log("==================================================================")
+        console.log(`Room updated successfully: ${result.rowsAffected} row(s) updated.`);
+        console.log("==================================================================")
 
-      
-      const updatedRoomData = result.recordset?.[0]
-      if(!updatedRoomData){
-        throw new Error("Failed to retrieve updated room data")
-      }
-      const updatedRoom = Room.toModel(updatedRoomData)
+        
+        const updatedRoomData = result.recordset?.[0]
+        if(!updatedRoomData){
+            throw new Error("Failed to retrieve updated room data")
+        }
+        const updatedRoom = Room.toModel(updatedRoomData)
 
-      return updatedRoom;
+        return updatedRoom;
     }catch(err){
         console.error({ message: err.message, stack: err.stack });
         throw new Error(`Failed to update room: ${err.message}`);
