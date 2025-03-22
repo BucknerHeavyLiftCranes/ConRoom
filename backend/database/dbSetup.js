@@ -25,14 +25,14 @@ async function createBucknerConroomDatabase() {
 /**
  * Create Users table in the database.
  */
-async function createUsersTable() {
-    try {
-      // Create a request and execute the SQL command stored in DB_COMMANDS.createUsersTable
-      await pool.request().query(DB_COMMANDS.createUsersTable);
-    } catch (err) {
-      throw new Error(`USERS TABLE CREATION ERROR: ${err}`)
-    }
-}
+// async function createUsersTable() {
+//     try {
+//       // Create a request and execute the SQL command stored in DB_COMMANDS.createUsersTable
+//       await pool.request().query(DB_COMMANDS.createUsersTable);
+//     } catch (err) {
+//       throw new Error(`USERS TABLE CREATION ERROR: ${err}`)
+//     }
+// }
 
 /**
  * Create Rooms table in the database.
@@ -51,12 +51,14 @@ async function createRoomsTable() {
  */
 async function createReservationsTable() {
     try {
-      // Create a request and execute the SQL command stored in DB_COMMANDS.createReservationsTable
-        await pool.request().query(DB_COMMANDS.createReservationsTable);
-        await pool.request().query(DB_COMMANDS.createIndexReservationsDate);
-        await pool.request().query(DB_COMMANDS.createIndexReservationsRoomTime);
-        await pool.request().query(DB_COMMANDS.createIndexReservationsUser);
-        await pool.request().query(DB_COMMANDS.createIndexReservationsStatus);
+      /* Create reservations table */
+      await pool.request().query(DB_COMMANDS.createReservationsTable);
+
+      /* Create reservations table indexes */
+      await pool.request().query(DB_COMMANDS.createIndexReservationsDate);
+      await pool.request().query(DB_COMMANDS.createIndexReservationsRoomTime);
+      await pool.request().query(DB_COMMANDS.createIndexReservationsUser);
+      await pool.request().query(DB_COMMANDS.createIndexReservationsStatus);
     } catch (err) {
       throw new Error(`RESERVATIONS TABLE CREATION ERROR: ${err}`)
     }
@@ -67,19 +69,26 @@ async function createReservationsTable() {
  */
 export async function setupDatabase(){
     try {
-        createBucknerConroomDatabase()
-        createUsersTable()
-        createRoomsTable()
-        createReservationsTable()
-
-        /* Delete Tables (for debugging) */
-        // await pool.request().query(DB_COMMANDS.dropReservationsTable);
-        // await pool.request().query(DB_COMMANDS.dropUsersTable);
-        // await pool.request().query(DB_COMMANDS.dropRoomsTable);
+        await createBucknerConroomDatabase()
+        await createRoomsTable()
+        await createReservationsTable()
         console.log("Database setup completed!")
     } catch (err) {
         console.error({ message: err.message, stack: err.stack });   
     }
+}
+
+/**
+ * Reset the database - drop the tables (for debugging purposes).
+ */
+export async function clearDatabase(){
+  try {
+      await pool.request().query(DB_COMMANDS.dropReservationsTable);
+      await pool.request().query(DB_COMMANDS.dropRoomsTable);
+      console.log("Database cleared!")
+  } catch (err) {
+      console.error({ message: err.message, stack: err.stack });   
+  }
 }
 
 
