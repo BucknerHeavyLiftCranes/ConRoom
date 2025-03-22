@@ -9,6 +9,7 @@ import { clearDatabase, setupDatabase } from "../database/dbSetup.js";
 import { getAllRooms, createRoom, updateRoom, deleteRoom, getRoomByNameAndEmail } from "../database/roomsTable.js";
 import { getAllReservations } from "../database/reservationsTable.js";
 import  Room  from "../model/Room.js";
+import Reservation from "../model/Reservation.js";
 
 // dotenv.config({ path: './backend/.env' }); // loads in env variables - to be used via the process object // container already loads env vars so this is not needed
 
@@ -19,7 +20,8 @@ try {
     console.error({ message: err.message, stack: err.stack });
 }
 
-
+/* Testing Rooms Table CRUD Operations */
+{
 // try {
 //     const roomToCheck = new Room(
 //         undefined,
@@ -109,7 +111,9 @@ try {
 // } catch (err) {
 //     console.error({ message: err.message, stack: err.stack });
 // }
+}
 
+/* Testing Reservations Table CRUD Operations */
 // try {
 //     const allReservations = await getAllReservations()
 //     if(allReservations.length !== 0){
@@ -120,6 +124,8 @@ try {
 // } catch (err) {
 //     console.error({ message: err.message, stack: err.stack });
 // }
+
+
 
 const app = express();
 app.use(cors())
