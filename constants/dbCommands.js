@@ -52,11 +52,11 @@ export const DB_COMMANDS = {
             date DATE NOT NULL,
             start_time TIME NOT NULL,
             end_time TIME NOT NULL,
-            status TINYINT NOT NULL DEFAULT 0,
+            status VARCHAR(20) NOT NULL DEFAULT 'Confirmed',
 
             -- Constraints
             CONSTRAINT chk_time CHECK (start_time < end_time),
-            CONSTRAINT chk_status CHECK (status IN (0, 1, 2, 3)), -- Valid status range
+            CONSTRAINT chk_status CHECK (status IN ('Confirmed', 'In Progress', 'Completed', 'Cancelled')), -- Allowed string status values
             CONSTRAINT fk_room FOREIGN KEY (room_id) REFERENCES rooms(room_id) ON DELETE CASCADE
         );
 
