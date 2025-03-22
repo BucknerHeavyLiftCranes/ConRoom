@@ -1,6 +1,6 @@
 import UndeterminedStatusError from "../../errors/UndeterminedStatusError.js"
 
-export class Reservation{
+export default class Reservation{
     constructor({
         reservationId, 
         title, 
