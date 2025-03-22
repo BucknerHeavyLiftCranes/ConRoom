@@ -1,6 +1,6 @@
 import mssql from "mssql"
 import { connectToDatabase } from "../config/dbConnection.js"
-import { DB_COMMANDS } from "../../constants/dbCommands.js"
+import DB_COMMANDS  from "../../constants/dbCommands.js"
 import  Reservation  from "../model/Reservation.js";
 
 let pool

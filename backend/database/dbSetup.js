@@ -1,5 +1,5 @@
 import { connectToDatabase } from "../config/dbConnection.js"
-import { DB_COMMANDS } from "../../constants/dbCommands.js"
+import DB_COMMANDS  from "../../constants/dbCommands.js"
 
 
 let pool

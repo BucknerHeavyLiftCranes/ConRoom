@@ -1,7 +1,7 @@
 /**
  * Commands to manipulate MSSQL Database.
  */
-export const DB_COMMANDS = {
+const DB_COMMANDS = {
     /* CREATE DATABASE COMMAND*/
     createBucknerConroomDatabase: `
         IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'Buckner_Conroom')
@@ -210,5 +210,6 @@ export const DB_COMMANDS = {
             SELECT * FROM reservations;
         END
     `,
-    
 }
+
+export default DB_COMMANDS
