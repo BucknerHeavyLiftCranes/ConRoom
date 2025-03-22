@@ -2,11 +2,10 @@
  * Object representating a meeting room.
  */
 export class Room {
-    constructor(roomId, roomName, building, roomNumber, seats, projector, summary, openHour, closeHour) {
-      this.roomId = roomId;
+    constructor(roomId = undefined, roomName, roomEmail, seats, projector, summary, openHour, closeHour) {
+      this.roomId = roomId
       this.roomName = roomName;
-      this.building = building;
-      this.roomNumber = roomNumber;
+      this.roomEmail = roomEmail;
       this.seats = seats;
       this.projector = Boolean(projector); // Ensure it's a boolean
       this.summary = summary;
@@ -34,8 +33,7 @@ export class Room {
         return new Room(
           roomData.room_id,
           roomData.room_name,
-          roomData.building,
-          roomData.room_number,
+          roomData.room_email,
           roomData.seats,
           roomData.projector,
           roomData.summary,
@@ -52,8 +50,7 @@ export class Room {
         return {
             roomId: this.roomId,
             roomName: this.roomName,
-            building: this.building,
-            roomNumber: this.roomNumber,
+            roomEmail: this.roomEmail,
             seats: this.seats,
             projector: this.projector ? 1 : 0, // Convert boolean to BIT (0 or 1) for MSSQL
             summary: this.summary,
