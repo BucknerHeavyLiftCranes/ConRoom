@@ -19,9 +19,17 @@ export class Room {
      * @param {string} meetingEndTime meeting end time
      * @returns {boolean} whether the room is or isn't available.
      */
-    isAvailable(meetingStartTime, meetingEndTime) {
+    isOpen(meetingStartTime, meetingEndTime) {
         return meetingStartTime >= this.openHour && meetingEndTime <= this.closeHour;
       }
+
+    /**
+     * Check if the room's open hours are valid (its open hour is before its close hour).
+     * @returns {boolean} whether or not the room has valid open hours.
+     */ 
+    hasValidHours() {
+        return this.openHour < this.closeHour // will return false of this.openHour >= this.closeHour
+    }
 
 
     /**
