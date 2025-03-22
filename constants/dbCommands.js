@@ -30,6 +30,7 @@ export const DB_COMMANDS = {
                 room_id INT IDENTITY(1,1) PRIMARY KEY,
                 room_name VARCHAR(255) NOT NULL,
                 room_email VARCHAR(255) NOT NULL,
+                room_status BIT NOT NULL DEFAULT 1,
                 seats SMALLINT CHECK (seats >= 0),
                 projector BIT NOT NULL DEFAULT 0,
                 summary VARCHAR(500),
@@ -161,9 +162,9 @@ export const DB_COMMANDS = {
         BEGIN
             IF NOT EXISTS (SELECT 1 FROM rooms WHERE room_name = @room_name AND room_email = @room_email)
             BEGIN
-                INSERT INTO rooms (room_name, room_email, seats, projector, summary, open_hour, close_hour)
+                INSERT INTO rooms (room_name, room_email, room_status, seats, projector, summary, open_hour, close_hour)
                 OUTPUT INSERTED.* 
-                VALUES (@room_name, @room_email, @seats, @projector, @summary, @open_hour, @close_hour);
+                VALUES (@room_name, @room_email, @room_status, @seats, @projector, @summary, @open_hour, @close_hour);
             END;
         END;
       `,
@@ -180,6 +181,7 @@ export const DB_COMMANDS = {
                   UPDATE rooms
                   SET room_name = @room_name,
                       room_email = @room_email,
+                      room_status = @room_status,
                       seats = @seats,
                       projector = @projector,
                       summary = @summary,
