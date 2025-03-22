@@ -49,7 +49,7 @@ export class Room {
 
     /**
     * Converts a database record or API object into a Room instance.
-    * @param {Object} roomData - Record from the database or API response.
+    * @param {Object} roomData - object containing details abour the room.
     * @param {number} [roomData.room_id] - Unique ID of the room.
     * @param {string} roomData.room_name - Name of the room.
     * @param {string} roomData.room_email - Email associated with the room.
