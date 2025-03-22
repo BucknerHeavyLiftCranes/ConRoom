@@ -72,6 +72,7 @@ export async function setupDatabase(){
         await createBucknerConroomDatabase()
         await createRoomsTable()
         await createReservationsTable()
+        console.log("Database setup completed!") // 🚨 🚨 🚨
     } catch (err) {
         console.error({ message: err.message, stack: err.stack });   
     }
