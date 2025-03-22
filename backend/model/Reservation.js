@@ -1,5 +1,15 @@
+import UndeterminedStatusError from "../../errors/UndeterminedStatusError.js"
+
 export class Reservation{
-    constructor(reservationId, title, roomId, userEmail, date, startTime, endTime, status){
+    constructor({
+        reservationId, 
+        title, 
+        roomId, 
+        userEmail, 
+        date, 
+        startTime, 
+        endTime, 
+        status}){
         this.reservationId = reservationId,
         this.title = title,
         this.roomId = roomId,
@@ -7,7 +17,7 @@ export class Reservation{
         this.date = date,
         this.startTime = this.extractTime(startTime),
         this.endTime = this.extractTime(endTime),
-        this.status = status
+        this.status = this.validateStatus(status)
     }
 
     /**
@@ -32,13 +42,21 @@ export class Reservation{
     }
 
     /**
-    * Converts a database record or API response object into a Reservation instance.
-    * @param reservationData record from the database.
-    * @returns {Reservation} a Reservation object.
-    */
+     * Converts a database record or API object into a Reservation instance.
+     * @param {Object} reservationData - object containing details about the reservation.
+     * @param {number} reservationData.reservationId - Unique ID of the reservation.
+     * @param {string} reservationData.title - Title or description of the reservation.
+     * @param {number} reservationData.roomId - ID of the room associated with the reservation.
+     * @param {string} reservationData.userEmail - Email of the user who made the reservation.
+     * @param {string} reservationData.date - Date of the reservation (format: "YYYY-MM-DD").
+     * @param {string} reservationData.startTime - Start time of the reservation (format: "HH:MM:SS").
+     * @param {string} reservationData.endTime - End time of the reservation (format: "HH:MM:SS").
+     * @param {string} reservationData.status - Status of the reservation (e.g., "confirmed", "pending", "cancelled").
+     * @returns {Reservation} A Reservation object.
+     */
     static toModel(reservationData) {
         return new Reservation(
-          reservationData.reservationId,
+          reservationData.reservationId,  // Accessing properties directly from reservationData object
           reservationData.title,
           reservationData.roomId,
           reservationData.userEmail,
@@ -47,9 +65,9 @@ export class Reservation{
           reservationData.endTime,
           reservationData.status
         );
-      }
+    }
 
-      /**
+    /**
     * Converts a Reservation instance back to a plain object (for API responses or DB insertion).
     * @returns an object containing the reservation data.
     */
@@ -82,5 +100,21 @@ export class Reservation{
         }
 
         return '00:00:00'; // Default if the dateTime is invalid or missing
+    }
+
+
+    validateStatus(status){
+        switch (status) {
+            case "Confirmed":
+                return "Confirmed";
+            case "In Progress":
+                return "In Progress";
+            case "Completed":
+                return "Completed";
+            case "Cancelled":
+                return "Cancelled";
+            default:
+                throw new UndeterminedStatusError("This reservation has an invalid status")
+        }
     }
 }
