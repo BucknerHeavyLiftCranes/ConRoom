@@ -3,11 +3,12 @@ import { connectToDatabase } from "../config/dbConnection.js"
 import DB_COMMANDS  from "../../constants/dbCommands.js"
 import  Room  from "../model/Room.js"
 import InvalidTimeError from "../../errors/InvalidTimeError.js"
+import { NoRoomError } from "../../errors/RoomError.js"
 
 let pool
 
 try{
-    if(!pool){
+    if (!pool){
         pool = await connectToDatabase()
     }
 }catch (err) {
@@ -21,7 +22,7 @@ try{
 //         WHERE type_desc LIKE '%CONSTRAINT%' AND name LIKE '%rooms%';
 //     `)
 
-//     if(result){
+//     if (result){
 //         console.log(result.recordset)
 //     }else{
 //         console.log("There are no constraints on the 'rooms' table")
@@ -38,7 +39,7 @@ try{
 //                         END
 //                     `)
 
-//                     if(result.recordset.length !== 0){
+//                     if (result.recordset.length !== 0){
 //                         console.log("Room:", result.recordset)
 //                     }else{
 //                         console.log("There is no room named:", roomName)
@@ -75,7 +76,7 @@ export const getAllRooms = async () => {
 
         const roomData = result.recordset?.[0];
 
-        if(roomData){
+        if (roomData){
             return Room.toModel(roomData) // convert each database record to a Room object
         }else{
             return undefined
@@ -99,7 +100,7 @@ export const getAllRooms = async () => {
 
         const roomData = result.recordset?.[0];
 
-        if(roomData){
+        if (roomData){
             return Room.toModel(roomData) // convert each database record to a Room object
         }else{
             return undefined
@@ -117,17 +118,17 @@ export const getAllRooms = async () => {
  * @returns {promise<Room>} the newly created room (converted to a Room object).
  */
 export const createRoom = async (roomData) => {
-    if(!roomData.hasValidHours()){
+    if (!roomData.hasValidHours()){
         throw new InvalidTimeError("This room's opening and closing hours are invalid")
     }
 
-    const roomDetails = roomData.fromModel()
-
     const roomAlreadyExists = await getRoomByNameAndEmail(roomData.roomName, roomData.roomEmail)
 
-    if(roomAlreadyExists){
+    if (roomAlreadyExists){
         throw new Error("A room with this name and email already exists")
     }
+
+    const roomDetails = roomData.fromModel()
   
     try{
         const result = await pool.request()
@@ -147,7 +148,7 @@ export const createRoom = async (roomData) => {
 
         
         const newRoomData = result.recordset?.[0]
-        if(!newRoomData){
+        if (!newRoomData){
             throw new Error("Failed to retrieve new room data")
         }
         const newRoom = Room.toModel(newRoomData)
@@ -168,8 +169,8 @@ export const createRoom = async (roomData) => {
 export const updateRoom = async (roomId, roomData) => { 
     const roomToUpdate = await getRoomById(roomId)
 
-    if(!roomToUpdate){
-        throw new Error(`This room doesn't exist`);
+    if (!roomToUpdate){
+        throw new NoRoomError(`This room doesn't exist`);
     }
 
     const roomDetails = roomData.fromModel()
@@ -193,7 +194,7 @@ export const updateRoom = async (roomId, roomData) => {
 
         
         const updatedRoomData = result.recordset?.[0]
-        if(!updatedRoomData){
+        if (!updatedRoomData){
             throw new Error("Failed to retrieve updated room data")
         }
         const updatedRoom = Room.toModel(updatedRoomData)
@@ -217,8 +218,8 @@ export const deleteRoom = async (roomId) => {
 try{
     const deletedRoom = await getRoomById(roomId)
 
-    if(!deleteRoom){
-        throw new Error(`This room doesn't exist`);
+    if (!deleteRoom){
+        throw new NoRoomError(`This room doesn't exist`);
     }
     const result = await pool.request()
     .input('room_id', mssql.Int, roomId)

@@ -42,7 +42,7 @@ export default class Room {
      * @returns {boolean} whether the room is or isn't available.
      */
     isOpen(meetingStartTime, meetingEndTime) {
-        if(!this.roomStatus){
+        if (!this.roomStatus){
             return false
         }
 
@@ -111,7 +111,7 @@ export default class Room {
      */
     extractTime(dateTime) {
         const timeRegex = /^\d{2}:\d{2}:\d{2}$/; // Matches HH:MM:SS
-        if(timeRegex.test(dateTime)){ // if dateTime is already in a valid format, just return it
+        if (timeRegex.test(dateTime)){ // if dateTime is already in a valid format, just return it
             return dateTime
         }
         // If dateTime is a valid string, extract the time part
