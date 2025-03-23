@@ -35,7 +35,7 @@ try {
 //     )
     
 //     const room = await getRoomByNameAndEmail(roomToCheck.roomName, roomToCheck.roomEmail)
-//     if(!room){
+//     if (!room){
 //         console.log("There is no room in the database with this name and email.")
 //     }else{
 //         console.log(room)
@@ -103,7 +103,7 @@ try {
 
 // try {
 //     const allRooms = await getAllRooms()
-//     if(allRooms.length !== 0){
+//     if (allRooms.length !== 0){
 //         console.log(allRooms)
 //     }else{
 //         console.log("There are no rooms in this database")
@@ -114,16 +114,16 @@ try {
 }
 
 /* Testing Reservations Table CRUD Operations */
-// try {
-//     const allReservations = await getAllReservations()
-//     if(allReservations.length !== 0){
-//         console.log(allReservations)
-//     }else{
-//         console.log("There are no reservations in this database")
-//     }
-// } catch (err) {
-//     console.error({ message: err.message, stack: err.stack });
-// }
+try {
+    const allReservations = await getAllReservations()
+    if (allReservations.length !== 0){
+        console.log(allReservations)
+    }else{
+        console.log("There are no reservations in this database")
+    }
+} catch (err) {
+    console.error({ message: err.message, stack: err.stack });
+}
 
 
 

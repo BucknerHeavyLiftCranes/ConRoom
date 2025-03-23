@@ -11,7 +11,7 @@ function Home() {
       console.log("Start log in!")
       const response = await fetch(baseKey)
 
-      if(response.ok){
+      if (response.ok){
         const testData = await response.json()
         console.log(testData)
       }
