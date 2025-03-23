@@ -42,12 +42,38 @@ export default class Reservation{
     }
 
     /**
+     * Check if the reservation's date and time is valid (not in the past).
+     * @returns {boolean} whether or not the reservation has valid a valid date and time.
+     */ 
+    hasValidDateAndTime() {
+        let today = new Date();
+        
+        // Format today's date as YYYY-MM-DD
+        let todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    
+        // If reservation date is in the past, return false
+        if (this.date < todayStr) {
+            return false;
+        }
+    
+        // If reservation is today, check if the start time has already passed
+        if (this.date === todayStr) {
+            let nowStr = today.toTimeString().split(" ")[0]; // Format HH:MM:SS
+            if (this.startTime < nowStr) {
+                return false;
+            }
+        }
+    
+        return true;
+    }
+
+    /**
      * Check if a reservation conflicts with another on the same day.
      * @param {Reservation} otherReservation possibly conflicting reservation.
      * @returns {boolean} whether this reservation conflicts with the other one.
      */
     conflictsWith(otherReservation){
-        if(this.date !== otherReservation.date || this.roomId !== otherReservation.roomId){
+        if (this.date !== otherReservation.date || this.roomId !== otherReservation.roomId){
             return false
         }
 
@@ -104,7 +130,7 @@ export default class Reservation{
      */
     extractTime(dateTime) {
         const timeRegex = /^\d{2}:\d{2}:\d{2}$/; // Matches HH:MM:SS
-        if(timeRegex.test(dateTime)){ // if dateTime is already in a valid format, just return it
+        if (timeRegex.test(dateTime)){ // if dateTime is already in a valid format, just return it
             return dateTime
         }
         // If dateTime is a valid string, extract the time part

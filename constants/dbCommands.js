@@ -210,6 +210,81 @@ const DB_COMMANDS = {
             SELECT * FROM reservations;
         END
     `,
+
+    getReservationById: `
+        IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'reservations')
+        BEGIN
+            SELECT * FROM reservations WHERE reservation_id = @reservation_id;
+        END
+    `,
+
+    getReservationsByRoomId: `
+        IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'reservations')
+        BEGIN
+            SELECT * FROM reservations WHERE room_id = @room_id;
+        END
+    `,
+
+    getReservationsByDate: `
+        IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'reservations')
+        BEGIN
+            SELECT * FROM reservations WHERE date = @date;
+        END
+    `,
+
+    getReservationsByRoomAndDate: `
+        IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'reservations')
+        BEGIN
+            SELECT * FROM reservations WHERE room_id = @room_id AND date = @date ;
+        END
+    `,
+
+    getReservationsByUserEmail: `
+        IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'reservations')
+        BEGIN
+            SELECT * FROM reservations WHERE user_email = @user_email ;
+        END
+    `,
+
+    getReservationsByStatus: `
+        IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'reservations')
+        BEGIN
+            SELECT * FROM reservations WHERE status = @status;
+        END
+    `,
+
+    
+    
+    
+    
+    
+    
+    getReservationPerRoom: `
+        IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'reservations')
+        BEGIN
+            SELECT  FROM reservations WHERE 🚨🚨🚨🚨 THIS WILL NEED A JOIN;
+        END
+    `,
+
+    createNewReservation: `
+        IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'reservations')
+        BEGIN
+            IF NOT EXISTS (SELECT 1 FROM rooms WHERE room_name = @room_name AND room_email = @room_email)
+            BEGIN
+                INSERT INTO reservations (title, room_id, user_email, date, start_time, end_time, status)
+                OUTPUT INSERTED.* 
+                VALUES (@title, @room_id, @user_email, @date, @start_time, @end_time, @status);
+            END;
+        END;
+    `,
+
+    deleteReservation: `
+        IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'reservations')
+        BEGIN
+            DELETE FROM reservations WHERE reservation_id = @reservation_id;
+        END
+    `,
 }
+
 
 export default DB_COMMANDS
