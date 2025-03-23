@@ -22,12 +22,12 @@ export default class Reservation{
         date, 
         startTime, 
         endTime, 
-        status}){
+        status = "Confirmed"}){
         this.reservationId = reservationId,
         this.title = title,
         this.roomId = roomId,
         this.userEmail = userEmail,
-        this.date = date,
+        this.date = this.extractDate(date),
         this.startTime = this.extractTime(startTime),
         this.endTime = this.extractTime(endTime),
         this.status = this.validateStatus(status)
@@ -45,26 +45,19 @@ export default class Reservation{
      * Check if the reservation's date and time is valid (not in the past).
      * @returns {boolean} whether or not the reservation has valid a valid date and time.
      */ 
-    hasValidDateAndTime() {
-        let today = new Date();
-        
-        // Format today's date as YYYY-MM-DD
-        let todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-    
-        // If reservation date is in the past, return false
-        if (this.date < todayStr) {
-            return false;
-        }
-    
-        // If reservation is today, check if the start time has already passed
-        if (this.date === todayStr) {
-            let nowStr = today.toTimeString().split(" ")[0]; // Format HH:MM:SS
-            if (this.startTime < nowStr) {
-                return false;
-            }
-        }
-    
-        return true;
+    hasNotPassed() {
+        // Convert reservation date & time into a Date object
+        const reservationDateTime = new Date(`${this.date}T${this.startTime}Z`);
+
+        // Convert to EST (Eastern Time)
+        const estTime = new Date().toLocaleString("en-US", { timeZone: "America/New_York" });
+        const now = new Date(estTime);
+
+        // Convert both timestamps to seconds
+        const reservationSeconds = Math.floor(reservationDateTime.getTime() / 1000);
+        const nowSeconds = Math.floor(now.getTime() / 1000);
+
+        return reservationSeconds > nowSeconds;
     }
 
     /**
@@ -77,7 +70,7 @@ export default class Reservation{
             return false
         }
 
-        return !(this.endTime <= otherReservation.startTime || this.startTime >= otherReservation.endTime);
+        return !(this.endTime < otherReservation.startTime || this.startTime > otherReservation.endTime);
     }
 
     /**
@@ -94,16 +87,16 @@ export default class Reservation{
      * @returns {Reservation} A Reservation object.
      */
     static toModel(reservationData) {
-        return new Reservation(
-          reservationData.reservationId,  // Accessing properties directly from reservationData object
-          reservationData.title,
-          reservationData.roomId,
-          reservationData.userEmail,
-          reservationData.date,
-          reservationData.startTime,
-          reservationData.endTime,
-          reservationData.status
-        );
+        return new Reservation({
+            reservationId: reservationData.reservation_id,
+            title: reservationData.title,
+            roomId: reservationData.room_id,
+            userEmail: reservationData.user_email,
+            date: reservationData.date,
+            startTime: reservationData.start_time,
+            endTime: reservationData.end_time,
+            status: reservationData.status
+        });
     }
 
     /**
@@ -133,7 +126,7 @@ export default class Reservation{
         if (timeRegex.test(dateTime)){ // if dateTime is already in a valid format, just return it
             return dateTime
         }
-        // If dateTime is a valid string, extract the time part
+        
         if (dateTime) {
           return new Date(dateTime).toTimeString().split(' ')[0]; // Returns 'HH:mm:ss'
         }
@@ -141,7 +134,30 @@ export default class Reservation{
         return '00:00:00'; // Default if the dateTime is invalid or missing
     }
 
+    /**
+     * Convert Date object string to date string.
+     * @param {string} date Date object with the date to be spliced and extracted.
+     * @returns {string} date portion of the Date object.
+     */
+      extractDate(date) {
+        const timeRegex = /^\d{4}-\d{2}-\d{2}$/; // Matches YYYY-MM-SS
+        if (timeRegex.test(date)){ // if dateTime is already in a valid format, just return it
+            return date
+        }
+        
+        if (date) {
+          return new Date(date).toISOString().split('T')[0]; // Returns 'HH:mm:ss'
+        }
 
+        return '0000-00-00'; // Default if the dateTime is invalid or missing
+    }
+
+
+    /**
+     * validates the status of either a database record or API object
+     * @param {string} status status to confirm.
+     * @returns {string} 1 of 4 statuses [`Confirmed`, `In Progress`, `Completed`, `Cancelled`].
+     */
     validateStatus(status){
         switch (status) {
             case "Confirmed":
