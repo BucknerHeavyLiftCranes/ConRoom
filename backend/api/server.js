@@ -5,17 +5,22 @@ import express from "express"
 import { router as adminRouter } from "./routes/adminRoutes.js";
 import { router as userRouter } from "./routes/userRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
-import { clearDatabase, setupDatabase } from "../database/dbSetup.js";
+import { clearDatabase, dropReservationsTable, setupDatabase } from "../database/dbSetup.js";
 import { getAllRooms, createRoom, updateRoom, deleteRoom, getRoomByNameAndEmail } from "../database/roomsTable.js";
-import { getAllReservations } from "../database/reservationsTable.js";
+import { createReservation, deleteReservation, getAllReservations, getReservationById, toggleReservationCanceledStatus, updateReservation } from "../database/reservationsTable.js";
 import  Room  from "../model/Room.js";
 import Reservation from "../model/Reservation.js";
+import { fakeRooms } from "../../tests/fakeRooms.js";
+import { fakeReservations } from "../../tests/fakeReservations.js";
+import { log } from "console";
 
 // dotenv.config({ path: './backend/.env' }); // loads in env variables - to be used via the process object // container already loads env vars so this is not needed
 
 try {
     // await setupDatabase()
     // await clearDatabase()
+    // await dropReservationsTable()
+    
 } catch (err) {
     console.error({ message: err.message, stack: err.stack });
 }
@@ -45,57 +50,36 @@ try {
 // }
 
 
+// let fakeRoom
 // try {
-//     const newRoom = new Room({
-//         roomName: 'Mindscape',
-//         roomEmail: 'MindscapeRoom@bucknerheavylift.com',
-//         seats: 500,
-//         projector: 1, 
-//         summary: 'Large lecture hall designed for symposiums and presentaions',
-//         openHour: '08:00:00',
-//         closeHour: '16:00:00'
-//     })
-    
-//     await createRoom(newRoom)
+//     for (fakeRoom of fakeRooms){
+//         await createRoom(fakeRoom)
+//     }   
+//     await logRooms()
 // } catch (err) {
+//     console.log(`Room '${fakeRoom.roomName}' could NOT be made.`)
 //     console.error({ message: err.message, stack: err.stack });
 // }
 
 
 // try {
-//     const roomToUpdate = new Room({
-//         roomId: 1,
-//         roomName: 'Twinnings',
-//         roomEmail: 'TwinningsRoom@bucknerheavylift.com',
-//         roomStatus: 1,
-//         seats: 2,
-//         projector: 0, 
-//         summary: 'Small room designed for pair scrum meetings (includes dual monitors)',
-//         openHour: '10:00:00',
-//         closeHour: '17:00:00'
-//     })
+//     const roomToUpdate = new Room({...fakeRooms[1], roomId: 2, openHour: "00:00:00", closeHour: "23:59:59"})
 
-//     console.log("roomStatus: ", roomToUpdate.roomStatus)
     
-//     await updateRoom(roomToUpdate.roomId, roomToUpdate)
+//     await updateRoom(roomToUpdate)
+//     await logRooms()
 // } catch (err) {
 //     console.error({ message: err.message, stack: err.stack });
 // }
 
 
+
 // try {
-//     const roomToDelete = new Room(
-//         2,
-//         'Linhawks',
-//         'LinhawksRoom@bucknerheavylift.com',
-//         1000,
-//         1, 
-//         'Large hall for conferences, equipped with projectors, full speaker system, and dual monitor podium setup',
-//         '09:00:00',
-//         '22:00:00'
-//     )
+//     const roomToDelete = new Room({...fakeRooms[3], roomId: 4})
     
-//     await deleteRoom(roomToDelete.roomId)
+//     const deletedRoom = await deleteRoom(roomToDelete.roomId)
+//     console.log("DELETED ROOM:", deletedRoom)
+//     await logRooms()
 // } catch (err) {
 //     console.error({ message: err.message, stack: err.stack });
 // }
@@ -114,16 +98,123 @@ try {
 }
 
 /* Testing Reservations Table CRUD Operations */
+
+// Create a reservation
+// let fakeReservation
+// try {
+//     for (fakeReservation of fakeReservations){
+//         await createReservation(fakeReservation)
+//     }   
+
+//     // const newReservation = new Reservation({
+//     //     title: "Milly Bobby Brown's Wedding",
+//     //     roomId: 3,
+//     //     userEmail: "celebrities@abc.com", 
+//     //     date: "2025-04-15",
+//     //     startTime: '15:00:00',
+//     //     endTime: '15:30:00'
+//     // })
+//     // await createReservation(newReservation)
+//     await logReservations()
+// } catch (err) {
+//     console.log(`Reservation '${fakeReservation.title}' could NOT be made.`)
+//     console.error({ message: err.message, stack: err.stack });
+// }
+
+// Update reservation
+// try {
+//         const updatedReservation = await getReservationById(4)
+//         updatedReservation.toggleCanceledStatus()
+//         // console.log(updatedReservation)
+
+//         await updateReservation(updatedReservation)
+//         await logReservations()
+        
+//     } catch (err) {
+//         console.error({ message: err.message, stack: err.stack });
+//     }
+
+
+// Get the room for a reservation
+// try {
+//     const reservation = await getReservationById(4)
+//     const reservationRoom = await reservation.getRoom()
+//     log(reservationRoom)
+    
+// } catch (err) {
+//     console.error({ message: err.message, stack: err.stack });
+// }
+
+// Delete a reservation
+// try {
+//     const deletedReservation = await getReservationById(4)
+
+//     await deleteReservation(deletedReservation.reservationId)
+//     await logReservations()
+    
+// } catch (err) {
+//     console.error({ message: err.message, stack: err.stack });
+// }
+
+// Cancel a reservation
 try {
-    const allReservations = await getAllReservations()
-    if (allReservations.length !== 0){
-        console.log(allReservations)
-    }else{
-        console.log("There are no reservations in this database")
-    }
+    const reservationToCancelOrUncancel = await getReservationById(3)
+
+    await toggleReservationCanceledStatus(reservationToCancelOrUncancel)
+    await logReservations()
+    
 } catch (err) {
     console.error({ message: err.message, stack: err.stack });
 }
+
+
+
+async function logRooms() {
+    try {
+        const allRooms = await getAllRooms()
+        if (allRooms.length !== 0){
+            console.log(allRooms)
+        }else{
+            console.log("There are no rooms in this database")
+        }
+    } catch (err) {
+        console.error({ message: err.message, stack: err.stack });
+    }
+}
+
+async function logReservations() {
+    try {
+        const allReservations = await getAllReservations()
+        if (allReservations.length !== 0){
+            console.log(allReservations)
+        }else{
+            console.log("There are no reservations in this database")
+        }
+    } catch (err) {
+        console.error({ message: err.message, stack: err.stack });
+    }
+}
+
+// await logRooms()
+// await logReservations()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -139,7 +230,7 @@ app.use(express.json());
 const PORT = process.env.PORT || 3000;
 
 app.get("/", (req, res) => {
-    res.json({status: `User logged in`,
+    res.json({userStatus: `User logged in`,
         port: PORT 
     })
 })
