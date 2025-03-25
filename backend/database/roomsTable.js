@@ -2,8 +2,16 @@ import mssql from "mssql"
 import { connectToDatabase } from "../config/dbConnection.js"
 import DB_COMMANDS  from "../../constants/dbCommands.js"
 import  Room  from "../model/Room.js"
-import InvalidTimeError from "../../errors/InvalidTimeError.js"
-import { NoRoomError } from "../../errors/RoomError.js"
+import { InvalidTimeError } from "../../errors/InvalidTimeError.js"
+import { 
+        GetRoomError, 
+        CreateRoomError, 
+        DuplicateRoomError, 
+        UpdateRoomError, 
+        DeleteRoomError, 
+        RoomValidationError
+    } from "../../errors/RoomError.js"
+import { log } from "console"
 
 let pool
 
@@ -12,39 +20,9 @@ try{
         pool = await connectToDatabase()
     }
 }catch (err) {
-    console.log(`Failed to connect to database: ${err}`)
+    console.error(`Failed to connect to database: ${err}`)
 }
 
-// export const checkForRoomConstraints = async () => {
-//     const result = await pool.request().query(`
-//         SELECT name, type_desc 
-//         FROM sys.objects 
-//         WHERE type_desc LIKE '%CONSTRAINT%' AND name LIKE '%rooms%';
-//     `)
-
-//     if (result){
-//         console.log(result.recordset)
-//     }else{
-//         console.log("There are no constraints on the 'rooms' table")
-//     }
-// }
-
-// export const getRoomByName = async (roomName) => {
-//     const result = await pool.request()
-//                              .input('room_name', mssql.VarChar(255), roomName)
-//                              .query(`
-//                         IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'rooms')
-//                         BEGIN
-//                             SELECT * FROM rooms WHERE room_name = '@room_name';
-//                         END
-//                     `)
-
-//                     if (result.recordset.length !== 0){
-//                         console.log("Room:", result.recordset)
-//                     }else{
-//                         console.log("There is no room named:", roomName)
-//                     }
-// }
 
 /**
  * Fetch all rooms from the database.
@@ -59,14 +37,15 @@ export const getAllRooms = async () => {
         return allRooms
       } catch (err) {
           console.error({ message: err.message, stack: err.stack });
-          throw new Error(`Failed to retrieve rooms: ${err.message}`);
+          throw new GetRoomError(`Failed to retrieve rooms: ${err.message}`);
       }
  };
 
  
 /**
  * Fetch a specific room from the database by its unique id.
- * @returns {Promise<Room> | undefined} a room in the database.
+ * @param {number} roomId unique id of the room.
+ * @returns {Promise<Room | undefined>} a room in the database.
  */
  export const getRoomById = async (roomId) => { 
     try {
@@ -83,19 +62,72 @@ export const getAllRooms = async () => {
         }
       } catch (err) {
           console.error({ message: err.message, stack: err.stack });
-          throw new Error(`Failed to retrieve room: ${err.message}`);
+          throw new GetRoomError(`Failed to retrieve room: ${err.message}`);
       }
  };
 
+
+/**
+ * Fetch a specific room from the database by its room name.
+ * @param {string} roomName name of the room.
+ * @returns {Promise<Room | undefined>} a room in the database.
+ */
+export const getRoomByName = async (roomName) => { 
+    try {
+        const result = await pool.request()
+        .input('room_name', mssql.VarChar(255), roomName)
+        .query(DB_COMMANDS.getRoomByName);
+
+        const roomData = result.recordset?.[0];
+
+        if (roomData){
+            return Room.toModel(roomData) // convert each database record to a Room object
+        }else{
+            return undefined
+        }
+      } catch (err) {
+          console.error({ message: err.message, stack: err.stack });
+          throw new GetRoomError(`Failed to retrieve room: ${err.message}`);
+      }
+ };
+
+
  /**
+ * Fetch a specific room from the database by its room name.
+ * @param {string} roomEmail unique email of the room.
+ * @returns {Promise<Room | undefined>} a room in the database.
+ */
+export const getRoomByEmail = async (roomEmail) => { 
+    try {
+        const result = await pool.request()
+        .input('room_email', mssql.VarChar(255), roomEmail)
+        .query(DB_COMMANDS.getRoomByEmail);
+
+        const roomData = result.recordset?.[0];
+
+        if (roomData){
+            return Room.toModel(roomData) // convert each database record to a Room object
+        }else{
+            return undefined
+        }
+      } catch (err) {
+          console.error({ message: err.message, stack: err.stack });
+          throw new GetRoomError(`Failed to retrieve room: ${err.message}`);
+      }
+ };
+
+
+/**
  * Fetch a specific room from the database by its room name and email.
- * @returns {Promise<Room> | undefined} a room in the database.
+ * @param {string} roomName unique name of the room.
+ * @param {string} roomEmail unique email of the room.
+ * @returns {Promise<Room | undefined>} a room in the database.
  */
  export const getRoomByNameAndEmail = async (roomName, roomEmail) => { 
     try {
         const result = await pool.request()
-        .input('room_name', mssql.VarChar, roomName)
-        .input('room_email', mssql.VarChar, roomEmail)
+        .input('room_name', mssql.VarChar(255), roomName)
+        .input('room_email', mssql.VarChar(255), roomEmail)
         .query(DB_COMMANDS.getRoomByNameAndEmail);
 
         const roomData = result.recordset?.[0];
@@ -107,7 +139,7 @@ export const getAllRooms = async () => {
         }
       } catch (err) {
           console.error({ message: err.message, stack: err.stack });
-          throw new Error(`Failed to retrieve room: ${err.message}`);
+          throw new GetRoomError(`Failed to retrieve room: ${err.message}`);
       }
  };
 
@@ -118,15 +150,7 @@ export const getAllRooms = async () => {
  * @returns {promise<Room>} the newly created room (converted to a Room object).
  */
 export const createRoom = async (roomData) => {
-    if (!roomData.hasValidHours()){
-        throw new InvalidTimeError("This room's opening and closing hours are invalid")
-    }
-
-    const roomAlreadyExists = await getRoomByNameAndEmail(roomData.roomName, roomData.roomEmail)
-
-    if (roomAlreadyExists){
-        throw new Error("A room with this name and email already exists")
-    }
+    await validateRoom(roomData)
 
     const roomDetails = roomData.fromModel()
   
@@ -138,25 +162,26 @@ export const createRoom = async (roomData) => {
         .input('seats', mssql.SmallInt, roomDetails.seats)
         .input('projector', mssql.Bit, roomDetails.projector)
         .input('summary', mssql.VarChar(255), roomDetails.summary)
-        .input('open_hour', mssql.VarChar, roomDetails.openHour)
-        .input('close_hour', mssql.VarChar, roomDetails.closeHour)
+        .input('open_hour', mssql.VarChar(10), roomDetails.openHour)
+        .input('close_hour', mssql.VarChar(10), roomDetails.closeHour)
         .query(DB_COMMANDS.createNewRoom)
-      
+        
+        const newRoomData = result.recordset?.[0]
+        if (!newRoomData){
+            throw new GetRoomError("Failed to retrieve new room data")
+        }
+
         console.log("==================================================================")
         console.log(`Room created successfully: ${result.rowsAffected} row(s) added.`);
         console.log("==================================================================")
 
-        
-        const newRoomData = result.recordset?.[0]
-        if (!newRoomData){
-            throw new Error("Failed to retrieve new room data")
-        }
+
         const newRoom = Room.toModel(newRoomData)
 
         return newRoom;
     }catch(err){
         console.error({ message: err.message, stack: err.stack });
-        throw new Error(`Failed to create new room: ${err.message}`);
+        throw new CreateRoomError(`Failed to create new room: ${err.message}`);
     }
 };
 
@@ -166,16 +191,16 @@ export const createRoom = async (roomData) => {
  * @param {Room} roomData the details of the updated room.
  * @returns {Promise<Room>} the updated room.
  */
-export const updateRoom = async (roomId, roomData) => { 
-    const roomToUpdate = await getRoomById(roomId)
-
-    if (!roomToUpdate){
-        throw new NoRoomError(`This room doesn't exist`);
-    }
-
-    const roomDetails = roomData.fromModel()
-  
+export const updateRoom = async (roomData) => { 
     try{
+        const roomExists = await getRoomById(roomData.roomId)
+
+        if(roomExists){
+            await validateRoom(roomData)
+        }
+
+        const roomDetails = roomData.fromModel()
+
         const result = await pool.request()
         .input('room_id', mssql.Int, roomDetails.roomId)
         .input('room_name', mssql.VarChar(255), roomDetails.roomName)
@@ -183,26 +208,27 @@ export const updateRoom = async (roomId, roomData) => {
         .input('room_status', mssql.Bit, roomDetails.roomStatus)
         .input('seats', mssql.SmallInt, roomDetails.seats)
         .input('projector', mssql.Bit, roomDetails.projector)
-        .input('summary', mssql.VarChar(255), roomDetails.summary)
-        .input('open_hour', mssql.VarChar, roomDetails.openHour)
-        .input('close_hour', mssql.VarChar, roomDetails.closeHour)
+        .input('summary', mssql.VarChar(500), roomDetails.summary)
+        .input('open_hour', mssql.VarChar(10), roomDetails.openHour)
+        .input('close_hour', mssql.VarChar(10), roomDetails.closeHour)
         .query(DB_COMMANDS.updateRoom)
-      
+
+
+        const updatedRoomData = result.recordset?.[0]
+        if (!updatedRoomData){
+            throw new GetRoomError("Failed to retrieve updated room data")
+        }
+
         console.log("==================================================================")
         console.log(`Room updated successfully: ${result.rowsAffected} row(s) updated.`);
         console.log("==================================================================")
 
-        
-        const updatedRoomData = result.recordset?.[0]
-        if (!updatedRoomData){
-            throw new Error("Failed to retrieve updated room data")
-        }
         const updatedRoom = Room.toModel(updatedRoomData)
 
         return updatedRoom;
     }catch(err){
         console.error({ message: err.message, stack: err.stack });
-        throw new Error(`Failed to update room: ${err.message}`);
+        throw new UpdateRoomError(`Failed to update room: ${err.message}`);
     }
 
 
@@ -219,7 +245,7 @@ try{
     const deletedRoom = await getRoomById(roomId)
 
     if (!deleteRoom){
-        throw new NoRoomError(`This room doesn't exist`);
+        throw new GetRoomError(`This room doesn't exist`);
     }
     const result = await pool.request()
     .input('room_id', mssql.Int, roomId)
@@ -228,9 +254,44 @@ try{
     console.log("==================================================================")
     console.log(`Room deleted successfully: ${result.rowsAffected} row(s) deleted.`);
     console.log("==================================================================")
+
     return deletedRoom;
     }catch(err){
     console.error({ message: err.message, stack: err.stack });
-    throw new Error(`Failed to delete room: ${err.message}`);
+    throw new DeleteRoomError(`Failed to delete room: ${err.message}`);
     }
 };
+
+
+/**
+ * Validate a room before creating it in the database.
+ * @param {Room} room room to be validated.
+ * @throws {InvalidTimeError} if the room doesn not have valid open hours.
+ * @throws {DuplicateRoomError} if the room already exists.
+ * @throws {Error} if an unexpected validation error occurs.
+ */
+const validateRoom = async (room) => {
+    try{
+        if (!room.hasValidHours()){
+            throw new InvalidTimeError("This room's opening and closing hours are invalid")
+        }
+
+        const duplicateRoomName = await getRoomByName(room.roomName)
+        const duplicateRoomEmail = await getRoomByEmail(room.roomEmail)
+
+        if (duplicateRoomName && duplicateRoomName.roomId != room.roomId){ 
+            if(duplicateRoomName.roomName.toLowerCase() === room.roomName.toLowerCase()){
+                throw new DuplicateRoomError("A room with this name already exists")
+            }
+        }
+
+        if (duplicateRoomEmail && duplicateRoomEmail.roomId != room.roomId){ 
+            if(duplicateRoomEmail.roomEmail.toLowerCase() === room.roomEmail.toLowerCase()){
+                throw new DuplicateRoomError("A room with this email already exists")
+            }
+        }
+    }catch(err){
+        console.error({ message: err.message, stack: err.stack });
+        throw new RoomValidationError(`Failed to validate room: ${err.message}`);
+    }
+}
