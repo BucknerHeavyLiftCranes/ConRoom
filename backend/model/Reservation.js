@@ -200,27 +200,13 @@ export default class Reservation{
         const reservationEndTime = new Date(`${this.date}T${this.endTime}Z`);
 
         // Get the current time in UTC
-        const now = new Date();
-
-        
+        /**@type {Date} the current time*/
+        const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
 
         // Convert timestamps to seconds
         const reservationStartTimeInSeconds = Math.floor(reservationStartTime.getTime() / 1000);
         const reservationEndTimeInSeconds = Math.floor(reservationEndTime.getTime() / 1000);
         const nowInSeconds = Math.floor(now.getTime() / 1000);
-
-        // if(this.title === "All-Hands Meeting"){
-            // console.log({
-            //     reservationStartTime: reservationStartTime.toISOString(),
-            //     reservationEndTime: reservationEndTime.toISOString(),
-            //     now: now.toISOString()
-            // });
-            
-            // console.log(`${nowInSeconds} < ${reservationEndTimeInSeconds}`)
-        // }
-
-        // console.log(`${this.title}: ${nowInSeconds} >= ${reservationStartTimeInSeconds} && ${nowInSeconds} < ${reservationEndTimeInSeconds}`)
-        // console.log(nowInSeconds >= reservationStartTimeInSeconds && nowInSeconds < reservationEndTimeInSeconds)
 
         // Determine status
         if (nowInSeconds < reservationStartTimeInSeconds) {

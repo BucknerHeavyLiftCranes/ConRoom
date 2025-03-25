@@ -27,34 +27,13 @@ try {
 
 /* Testing Rooms Table CRUD Operations */
 {
-// try {
-//     const roomToCheck = new Room(
-//         undefined,
-//         'Linhawks',
-//         'LinhawksRoom@bucknerheavylift.com',
-//         500,
-//         1, 
-//         'Large hall for conferences, equipped with projectors, full speaker system, and dual monitor podium setup',
-//         '08:00:00',
-//         '20:00:00'
-//     )
-    
-//     const room = await getRoomByNameAndEmail(roomToCheck.roomName, roomToCheck.roomEmail)
-//     if (!room){
-//         console.log("There is no room in the database with this name and email.")
-//     }else{
-//         console.log(room)
-//     }
-// } catch (err) {
-//     console.error({ message: err.message, stack: err.stack });
-// }
-
-
+// Create a room
 // let fakeRoom
 // try {
 //     for (fakeRoom of fakeRooms){
 //         await createRoom(fakeRoom)
 //     }   
+
 //     await logRooms()
 // } catch (err) {
 //     console.log(`Room '${fakeRoom.roomName}' could NOT be made.`)
@@ -98,41 +77,41 @@ try {
 }
 
 /* Testing Reservations Table CRUD Operations */
-
+{
 // Create a reservation
 // let fakeReservation
 // try {
-//     for (fakeReservation of fakeReservations){
-//         await createReservation(fakeReservation)
-//     }   
+//     // for (fakeReservation of fakeReservations){
+//     //     await createReservation(fakeReservation)
+//     // }   
 
-//     // const newReservation = new Reservation({
-//     //     title: "Milly Bobby Brown's Wedding",
-//     //     roomId: 3,
-//     //     userEmail: "celebrities@abc.com", 
-//     //     date: "2025-04-15",
-//     //     startTime: '15:00:00',
-//     //     endTime: '15:30:00'
-//     // })
-//     // await createReservation(newReservation)
-//     await logReservations()
+//     const newReservation = new Reservation({
+//         title: "Cheesecake Factory Dinner",
+//         roomId: 5,
+//         userEmail: "CF@abc.com", 
+//         date: "2025-03-25",
+//         startTime: '18:23:00',
+//         endTime: '19:30:00'
+//     })
+//     await createReservation(newReservation)
+    // await logReservations()
 // } catch (err) {
-//     console.log(`Reservation '${fakeReservation.title}' could NOT be made.`)
+//     // console.log(`Reservation '${fakeReservation.title}' could NOT be made.`)
 //     console.error({ message: err.message, stack: err.stack });
 // }
 
 // Update reservation
-// try {
-//         const updatedReservation = await getReservationById(4)
-//         updatedReservation.toggleCanceledStatus()
-//         // console.log(updatedReservation)
+try {
+        // const reservationToUpdate = (await getReservationById(5)).fromModel()
+        // const updatedReservation = new Reservation({...reservationToUpdate, startTime:"18:41:00", endTime: "18:41:15"})
+        // // console.log(updatedReservation)
 
-//         await updateReservation(updatedReservation)
-//         await logReservations()
+        // await updateReservation(updatedReservation)
+        await logReservations()
         
-//     } catch (err) {
-//         console.error({ message: err.message, stack: err.stack });
-//     }
+    } catch (err) {
+        console.error({ message: err.message, stack: err.stack });
+    }
 
 
 // Get the room for a reservation
@@ -157,14 +136,15 @@ try {
 // }
 
 // Cancel a reservation
-try {
-    const reservationToCancelOrUncancel = await getReservationById(3)
+// try {
+//     const reservationToCancelOrUncancel = await getReservationById(3)
 
-    await toggleReservationCanceledStatus(reservationToCancelOrUncancel)
-    await logReservations()
+//     await toggleReservationCanceledStatus(reservationToCancelOrUncancel)
+//     await logReservations()
     
-} catch (err) {
-    console.error({ message: err.message, stack: err.stack });
+// } catch (err) {
+//     console.error({ message: err.message, stack: err.stack });
+// }
 }
 
 

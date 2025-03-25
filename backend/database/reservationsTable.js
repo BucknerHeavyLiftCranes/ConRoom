@@ -386,7 +386,7 @@ export const toggleReservationCanceledStatus = async (reservation) => {
         // const reservationExists = await getReservationById(reservation.reservationId)
         // if(!reservationExists){
         //     throw GetReservationError("This reservation doesn't exists")
-        // } // MAY BE REDUNDANT SICNE updateReservation ALREADY CHECKS THIS
+        // } // MAY BE REDUNDANT SINCE updateReservation ALREADY CHECKS THIS
 
         reservation.toggleCanceledStatus()
 
