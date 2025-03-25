@@ -67,3 +67,43 @@ export class DeleteReservationError extends ReservationError {
         this.name = "DeleteReservationError"
     }
 }
+
+/**
+ * Thrown if details for a reservation fail to be retrieved from the database.
+ */
+export class ReservationDetailsError extends ReservationError {
+    constructor(message) {
+        super(message)
+        this.name = "ReservationDetailsError"
+    }
+}
+
+/**
+ * Thrown if an action on a reservation fails due to the reservation already being in progress.
+ */
+export class ReservationInProgressError extends ReservationError {
+    constructor(message) {
+        super(message)
+        this.name = "ReservationInProgressError"
+    }
+}
+
+/**
+ * Thrown if an action on a reservation fails due to the reservation being canceled.
+ */
+export class ReservationCanceledError extends ReservationError {
+    constructor(message) {
+        super(message)
+        this.name = "ReservationCanceledError"
+    }
+}
+
+/**
+ * Thrown if an action on a reservation fails due to the reservation having ended.
+ */
+export class ReservationCompletedError extends ReservationError {
+    constructor(message) {
+        super(message)
+        this.name = "ReservationCanceledError"
+    }
+}
