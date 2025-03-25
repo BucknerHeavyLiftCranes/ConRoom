@@ -14,5 +14,5 @@ export const HTTP_STATUS_CODES = {
 //     1: "Confirmed",
 //     2: "In Progress",
 //     3: "Completed",
-//     4: "Cancelled",
+//     4: "Canceled",
 // }

@@ -1,4 +1,4 @@
-export class MeetingDetails {
+export class MeetingDetails { //maybe just use Reservation model instead
     constructor(id, title, room, time, duration, status) {
       this.id = id
       this.title = title;
