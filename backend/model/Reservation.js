@@ -133,6 +133,26 @@ export default class Reservation{
     }
 
     /**
+     * Converts a Reservation instance to a MeetingDetails object for frontend use.
+     * @returns 
+     */
+    async toMeetingDetails() {
+        return {
+            reservationId: this.reservationId,
+            title: this.title,
+            roomId: this.roomId,
+            /**@type {string} */
+            roomName: (await this.getRoom()).roomName,
+            userEmail: this.userEmail,
+            date: this.date,
+            startTime: this.startTime,
+            endTime: this.endTime,
+            canceled: this.canceled,
+            status: this.getStatus()
+        }
+    }
+
+    /**
     * Converts a Reservation instance back to a plain object (for DB insertion).
     * @returns an object containing the reservation data.
     */
