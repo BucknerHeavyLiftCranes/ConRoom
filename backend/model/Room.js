@@ -11,8 +11,8 @@ import { InvalidTimeFormatError } from "../../errors/InvalidTimeError.js";
  * @param {number} params.seats - The number of seats available in the room.
  * @param {boolean|number} params.projector - Whether the room has a projector (1 or 0 from the database, converted to a boolean).
  * @param {string} params.summary - A brief description of the room.
- * @param {string} params.openHour - The opening time of the room (format: 'HH:MM:SS').
- * @param {string} params.closeHour - The closing time of the room (format: 'HH:MM:SS').
+ * @param {string} params.openHour - The opening time of the room (format: 'HH:MM').
+ * @param {string} params.closeHour - The closing time of the room (format: 'HH:MM').
  */
 export default class Room {
     constructor({
@@ -79,8 +79,8 @@ export default class Room {
     * @param {number} roomData.seats - Number of seats in the room.
     * @param {boolean|number} roomData.projector - Whether the room has a projector (1 or 0 from the database, converted to boolean).
     * @param {string} roomData.summary - Description of the room.
-    * @param {string} roomData.open_hour - Opening time (format: "HH:MM:SS").
-    * @param {string} roomData.close_hour - Closing time (format: "HH:MM:SS").
+    * @param {string} roomData.open_hour - Opening time (format: "HH:MM").
+    * @param {string} roomData.close_hour - Closing time (format: "HH:MM").
     * @returns {Room} A Room object.
     */
     static toModel(roomData) {
@@ -122,27 +122,28 @@ export default class Room {
      * @returns {string} time portion of the Date object.
      */
     extractTime(dateTime) {
-        const timeRegex = /^\d{2}:\d{2}:\d{2}$/; // Matches HH:MM:SS
+        const timeRegex = /^\d{2}:\d{2}$/; // Matches HH:MM
         if (timeRegex.test(dateTime)){ // if dateTime is already in a valid format, just return it
             return dateTime
         }
         // If dateTime is a valid string, extract the time part
         if (dateTime) {
-          return new Date(dateTime).toTimeString().split(' ')[0]; // Returns 'HH:mm:ss'
+            return new Date(dateTime)
+                .toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false }); // Returns 'HH:mm'
         }
 
-        throw new InvalidTimeFormatError(`Invalid time format. Expected HH:MM:SS, but got ${dateTime}`);
+        throw new InvalidTimeFormatError(`Invalid time format. Expected HH:MM, but got ${dateTime}`);
     }
 
     // /**
     //  * Convert Time string to dateTime string.
-    //  * @param {string} timeString string representation of time (HH:MM:SS)
+    //  * @param {string} timeString string representation of time (HH:MM)
     //  * @returns {string} ISO formatted time string
     //  */
     // convertToISO(timeString) {
     //     console.log(timeString)
     //     if (!timeString || !/^\d{2}:\d{2}:\d{2}$/.test(timeString)) {
-    //         throw new InvalidTimeFormatError(`Invalid time format. Expected HH:MM:SS, but got ${timeString}`);
+    //         throw new InvalidTimeFormatError(`Invalid time format. Expected HH:MM, but got ${timeString}`);
     //     }
         
     //     const date = new Date(`1970-01-01T${timeString}Z`);

@@ -9,7 +9,7 @@ export class InvalidTimeError extends Error {
 }
 
 /**
- * Thrown when the format of an object's start or end time is not valid (HH:MM:SS).
+ * Thrown when the format of an object's start or end time is not valid (HH:MM).
  */
 export class InvalidTimeFormatError extends InvalidTimeError {
     constructor(message) {

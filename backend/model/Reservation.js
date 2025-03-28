@@ -10,8 +10,8 @@ import { getRoomById } from "../database/roomsTable.js";
  * @param {number} [params.roomId] - The unique identifier of the room being reserved.
  * @param {string} [params.userEmail] - The email of the user making the reservation.
  * @param {string} [params.date] - The date of the reservation (format: 'YYYY-MM-DD').
- * @param {string} [params.startTime] - The start time of the reservation (format: 'HH:MM:SS').
- * @param {string} [params.endTime] - The end time of the reservation (format: 'HH:MM:SS').
+ * @param {string} [params.startTime] - The start time of the reservation (format: 'HH:MM').
+ * @param {string} [params.endTime] - The end time of the reservation (format: 'HH:MM').
  * @param {boolean} [params.canceled] - Whether or not the reservation is active.
  * @param {string} params.status - The current status of the reservation. Valid statuses are: 'Confirmed', 'In Progress', 'Completed', 'Canceled'.
  */
@@ -113,8 +113,8 @@ export default class Reservation{
      * @param {number} reservationData.room_id - ID of the room associated with the reservation.
      * @param {string} reservationData.user_email - Email of the user who made the reservation.
      * @param {string} reservationData.date - Date of the reservation (format: "YYYY-MM-DD").
-     * @param {string} reservationData.start_time - Start time of the reservation (format: "HH:MM:SS").
-     * @param {string} reservationData.end_time - End time of the reservation (format: "HH:MM:SS").
+     * @param {string} reservationData.start_time - Start time of the reservation (format: "HH:MM").
+     * @param {string} reservationData.end_time - End time of the reservation (format: "HH:MM").
      * @param {number} reservationData.canceled - Whether or not the reservation is active.
      * @param {string} reservationData.status - Status of the reservation (either  `Confirmed`, `In Progress`, `Completed`, or `Canceled`).
      * @returns {Reservation} A Reservation object.
@@ -176,13 +176,14 @@ export default class Reservation{
      * @returns {string} time portion of the Date object.
      */
     extractTime(dateTime) {
-        const timeRegex = /^\d{2}:\d{2}:\d{2}$/; // Matches HH:MM:SS
+        const timeRegex = /^\d{2}:\d{2}$/; // Matches HH:MM
         if (timeRegex.test(dateTime)){ // if dateTime is already in a valid format, just return it
             return dateTime
         }
-        
+
         if (dateTime) {
-          return new Date(dateTime).toTimeString().split(' ')[0]; // Returns 'HH:mm:ss'
+            return new Date(dateTime)
+                .toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false }); // Returns 'HH:mm'
         }
 
         return '00:00:00'; // Default if the dateTime is invalid or missing
@@ -200,7 +201,7 @@ export default class Reservation{
         }
         
         if (date) {
-          return new Date(date).toISOString().split('T')[0]; // Returns 'HH:mm:ss'
+          return new Date(date).toISOString().split('T')[0]; // Returns 'HH:MM'
         }
 
         return '0000-00-00'; // Default if the dateTime is invalid or missing
