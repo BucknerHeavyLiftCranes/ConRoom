@@ -345,11 +345,14 @@ export const updateReservation = async (reservationData) => {
 /**
  * Delete a reservation.
  * @param {number} reservationId id of the reservation to delete.
- * @returns {Promise<Reservation>} deleted reservation.
+ * @returns {Promise<any>} meeting details of the deleted reservation.
  */
 export const deleteReservation = async (reservationId) => { 
+    const transaction = new mssql.Transaction(pool)
     try {
+        await transaction.begin() // start a transaction
         const deletedReservation = await getReservationById(reservationId)
+        const deletedMeeting = await deletedReservation.toMeetingDetails()
     
         if (!deletedReservation){
             throw new GetReservationError(`This reservation doesn't exist`);
@@ -359,6 +362,7 @@ export const deleteReservation = async (reservationId) => {
             throw new ReservationInProgressError("This meeting has already started")
         }
 
+
         const result = await pool.request()
         .input('reservation_id', mssql.Int, reservationId)
         .query(DB_COMMANDS.deleteReservation);
@@ -366,17 +370,20 @@ export const deleteReservation = async (reservationId) => {
         console.log("==================================================================")
         console.log(`Reservation deleted successfully: ${result.rowsAffected} row(s) deleted.`);
         console.log("==================================================================")
-        return deletedReservation;
+
+        await transaction.commit()
+        return deletedMeeting;
 
       } catch (err) {
-          console.error({ message: err.message, stack: err.stack });
-          throw new DeleteReservationError(`Failed to delete reservation': ${err.message}`);
+        await transaction.rollback()
+        console.error({ message: err.message, stack: err.stack });
+        throw new DeleteReservationError(`Failed to delete reservation': ${err.message}`);
       }
  };
 
 
 /**
- * Delete a reservation.
+ * Cancel or uncancel a reservation.
  * @param {Reservation} reservation reservation to cancel or uncancel.
  * @returns {Promise<Reservation>} canceled/uncanceled reservation.
  */
