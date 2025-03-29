@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types'
 import ActionButton from '../ActionButtonModule/ActionButton'
 import styles from './ReservationDetails.module.css'
+import { reservationKey } from '../../../constants/keys/keys.js'
+import { DeleteReservationError } from '../../../errors/ReservationError.js'
 
 function ReservationDetails({ meetingDetails }) {
 
@@ -8,8 +10,25 @@ function ReservationDetails({ meetingDetails }) {
         console.log(`Editing Reservation with id: ${meetingDetails.id}`) // placeholder logic
     }
 
-    const deleteReservation = () => {
-        console.log(`Deleting Reservation with id: ${meetingDetails.id}`) // placeholder logic
+    const deleteReservation = async () => {
+        try {
+            const response = await fetch(`${reservationKey}/${meetingDetails.id}`, {
+                method: 'DELETE',
+            });
+    
+            if(!response.ok){
+                throw new DeleteReservationError("Error deleting reservation")
+            }
+            
+            const deletedMeeting = await response.json()
+            console.log(deletedMeeting)
+
+        } catch (err) {
+            console.log({message: err.message, stack: err.stack});
+        }
+
+
+        // console.log(`Deleting Reservation with id: ${meetingDetails.id}`) // placeholder logic
     }
 
     return (
