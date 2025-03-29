@@ -1,13 +1,25 @@
+/**
+ * Details of a reservation for a room.
+ */
 export class MeetingDetails { //maybe just use Reservation model instead
     constructor(id, title, room, date, startTime, endTime, status) {
-      this.id = id
+      /** @type {number | undefined} */
+      this.id = id ? id : undefined
+      /** @type {string} */
       this.title = title;
+      /** @type {string} */
       this.room = room;
+      /** @type {string} */
       this.date = this.formatDate(date)
+      /** @type {string} */
       this.startTime = startTime;
+      /** @type {string} */
       this.endTime = endTime;
+      /** @type {string} */
       this.timeSpan = this.getFormattedTimeRange()
+      /** @type {string} */
       this.duration = this.calculateDuration();
+      /** @type {string} */
       this.status = status;
     }
 
