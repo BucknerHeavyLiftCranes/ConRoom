@@ -348,9 +348,7 @@ export const updateReservation = async (reservationData) => {
  * @returns {Promise<any>} meeting details of the deleted reservation.
  */
 export const deleteReservation = async (reservationId) => { 
-    const transaction = new mssql.Transaction(pool)
     try {
-        await transaction.begin() // start a transaction
         const deletedReservation = await getReservationById(reservationId)
         const deletedMeeting = await deletedReservation.toMeetingDetails()
     
@@ -371,11 +369,9 @@ export const deleteReservation = async (reservationId) => {
         console.log(`Reservation deleted successfully: ${result.rowsAffected} row(s) deleted.`);
         console.log("==================================================================")
 
-        await transaction.commit()
         return deletedMeeting;
 
       } catch (err) {
-        await transaction.rollback()
         console.error({ message: err.message, stack: err.stack });
         throw new DeleteReservationError(`Failed to delete reservation': ${err.message}`);
       }
