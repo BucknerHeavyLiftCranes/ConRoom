@@ -4,7 +4,18 @@ import { ReservationRequest } from "./ReservationRequest";
  * Details of a new reservation (on the CURRENT day for a SET time) to be created in the system.
  */
 export class StaticReservationResquest extends ReservationRequest{
-    constructor(title, room, user, start, meetingLength){
+    constructor(
+        /** @type {string} */
+        title, 
+        /** @type {string} */
+        room, 
+        /** @type {string} */
+        user, 
+        /** @type {string} */
+        start, 
+        /** @type {number} */
+        meetingLength){
+            
         const date = StaticReservationResquest.getCurrentDate() // needs to always be the current day
         const end = StaticReservationResquest.calculateEndTime(start, meetingLength)
         

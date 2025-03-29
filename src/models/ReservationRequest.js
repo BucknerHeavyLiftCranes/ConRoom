@@ -2,7 +2,20 @@
  * Details of a new reservation to be created in the system.
  */
 export class ReservationRequest {
-    constructor(title, room, user, date, start, end){
+    constructor(
+        /** @type {string} */
+        title, 
+        /** @type {string} */
+        room, 
+        /** @type {string} */
+        user, 
+        /** @type {string} */
+        date,
+        /** @type {number} */
+        start, 
+        /** @type {number} */
+        end){
+            
         /** @type {string} */
         this.title = title;
         /** @type {string} */
