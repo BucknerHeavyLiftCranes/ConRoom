@@ -86,12 +86,12 @@ try {
 //     // }   
 
     // const newReservation = new Reservation({
-    //     title: "Weekly Coach Meting",
-    //     roomId: 3,
-    //     userEmail: "WWW@abc.com", 
-    //     date: "2025-04-01",
-    //     startTime: '13:15:00',
-    //     endTime: '14:15:00'
+    //     title: "Wine Tasting",
+    //     roomId: 1,
+    //     userEmail: "WineWinners@abc.com", 
+    //     date: "2025-03-29",
+    //     startTime: '17:20',
+    //     endTime: '17:30'
     // })
     // await createReservation(newReservation)
     // await logReservations()
@@ -187,17 +187,13 @@ const meetingDetails = []
 const app = express();
 app.use(cors())
 app.use(errorHandler)
-app.use("/api/users", reservationRouter);
-app.use("/api/admins", roomRouter);
+app.use("/api/reservations", reservationRouter);
+app.use("/api/rooms", roomRouter);
 app.use(express.json());
 
 // console.log("TEST_VAR:", process.env.TEST_VAR);
 
 const PORT = process.env.PORT || 3000;
-
-app.get("/", (req, res) => {
-    res.json(meetingDetails)
-})
 
 
 app.listen(PORT, () => {
