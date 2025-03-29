@@ -2,8 +2,8 @@
 import cors from "cors"
 // import dotenv from "dotenv"
 import express from "express"
-import { router as adminRouter } from "./routes/adminRoutes.js";
-import { router as userRouter } from "./routes/userRoutes.js";
+import { router as roomRouter } from "./routes/roomRoutes.js";
+import { router as reservationRouter } from "./routes/reservationRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 import { clearDatabase, dropReservationsTable, setupDatabase } from "../database/dbSetup.js";
 import { getAllRooms, createRoom, updateRoom, deleteRoom, getRoomByNameAndEmail, getRoomById } from "../database/roomsTable.js";
@@ -187,8 +187,8 @@ const meetingDetails = []
 const app = express();
 app.use(cors())
 app.use(errorHandler)
-app.use("/api/users", userRouter);
-app.use("/api/admins", adminRouter);
+app.use("/api/users", reservationRouter);
+app.use("/api/admins", roomRouter);
 app.use(express.json());
 
 // console.log("TEST_VAR:", process.env.TEST_VAR);
