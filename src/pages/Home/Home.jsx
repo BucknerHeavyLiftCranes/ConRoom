@@ -1,10 +1,10 @@
-import { rootKey } from '../../../keys/keys.js'
+import { reservationKey } from '../../../constants/keys/keys.js'
 import { useState, useEffect } from 'react'
 import ActionButton from '../../components/ActionButtonModule/ActionButton'
 import ReservationDetails from '../../components/ReservationDetailsModule/ReservationDetails'
 import { MeetingDetails } from '../../models/MeetingDetails.js'
 import styles from './Home.module.css'
-import { StaticReservationResquest } from '../../models/StaticReservationResquest.js'
+// import { StaticReservationRequest } from '../../models/StaticReservationRequest.js'
 
 function Home() {
   const [meetingCards, setMeetingCards] = useState([]);
@@ -12,30 +12,16 @@ function Home() {
 
 
   const startExternalLogin = async () => {
-    // try {
-    //   console.log("Start log in!")
-    //   const response = await fetch(baseKey)
-
-    //   if (response.ok){
-    //     const testData = await response.json()
-    //     console.log(testData)
-    //   }
-    // } catch (error) {
-    //   console.log(error)
-      
-    // }
-
     console.log("SIGN IN")
-
   }
 
   /**
-   * Fetch meeting details for all reservation.
-   * @returns {Promise<MeetingDetails[]>} all reservation meeting details in the system.
+   * Fetch meeting details for all reservations.
+   * @returns {Promise<MeetingDetails[]>} All reservation meeting details in the system.
    */
-  async function fetchMeetings(){
+  const  fetchMeetings = async () => {
     try {
-      const response = await fetch(rootKey)
+      const response = await fetch(reservationKey)
       // console.log(response)
 
       if (!response.ok){
@@ -77,15 +63,15 @@ function Home() {
   }, []);
   
 
-  let shortMeeting = new StaticReservationResquest(
-    "Short Meeting",
-    "Twinnings",
-    "mimi@abc.com",
-    "11:00",
-    90
-  )
+  // let shortMeeting = new StaticReservationResquest(
+  //   "Short Meeting",
+  //   "Twinnings",
+  //   "mimi@abc.com",
+  //   "11:00",
+  //   90
+  // )
 
-  console.log(shortMeeting)
+  // console.log(shortMeeting)
   // const fakeMeetingDetails1 = new MeetingDetails(1, "All-Hands Meeting", "Tarheel", "09:00 AM - 10:30 AM", "01:30:00", "Complete")
   // const fakeMeetingDetails2 = new MeetingDetails(2, "UI Team Weekly Scrum", "Wolfpack", "11:00 AM - 11:45 AM", "00:45:00", "Ongoing")
   // const fakeMeetingDetails3 = new MeetingDetails(3, "Team Strategy Meeting", "Aggies", "02:30 PM - 03:30 AM", "01:00:00", "Pending")
