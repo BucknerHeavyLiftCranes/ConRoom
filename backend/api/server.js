@@ -6,7 +6,7 @@ import { router as adminRouter } from "./routes/adminRoutes.js";
 import { router as userRouter } from "./routes/userRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 import { clearDatabase, dropReservationsTable, setupDatabase } from "../database/dbSetup.js";
-import { getAllRooms, createRoom, updateRoom, deleteRoom, getRoomByNameAndEmail } from "../database/roomsTable.js";
+import { getAllRooms, createRoom, updateRoom, deleteRoom, getRoomByNameAndEmail, getRoomById } from "../database/roomsTable.js";
 import { createReservation, deleteReservation, getAllReservations, getReservationById, toggleReservationCanceledStatus, updateReservation } from "../database/reservationsTable.js";
 import  Room  from "../model/Room.js";
 import Reservation from "../model/Reservation.js";
@@ -85,15 +85,15 @@ try {
 //     //     await createReservation(fakeReservation)
 //     // }   
 
-//     const newReservation = new Reservation({
-//         title: "Cheesecake Factory Dinner",
-//         roomId: 5,
-//         userEmail: "CF@abc.com", 
-//         date: "2025-03-25",
-//         startTime: '18:23:00',
-//         endTime: '19:30:00'
-//     })
-//     await createReservation(newReservation)
+    // const newReservation = new Reservation({
+    //     title: "Weekly Coach Meting",
+    //     roomId: 3,
+    //     userEmail: "WWW@abc.com", 
+    //     date: "2025-04-01",
+    //     startTime: '13:15:00',
+    //     endTime: '14:15:00'
+    // })
+    // await createReservation(newReservation)
     // await logReservations()
 // } catch (err) {
 //     // console.log(`Reservation '${fakeReservation.title}' could NOT be made.`)
@@ -101,17 +101,17 @@ try {
 // }
 
 // Update reservation
-try {
-        // const reservationToUpdate = (await getReservationById(5)).fromModel()
-        // const updatedReservation = new Reservation({...reservationToUpdate, startTime:"18:41:00", endTime: "18:41:15"})
-        // // console.log(updatedReservation)
+// try {
+//         const reservationToUpdate = (await getReservationById()).fromModel()
+//         const updatedReservation = new Reservation({...reservationToUpdate, date: "2025-03-27", startTime:"07:30:00", endTime: "17:00:00"})
+//         // console.log(updatedReservation)
 
-        // await updateReservation(updatedReservation)
-        await logReservations()
+//         await updateReservation(updatedReservation)
+//         // await logReservations()
         
-    } catch (err) {
-        console.error({ message: err.message, stack: err.stack });
-    }
+// } catch (err) {
+//     console.error({ message: err.message, stack: err.stack });
+// }
 
 
 // Get the room for a reservation
@@ -126,7 +126,7 @@ try {
 
 // Delete a reservation
 // try {
-//     const deletedReservation = await getReservationById(4)
+//     const deletedReservation = await getReservationById(8)
 
 //     await deleteReservation(deletedReservation.reservationId)
 //     await logReservations()
@@ -178,25 +178,11 @@ async function logReservations() {
 // await logRooms()
 // await logReservations()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// const allReservations = await getAllReservations()
+const meetingDetails = []
+// for (let r of allReservations){
+//     meetingDetails.push(await r.toMeetingDetails())
+// }
 
 const app = express();
 app.use(cors())
@@ -210,9 +196,7 @@ app.use(express.json());
 const PORT = process.env.PORT || 3000;
 
 app.get("/", (req, res) => {
-    res.json({userStatus: `User logged in`,
-        port: PORT 
-    })
+    res.json(meetingDetails)
 })
 
 
