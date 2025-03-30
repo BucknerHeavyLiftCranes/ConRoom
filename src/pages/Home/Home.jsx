@@ -19,7 +19,7 @@ function Home() {
    * Fetch meeting details for all reservations.
    * @returns {Promise<MeetingDetails[]>} All reservation meeting details in the system.
    */
-  const  fetchMeetings = async () => {
+  const fetchMeetings = async () => {
     try {
       const response = await fetch(reservationKey)
       // console.log(response)
