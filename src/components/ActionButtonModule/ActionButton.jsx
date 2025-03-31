@@ -3,10 +3,10 @@ import styles from './ActionButton.module.css'
 
 
 /**
- * A button that performs a specified action
- * @param label - label for the button
- * @param action - the action (function) performed when the button is clicked
- * @returns ActionButton component
+ * A button that performs a specified action.
+ * @param label - label for the button.
+ * @param action - the action (function) performed when the button is clicked.
+ * @returns functional labeled button that performs an action.
  */
 function ActionButton({ label, action }) {
   
