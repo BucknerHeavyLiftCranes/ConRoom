@@ -4,7 +4,6 @@ import ActionButton from '../../components/ActionButtonModule/ActionButton'
 import ReservationDetails from '../../components/ReservationDetailsModule/ReservationDetails'
 import { MeetingDetails } from '../../models/MeetingDetails.js'
 import styles from './Home.module.css'
-// import { StaticReservationRequest } from '../../models/StaticReservationRequest.js'
 
 function Home() {
   const [meetingCards, setMeetingCards] = useState([]);
@@ -14,6 +13,7 @@ function Home() {
   const startExternalLogin = async () => {
     console.log("SIGN IN")
   }
+
 
   /**
    * Fetch meeting details for all reservations.
@@ -32,19 +32,12 @@ function Home() {
       const allMeetings = await response.json()
 
       return allMeetings.map(data => 
-        new MeetingDetails(
-          data.reservationId,
-          data.title,
-          data.roomName,
-          data.date,
-          data.startTime,
-          data.endTime,
-          data.status
-        )
+        MeetingDetails.fromObject(data)
       )
 
     } catch (err) {
       console.log({message: err.message, stack: err.stack});
+      window.alert(err.message, err.stack)
         return [] // Return an empty array to avoid issues if fetch fails
     }
   }
@@ -62,20 +55,12 @@ function Home() {
     getMeetings();
   }, []);
   
-
-  // let shortMeeting = new StaticReservationResquest(
-  //   "Short Meeting",
-  //   "Twinnings",
-  //   "mimi@abc.com",
-  //   "11:00",
-  //   90
-  // )
-
-  // console.log(shortMeeting)
-  // const fakeMeetingDetails1 = new MeetingDetails(1, "All-Hands Meeting", "Tarheel", "09:00 AM - 10:30 AM", "01:30:00", "Complete")
-  // const fakeMeetingDetails2 = new MeetingDetails(2, "UI Team Weekly Scrum", "Wolfpack", "11:00 AM - 11:45 AM", "00:45:00", "Ongoing")
-  // const fakeMeetingDetails3 = new MeetingDetails(3, "Team Strategy Meeting", "Aggies", "02:30 PM - 03:30 AM", "01:00:00", "Pending")
   
+  const updateMeetingDetailsList = (reservationId) => {
+    setMeetingCards(prevMeetings =>
+      prevMeetings.filter(meeting => meeting.id !== reservationId)
+    );
+  };
 
   return (
     <>
@@ -93,20 +78,9 @@ function Home() {
         <ReservationDetails
             key={id}
             meetingDetails={meeting}
+            onDelete={updateMeetingDetailsList}
         />
       ))}
-
-      {/* <ReservationDetails 
-        meetingDetails={fakeMeetingDetails1}
-      />
-
-      <ReservationDetails 
-        meetingDetails={fakeMeetingDetails2}
-      />
-
-      <ReservationDetails 
-        meetingDetails={fakeMeetingDetails3}
-      /> */}
     </>
   )
 }
