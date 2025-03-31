@@ -11,7 +11,7 @@ export class ReservationError extends Error {
 /**
  * Thrown when a Reservation object contains invalid data.
  */
-export class ReservationValidationError extends  ReservationError{
+export class ReservationValidationError extends ReservationError{
     constructor(message) {
         super(message)
         this.name = "ReservationValidationError"
@@ -21,7 +21,7 @@ export class ReservationValidationError extends  ReservationError{
 /**
  * Thrown when the database fails to return a reservation record.
  */
-export class GetReservationError extends  ReservationError {
+export class GetReservationError extends ReservationError {
     constructor(message) {
         super(message)
         this.name = "GetReservationError"
@@ -105,5 +105,15 @@ export class ReservationCompletedError extends ReservationError {
     constructor(message) {
         super(message)
         this.name = "ReservationCanceledError"
+    }
+}
+
+/**
+ * Thrown if a new reservation request is invalid.
+ */
+export class CreateReservationRequestError extends CreateReservationError {
+    constructor(message) {
+        super(message)
+        this.name = "CreateReservationRequestError"
     }
 }
