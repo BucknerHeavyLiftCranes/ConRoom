@@ -73,6 +73,7 @@ export default class Reservation{
         return reservationSeconds > nowSeconds;
     }
 
+    
     /**
      * Check if a reservation conflicts with another on the same day.
      * @param {Reservation} otherReservation possibly conflicting reservation.
@@ -104,7 +105,7 @@ export default class Reservation{
         this.canceled = !this.canceled
         this.status = this.getStatus()
     }
-
+ 
     /**
      * Converts a database record or API object into a Reservation instance.
      * @param {Object} reservationData - object containing details about the reservation.

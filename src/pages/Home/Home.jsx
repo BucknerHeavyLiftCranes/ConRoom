@@ -13,7 +13,7 @@ function Home() {
   const startExternalLogin = async () => {
     console.log("SIGN IN")
   }
-
+  
 
   /**
    * Fetch meeting details for all reservations.
