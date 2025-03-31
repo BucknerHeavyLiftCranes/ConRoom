@@ -42,10 +42,10 @@ export class StaticReservationRequest extends ReservationRequest{
      */
     static calculateEndTime(start, meetingLength) {
         const [hours, minutes] = start.split(":").map(Number);
-        const startTime = new Date();
-        startTime.setHours(hours, minutes, 0, 0);
-        startTime.setMinutes(startTime.getMinutes() + meetingLength); // Add meeting length
+        const endTime = new Date();
+        endTime.setHours(hours, minutes, 0, 0);
+        endTime.setMinutes(endTime.getMinutes() + meetingLength); // Add meeting length
 
-        return startTime.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false }); // "HH:mm"
+        return endTime.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false }); // "HH:mm"
     }
 }
