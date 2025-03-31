@@ -1,5 +1,5 @@
 import expressAsyncHandler from "express-async-handler"; // no need for try-catch
-import {deleteReservation, getAllReservations, getReservationById} from "../../database/reservationsTable.js"
+import {deleteReservation, getAllReservations } from "../../database/reservationsTable.js"
 import { DeleteReservationError, GetReservationError } from "../../../errors/ReservationError.js";
 
 /* NOTE: TWEAK ERROR RESPONSES FROM 'reservationsTable.js' 
@@ -12,8 +12,7 @@ export const handleGetAllReservation = expressAsyncHandler(async (req, res) => {
     const allReservations = await getAllReservations()
 
     if(allReservations == []){
-        res.status(404)
-        throw GetReservationError("Could not fetch all reservations")
+        res.status(204).json([])
     }
 
     const allMeetings = await Promise.all(allReservations.map((meeting) => meeting.toMeetingDetails()));
