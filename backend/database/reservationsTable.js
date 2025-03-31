@@ -28,9 +28,13 @@ try{
 export const getAllReservations = async () => { 
     try {
         const result = await pool.request().query(DB_COMMANDS.getAllReservations);
-        // console.log(result.recordset);
         
+        if(!result.recordset){
+            return []
+        }
         const allReservationsData = result.recordset;
+        
+        /** @type {Reservation[]} */
         const allReservations = []
         allReservationsData.forEach(
             (reservation) => allReservations.push(Reservation.toModel(reservation)) // convert each database record to a Reservation object
@@ -270,8 +274,8 @@ export const createReservation = async (reservationData) => {
         .input('room_id', mssql.Int, reservationDetails.roomId)
         .input('user_email', mssql.VarChar(255), reservationDetails.userEmail)
         .input('date', mssql.Date, reservationDetails.date)
-        .input('start_time', mssql.VarChar(10), reservationDetails.startTime)
-        .input('end_time', mssql.VarChar(10), reservationDetails.endTime)
+        .input('start_time', mssql.VarChar(10), reservationDetails.start)
+        .input('end_time', mssql.VarChar(10), reservationDetails.end)
         .query(DB_COMMANDS.createNewReservation);
 
 
@@ -318,8 +322,8 @@ export const updateReservation = async (reservationData) => {
         .input('room_id', mssql.Int, updatedReservationDetails.roomId)
         .input('user_email', mssql.VarChar(255), updatedReservationDetails.userEmail)
         .input('date', mssql.Date, updatedReservationDetails.date)
-        .input('start_time', mssql.VarChar(10), updatedReservationDetails.startTime)
-        .input('end_time', mssql.VarChar(10), updatedReservationDetails.endTime)
+        .input('start_time', mssql.VarChar(10), updatedReservationDetails.start)
+        .input('end_time', mssql.VarChar(10), updatedReservationDetails.end)
         .input('canceled', mssql.Bit, updatedReservationDetails.canceled)
         .query(DB_COMMANDS.updateReservation);
 
@@ -345,21 +349,34 @@ export const updateReservation = async (reservationData) => {
 /**
  * Delete a reservation.
  * @param {number} reservationId id of the reservation to delete.
- * @returns {Promise<any>} meeting details of the deleted reservation.
+ * @returns {Promise<{ 
+    *   reservationId?: number, 
+    *   title: string, 
+    *   roomId: number, 
+    *   roomName: string, 
+    *   userEmail: string, 
+    *   date: string, 
+    *   start: string, 
+    *   end: string, 
+    *   canceled: boolean, 
+    *   status: string 
+    * 
+ * }>}
+ * details of the deleted reservation
  */
 export const deleteReservation = async (reservationId) => { 
     try {
-        const deletedReservation = await getReservationById(reservationId)
-        const deletedMeeting = await deletedReservation.toMeetingDetails()
+        const reservationToDelete = await getReservationById(reservationId)
     
-        if (!deletedReservation){
+        if (!reservationToDelete){
             throw new GetReservationError(`This reservation doesn't exist`);
         }
 
-        if (deletedReservation.status === "In Progress") {
+        const deletedMeeting = await reservationToDelete.toMeetingDetails()
+
+        if (reservationToDelete.status === "In Progress") {
             throw new ReservationInProgressError("This meeting has already started")
         }
-
 
         const result = await pool.request()
         .input('reservation_id', mssql.Int, reservationId)
@@ -369,8 +386,7 @@ export const deleteReservation = async (reservationId) => {
         console.log(`Reservation deleted successfully: ${result.rowsAffected} row(s) deleted.`);
         console.log("==================================================================")
 
-        return deletedMeeting;
-
+        return deletedMeeting
       } catch (err) {
         console.error({ message: err.message, stack: err.stack });
         throw new DeleteReservationError(`Failed to delete reservation': ${err.message}`);
@@ -419,7 +435,7 @@ export const validateReservation = async (reservation) => {
     try{
         // 1. Validate meeting duration
         if (!reservation.hasValidDuration()){
-            throw new InvalidTimeError(`This reservation has an invalid meeting time`);
+            throw new InvalidTimeError(`This reservation has an invalid meeting time: ${reservation.start} - ${reservation.end}`);
         }
 
         // 2. Ensure reservation is not in the past
@@ -431,7 +447,7 @@ export const validateReservation = async (reservation) => {
         const reservationRoom = await getRoomById(reservation.roomId)
             // 4. The room exists
             if(reservationRoom){
-                if (!reservationRoom.isOpen(reservation.startTime, reservation.endTime)){
+                if (!reservationRoom.isOpen(reservation.start, reservation.end)){
                     throw new InvalidTimeError(`Room (${reservationRoom.roomName}) will be closed during this time.`);
                 }
             }else{
@@ -458,7 +474,7 @@ export const validateReservation = async (reservation) => {
         if (conflictingReservation) {
             throw new InvalidTimeError(
                 `This reservation conflicts with '${conflictingReservation.title}'
-                from ${conflictingReservation.startTime} to ${conflictingReservation.endTime}`
+                from ${conflictingReservation.start} to ${conflictingReservation.end}`
             );
         }
     }catch(err){
