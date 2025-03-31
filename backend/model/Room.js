@@ -48,16 +48,16 @@ export default class Room {
 
     /**
      * Check if the room is open and available between the given meeting duration.
-     * @param {string} meetingStartTime meeting start time.
-     * @param {string} meetingEndTime meeting end time
+     * @param {string} meetingstart meeting start time.
+     * @param {string} meetingend meeting end time
      * @returns {boolean} whether the room is or isn't available.
      */
-    isOpen(meetingStartTime, meetingEndTime) {
+    isOpen(meetingstart, meetingend) {
         if (!this.roomStatus){
             return false
         }
 
-        return meetingStartTime >= this.openHour && meetingEndTime <= this.closeHour;
+        return meetingstart >= this.openHour && meetingend <= this.closeHour;
     }
 
     /**

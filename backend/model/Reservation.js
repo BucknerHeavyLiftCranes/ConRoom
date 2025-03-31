@@ -10,8 +10,8 @@ import { getRoomById } from "../database/roomsTable.js";
  * @param {number} [params.roomId] - The unique identifier of the room being reserved.
  * @param {string} [params.userEmail] - The email of the user making the reservation.
  * @param {string} [params.date] - The date of the reservation (format: 'YYYY-MM-DD').
- * @param {string} [params.startTime] - The start time of the reservation (format: 'HH:MM').
- * @param {string} [params.endTime] - The end time of the reservation (format: 'HH:MM').
+ * @param {string} [params.start] - The start time of the reservation (format: 'HH:MM').
+ * @param {string} [params.end] - The end time of the reservation (format: 'HH:MM').
  * @param {boolean} [params.canceled] - Whether or not the reservation is active.
  * @param {string} params.status - The current status of the reservation. Valid statuses are: 'Confirmed', 'In Progress', 'Completed', 'Canceled'.
  */
@@ -22,27 +22,27 @@ export default class Reservation{
         roomId, 
         userEmail, 
         date, 
-        startTime, 
-        endTime,
+        start, 
+        end,
         canceled
     }) {
         /**@type {number | undefined} */
         this.reservationId = reservationId ? Number(reservationId) : undefined;
-        /**@type {string} */
+        /**@type {string} reservation title. */
         this.title = title;
-        /**@type {number} */
+        /**@type {number} room id for the reservation. */
         this.roomId = Number(roomId);
-        /**@type {string} */
+        /**@type {string} email of the reservation creator. */
         this.userEmail = userEmail;
-        /**@type {string} */
+        /**@type {string} reservation date. */
         this.date = this.extractDate(date);
-        /**@type {string} */
-        this.startTime = this.extractTime(startTime);
-        /**@type {string} */
-        this.endTime = this.extractTime(endTime);
-        /**@type {boolean} */
+        /**@type {string} reservation start time. */
+        this.start = this.extractTime(start);
+        /**@type {string} reservation start time. */
+        this.end = this.extractTime(end);
+        /**@type {boolean} active status of the reservation. */
         this.canceled = Boolean(canceled);
-        /**@type {string} */
+        /**@type {string} reservation status [`Confirmed`, `In Progress`, `Completed`, `Canceled`]*/
         this.status = this.getStatus();
     }
 
@@ -51,7 +51,7 @@ export default class Reservation{
      * @returns {boolean} whether or not the reservation has valid a valid duration.
      */ 
     hasValidDuration() {
-        return this.startTime < this.endTime // will return false of this.startTime >= this.endTime
+        return this.start < this.end // will return false of this.start >= this.end
     }
 
     /**
@@ -60,7 +60,7 @@ export default class Reservation{
      */ 
     hasNotPassed() {
         // Convert reservation date & time into a Date object
-        const reservationDateTime = new Date(`${this.date}T${this.startTime}Z`);
+        const reservationDateTime = new Date(`${this.date}T${this.start}Z`);
 
         // Convert to EST (Eastern Time)
         const estTime = new Date().toLocaleString("en-US", { timeZone: "America/New_York" });
@@ -83,7 +83,7 @@ export default class Reservation{
             return false
         }
 
-        return !(this.endTime < otherReservation.startTime || this.startTime > otherReservation.endTime);
+        return !(this.end < otherReservation.start || this.start > otherReservation.end);
     }
 
     /**
@@ -126,8 +126,8 @@ export default class Reservation{
             roomId: reservationData.room_id,
             userEmail: reservationData.user_email,
             date: reservationData.date,
-            startTime: reservationData.start_time,
-            endTime: reservationData.end_time,
+            start: reservationData.start_time,
+            end: reservationData.end_time,
             canceled: reservationData.canceled
         });
     }
@@ -145,8 +145,8 @@ export default class Reservation{
             roomName: (await this.getRoom()).roomName,
             userEmail: this.userEmail,
             date: this.date,
-            startTime: this.startTime,
-            endTime: this.endTime,
+            start: this.start,
+            end: this.end,
             canceled: this.canceled,
             status: this.getStatus()
         }
@@ -164,8 +164,8 @@ export default class Reservation{
             roomId: this.roomId,
             userEmail: this.userEmail,
             date: this.date,
-            startTime: this.startTime,
-            endTime: this.endTime,
+            start: this.start,
+            end: this.end,
             canceled: this.canceled ? 1 : 0
         };
     }
@@ -217,22 +217,22 @@ export default class Reservation{
         }
 
         // Convert reservation date & time into UTC Date object
-        const reservationStartTime = new Date(`${this.date}T${this.startTime}Z`);
-        const reservationEndTime = new Date(`${this.date}T${this.endTime}Z`);
+        const reservationstart = new Date(`${this.date}T${this.start}Z`);
+        const reservationend = new Date(`${this.date}T${this.end}Z`);
 
         // Get the current time in UTC
         /**@type {Date} the current time*/
         const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
 
         // Convert timestamps to seconds
-        const reservationStartTimeInSeconds = Math.floor(reservationStartTime.getTime() / 1000);
-        const reservationEndTimeInSeconds = Math.floor(reservationEndTime.getTime() / 1000);
+        const reservationstartInSeconds = Math.floor(reservationstart.getTime() / 1000);
+        const reservationendInSeconds = Math.floor(reservationend.getTime() / 1000);
         const nowInSeconds = Math.floor(now.getTime() / 1000);
 
         // Determine status
-        if (nowInSeconds < reservationStartTimeInSeconds) {
+        if (nowInSeconds < reservationstartInSeconds) {
             return "Confirmed"; // Meeting hasn't started
-        } else if (nowInSeconds >= reservationStartTimeInSeconds && nowInSeconds < reservationEndTimeInSeconds) {
+        } else if (nowInSeconds >= reservationstartInSeconds && nowInSeconds < reservationendInSeconds) {
             return "In Progress"; // Meeting is ongoing
         } else {
             return "Completed"; // Meeting has ended
