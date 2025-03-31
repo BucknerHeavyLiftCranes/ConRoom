@@ -48,7 +48,7 @@ const DB_COMMANDS = {
             reservation_id BIGINT IDENTITY(1,1) PRIMARY KEY,
             title VARCHAR(255) NOT NULL,
             room_id INT NOT NULL,
-            user_email VARCHAR(255) UNIQUE NOT NULL,
+            user_email VARCHAR(255) NOT NULL,
             date DATE NOT NULL,
             start_time TIME NOT NULL,
             end_time TIME NOT NULL,
