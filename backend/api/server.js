@@ -16,14 +16,14 @@ import { log } from "console";
 
 // dotenv.config({ path: './backend/.env' }); // loads in env variables - to be used via the process object // container already loads env vars so this is not needed
 
-try {
-    // await setupDatabase()
-    // await clearDatabase()
-    // await dropReservationsTable()
+// try {
+//     // await setupDatabase()
+//     // await clearDatabase()
+//     // await dropReservationsTable()
     
-} catch (err) {
-    console.error({ message: err.message, stack: err.stack });
-}
+// } catch (err) {
+//     console.error({ message: err.message, stack: err.stack });
+// }
 
 /* Testing Rooms Table CRUD Operations */
 {
@@ -62,18 +62,6 @@ try {
 // } catch (err) {
 //     console.error({ message: err.message, stack: err.stack });
 // }
-
-
-// try {
-//     const allRooms = await getAllRooms()
-//     if (allRooms.length !== 0){
-//         console.log(allRooms)
-//     }else{
-//         console.log("There are no rooms in this database")
-//     }
-// } catch (err) {
-//     console.error({ message: err.message, stack: err.stack });
-// }
 }
 
 /* Testing Reservations Table CRUD Operations */
@@ -81,20 +69,19 @@ try {
 // Create a reservation
 // let fakeReservation
 // try {
-//     // for (fakeReservation of fakeReservations){
-//     //     await createReservation(fakeReservation)
-//     // }   
+//     for (fakeReservation of fakeReservations){
+//         await createReservation(fakeReservation)
+//     }   
 
-    // const newReservation = new Reservation({
-    //     title: "Wine Tasting",
-    //     roomId: 1,
-    //     userEmail: "WineWinners@abc.com", 
-    //     date: "2025-03-29",
-    //     startTime: '17:20',
-    //     endTime: '17:30'
-    // })
-    // await createReservation(newReservation)
-    // await logReservations()
+//     // const newReservation = new Reservation({
+//     //     title: "Monthly Inspection",
+//     //     roomId: 3,
+//     //     userEmail: "G@abc.com", 
+//     //     date: "2025-12-10",
+//     //     start: '08:00',
+//     //     end: '15:00'
+//     // })
+//     // await createReservation(newReservation)
 // } catch (err) {
 //     // console.log(`Reservation '${fakeReservation.title}' could NOT be made.`)
 //     console.error({ message: err.message, stack: err.stack });
@@ -103,7 +90,7 @@ try {
 // Update reservation
 // try {
 //         const reservationToUpdate = (await getReservationById()).fromModel()
-//         const updatedReservation = new Reservation({...reservationToUpdate, date: "2025-03-27", startTime:"07:30:00", endTime: "17:00:00"})
+//         const updatedReservation = new Reservation({...reservationToUpdate, date: "2025-03-27", start:"07:30:00", end: "17:00:00"})
 //         // console.log(updatedReservation)
 
 //         await updateReservation(updatedReservation)
@@ -162,27 +149,7 @@ async function logRooms() {
     }
 }
 
-async function logReservations() {
-    try {
-        const allReservations = await getAllReservations()
-        if (allReservations.length !== 0){
-            console.log(allReservations)
-        }else{
-            console.log("There are no reservations in this database")
-        }
-    } catch (err) {
-        console.error({ message: err.message, stack: err.stack });
-    }
-}
 
-// await logRooms()
-// await logReservations()
-
-// const allReservations = await getAllReservations()
-const meetingDetails = []
-// for (let r of allReservations){
-//     meetingDetails.push(await r.toMeetingDetails())
-// }
 
 const app = express();
 app.use(cors())
@@ -190,6 +157,16 @@ app.use(errorHandler)
 app.use("/api/reservations", reservationRouter);
 app.use("/api/rooms", roomRouter);
 app.use(express.json());
+
+app.get("/", (req, res) => {
+    res.status(200).json({
+        message: "Welcome to the official Buckner Conference Room Scheduler API",
+        routes: {
+            rooms: "/api/rooms", // takes you to the getAllRooms page
+            reservations: "/api/reservations" // takes you to the getAllReservations page
+        }
+    })
+})
 
 // console.log("TEST_VAR:", process.env.TEST_VAR);
 
