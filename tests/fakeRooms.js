@@ -1,4 +1,4 @@
-import Room from "../backend/model/Room.js"
+import Room from "../backend/api/model/Room.js"
 
 const room1 = new Room({
     roomName: 'Mindscape',

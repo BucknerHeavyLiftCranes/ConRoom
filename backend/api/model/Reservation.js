@@ -1,6 +1,6 @@
-import { ReservationDetailsError, UpdateReservationError } from "../../errors/ReservationError.js";
-import { GetRoomError } from "../../errors/RoomError.js";
-import { getRoomById } from "../database/roomsTable.js";
+import { ReservationDetailsError, UpdateReservationError } from "../../../errors/ReservationError.js";
+import { GetRoomError } from "../../../errors/RoomError.js";
+import { getRoomById } from "../../database/roomsTable.js";
 
 /**
  * @class Represents a meeting reservation for a room.

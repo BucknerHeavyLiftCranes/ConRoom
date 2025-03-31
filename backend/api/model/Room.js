@@ -1,4 +1,4 @@
-import { InvalidTimeFormatError } from "../../errors/InvalidTimeError.js";
+import { InvalidTimeFormatError } from "../../../errors/InvalidTimeError.js";
 
 /**
  * Represents a room in the system.

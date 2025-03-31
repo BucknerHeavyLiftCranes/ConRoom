@@ -1,7 +1,7 @@
 import mssql from "mssql"
 import { connectToDatabase } from "../config/dbConnection.js"
 import DB_COMMANDS  from "../../constants/dbCommands.js"
-import  Reservation  from "../model/Reservation.js";
+import  Reservation  from "../api/model/Reservation.js";
 import { getRoomById } from "./roomsTable.js";
 import { InvalidTimeError } from "../../errors/InvalidTimeError.js";
 import { GetRoomError } from "../../errors/RoomError.js";

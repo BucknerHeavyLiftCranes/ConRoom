@@ -1,4 +1,4 @@
-import Reservation from "../backend/model/Reservation.js"
+import Reservation from "../backend/api/model/Reservation.js"
 
 const reservation1 = new Reservation({
     title: "All-Hands Meeting",
