@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import mssql from "mssql"
 import { connectToDatabase } from "../config/dbConnection.js"
 import DB_COMMANDS  from "../../constants/dbCommands.js"

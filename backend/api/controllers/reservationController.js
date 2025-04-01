@@ -1,6 +1,6 @@
 import expressAsyncHandler from "express-async-handler"; // no need for try-catch
 import {deleteReservation, getAllReservations } from "../../database/reservationsTable.js"
-import { DeleteReservationError, GetReservationError } from "../../../errors/ReservationError.js";
+import { DeleteReservationError } from "../../../errors/ReservationError.js";
 
 /* NOTE: TWEAK ERROR RESPONSES FROM 'reservationsTable.js' 
 SO RELEVANT ERROR INFO IS SENT OVER THE API */
