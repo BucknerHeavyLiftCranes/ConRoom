@@ -4,6 +4,7 @@ import ActionButton from '../../components/ActionButtonModule/ActionButton'
 import ReservationDetails from '../../components/ReservationDetailsModule/ReservationDetails'
 import { MeetingDetails } from '../../models/MeetingDetails.js'
 import styles from './Home.module.css'
+import DateTimeDisplay from '../../components/DateTimeDisplayModule/DateTimeDisplay.jsx'
 
 function Home() {
   const [meetingCards, setMeetingCards] = useState([]);
@@ -62,8 +63,11 @@ function Home() {
     );
   };
 
+
+
   return (
     <>
+    <DateTimeDisplay/>
       <h1 className={styles.pageTitle}>Home</h1>
       <div>
         This is the home page

@@ -1,9 +1,68 @@
-import React from 'react'
+import {useState, useEffect} from 'react'
+import styles from './DateTimeDisplay.module.css'
 
+
+/**
+ * Displays current date and time (based on local machine).
+ * @returns A date and time display.
+ */
 function DateTimeDisplay() {
-  return (
-    <div>DateTimeDisplay</div>
-  )
+    const [time, setTime] = useState(new Date());
+
+    useEffect(() => {
+        const intervalID =  setInterval(() => {
+            setTime(new Date());
+        }, 1000);
+
+        return () => {clearInterval(intervalID)};
+    
+    }, []); //start time only when we mount the clock to the DOM;
+    
+    
+
+    const formatTime = () => {
+        const hours = time.getHours().toString().padStart(2, 0);
+        const mins = time.getMinutes().toString().padStart(2, 0);
+        // const secs = time.getSeconds().toString().padStart(2, 0);
+
+        return `${hours}:${mins}`;
+        // return `${hours}:${mins}:${secs}`;
+    
+        // if (format) {
+        //     // 12-hour format
+        //     const meridiem = hours >= 12 ? "PM" : "AM";
+        //     hours = hours % 12 || 12; // Convert to 12-hour format
+        //     return `${hours}:${mins} ${meridiem}`;
+        // } else {
+            // 24-hour format
+            // return `${hours}:${mins}`;
+        // }
+    }
+
+    const formatDate = () => {
+        const date = new Date()
+  
+        const options = {
+            weekday: 'long', // Get short day name (e.g., "Tue")
+            day: '2-digit', // Get two-digit day (e.g., "25")
+            month: 'long', // Get full month name (e.g., "March")
+            // year: 'numeric' // Get full year (e.g., "2025")
+        };
+    
+        return time.toLocaleDateString('en-US', options);
+    }
+
+
+    return (
+        <div className={styles.dateTimeDisplay}>
+            <div className={styles.time}>
+                <span>{formatTime()}</span>
+            </div>
+            <div className={styles.date}>
+                <span>{formatDate()}</span>
+            </div>
+        </div>
+    )
 }
 
 export default DateTimeDisplay
