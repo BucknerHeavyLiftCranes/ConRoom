@@ -6,15 +6,20 @@
     border-radius: 10px;
     display: flex;
     flex-direction: column;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    min-width: 400px;
+    /* min-width: 400px;
+    max-width: 400px; */
+    width: 350px;
     margin: 15px;
 }
 
 .meetingLabel{
     color: black;
+    text-align: center;
     font-size: 20px;
+    padding: 0px 5px;
     margin-bottom: 0;
 }
 
