@@ -11,8 +11,8 @@ export const HTTP_STATUS_CODES = {
 }
 
 // const STATUS_MAP = {
-//     1: "Scheduled",
-//     2: "Ongoing",
+//     1: "Confirmed",
+//     2: "In Progress",
 //     3: "Completed",
-//     4: "Cancelled",
+//     4: "Canceled",
 // }

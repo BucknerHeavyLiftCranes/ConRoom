@@ -11,7 +11,7 @@ import styles from './ActionButton.module.css'
 function ActionButton({ label, action }) {
   
   const handleOnClick = (fn) => {
-    if(fn && typeof fn == "function"){
+    if (fn && typeof fn == "function"){
       fn()
     }
   }

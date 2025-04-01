@@ -25,6 +25,13 @@
 
 }
 
+.dateLabel{
+    color: black;
+    font-size: 18px;
+    margin-bottom: 0;
+
+}
+
 .timeLabel{
     color: black;
     font-size: 18px;

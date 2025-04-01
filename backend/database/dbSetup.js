@@ -1,7 +1,10 @@
+import mssql from "mssql"
 import { connectToDatabase } from "../config/dbConnection.js"
-import { DB_COMMANDS } from "../../constants/dbCommands.js"
+import DB_COMMANDS  from "../../constants/dbCommands.js"
+import { RoomError } from "../../errors/RoomError.js"
+import { ReservationError } from "../../errors/ReservationError.js"
 
-
+/**@type {mssql.ConnectionPool} */
 let pool
 
 try{
@@ -23,31 +26,19 @@ async function createBucknerConroomDatabase() {
 }
 
 /**
- * Create Users table in the database.
- */
-// async function createUsersTable() {
-//     try {
-//       // Create a request and execute the SQL command stored in DB_COMMANDS.createUsersTable
-//       await pool.request().query(DB_COMMANDS.createUsersTable);
-//     } catch (err) {
-//       throw new Error(`USERS TABLE CREATION ERROR: ${err}`)
-//     }
-// }
-
-/**
- * Create Rooms table in the database.
+ * Create `Rooms` table in the database.
  */
 async function createRoomsTable() {
     try {
         // Create a request and execute the SQL command stored in DB_COMMANDS.createRoomsTable
         await pool.request().query(DB_COMMANDS.createRoomsTable);
     } catch (err) {
-      throw new Error(`ROOMS TABLE CREATION ERROR: ${err}`)
+      throw new RoomError(`ROOMS TABLE CREATION ERROR: ${err}`)
     }
 }
 
 /**
- * Create Reservations table in the database (with the appropriate indexes).
+ * Create `Reservations` table in the database (with the appropriate indexes).
  */
 async function createReservationsTable() {
     try {
@@ -58,11 +49,38 @@ async function createReservationsTable() {
       await pool.request().query(DB_COMMANDS.createIndexReservationsDate);
       await pool.request().query(DB_COMMANDS.createIndexReservationsRoomTime);
       await pool.request().query(DB_COMMANDS.createIndexReservationsUser);
-      await pool.request().query(DB_COMMANDS.createIndexReservationsStatus);
+      await pool.request().query(DB_COMMANDS.createIndexReservationsCanceled);
     } catch (err) {
-      throw new Error(`RESERVATIONS TABLE CREATION ERROR: ${err}`)
+      throw new ReservationError(`RESERVATIONS TABLE CREATION ERROR: ${err}`)
     }
 }
+
+/**
+ * Delete Rooms table from the database.
+ */
+export async function dropRoomsTable() {
+  try {
+    /* Create reservations table */
+    await pool.request().query(DB_COMMANDS.dropRoomsTable);
+
+  } catch (err) {
+    throw new RoomError(`ROOMS TABLE DELETION ERROR: ${err}`)
+  }
+}
+
+/**
+ * Delete Reservations table from the database (along with the appropriate indexes).
+ */
+export async function dropReservationsTable() {
+  try {
+    /* Create reservations table */
+    await pool.request().query(DB_COMMANDS.dropReservationsTable);
+
+  } catch (err) {
+    throw new ReservationError(`RESERVATIONS TABLE DELETION ERROR: ${err}`)
+  }
+}
+
 
 /**
  * Initialize the database and setup all the tables.
@@ -83,8 +101,8 @@ export async function setupDatabase(){
  */
 export async function clearDatabase(){
   try {
-      await pool.request().query(DB_COMMANDS.dropReservationsTable);
-      await pool.request().query(DB_COMMANDS.dropRoomsTable);
+      await dropReservationsTable()
+      await dropRoomsTable()
       console.log("Database cleared!")
   } catch (err) {
       console.error({ message: err.message, stack: err.stack });   
