@@ -40,8 +40,6 @@ function DateTimeDisplay() {
     }
 
     const formatDate = () => {
-        const date = new Date()
-  
         const options = {
             weekday: 'long', // Get short day name (e.g., "Tue")
             day: '2-digit', // Get two-digit day (e.g., "25")
