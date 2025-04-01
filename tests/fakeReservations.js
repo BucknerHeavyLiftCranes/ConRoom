@@ -27,4 +27,7 @@ const reservation3 = new Reservation({
     endTime: '16:00:00'
 })
 
+/**
+ * Fake reservations to insert into the database (for testing).
+ */
 export const fakeReservations = [reservation1, reservation2, reservation3]

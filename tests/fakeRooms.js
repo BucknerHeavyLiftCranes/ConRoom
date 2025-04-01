@@ -40,4 +40,7 @@ const room4 = new Room({
     closeHour: '20:00:00'
 })
 
+/**
+ * Fake rooms to insert into the database (for testing).
+ */
 export const fakeRooms = [room1, room2, room3, room4]
