@@ -109,7 +109,7 @@ const reservation12 = new Reservation({
 })
 
 const reservation13 = new Reservation({
-    title: "Monthly Inspectio 13",
+    title: "Monthly Inspection 13",
     roomId: 3,
     userEmail: "G@abc.com", 
     date: "2025-12-03",
@@ -145,7 +145,7 @@ const reservation16 = new Reservation({
 })
 
 const reservation17 = new Reservation({
-    title: "Monthly Inspection 17",
+    title: "Monthly Inspection 17 + (plus a really really really long set of extra stuff to test how frontend handles overload behavior",
     roomId: 3,
     userEmail: "G@abc.com", 
     date: "2025-12-07",
