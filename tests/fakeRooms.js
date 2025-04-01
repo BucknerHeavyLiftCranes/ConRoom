@@ -36,7 +36,7 @@ const room4 = new Room({
     seats: 30,
     projector: 0, 
     summary: 'Basic work office',
-    openHour: '07:00:00',
+    openHour: '08:00:00',
     closeHour: '20:00:00'
 })
 
