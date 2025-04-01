@@ -1,4 +1,4 @@
-import { CreateReservationError } from "../../errors/ReservationError";
+import { CreateReservationRequestError } from "../../errors/ReservationError";
 
 /**
  * Details of a new reservation to be created in the system.
@@ -71,7 +71,7 @@ export class ReservationRequest {
      */
     validateReservationRequest() {
         if(!(this.hasValidDuration() && this.hasNotPassed())) {
-            throw new CreateReservationError("The is not a valid reservation")
+            throw new CreateReservationRequestError("The is not a valid reservation")
         }
     }
 }
