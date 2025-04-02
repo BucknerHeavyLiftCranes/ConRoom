@@ -16,7 +16,6 @@ function FullScreenPopup ({ isOpen, onClose, children }) {
     return (
         <div className={styles.overlay} onClick={onClose}>
             <div className={styles.popup} onClick={(e) => e.stopPropagation()}>
-                <button className={styles.closeButton} onClick={onClose}>✖</button>
                 {children}
                 <ActionButton
                     label="close"
