@@ -1,6 +1,9 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
+/**
+ * Wrapper to dynamically alter the background of the body element.
+ */
 function BodyBackgroundWrapper() {
     const location = useLocation();
   
@@ -18,7 +21,7 @@ function BodyBackgroundWrapper() {
           break;
       }
 
-      console.log(`The background here is: ${document.body.className}`)
+      console.log(`The background here is: ${document.body.className || "default-background"}`)
       // if (location.pathname === "/") {
       //   document.body.classList.add("home-background");
       // } else if (location.pathname === "/about") {

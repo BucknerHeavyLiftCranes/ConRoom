@@ -20,6 +20,10 @@ function DateTimeDisplay() {
     
     
 
+    /**
+     * Format the current time in EST
+     * @returns the current time (HH:MM)
+     */
     const formatTime = () => {
         const hours = dateTime.getHours().toString().padStart(2, 0);
         const mins = dateTime.getMinutes().toString().padStart(2, 0);
@@ -39,6 +43,10 @@ function DateTimeDisplay() {
         // }
     }
 
+    /**
+     * Format the current date in EST
+     * @returns the current date (i.e Tuesday, April 01)
+     */
     const formatDate = () => {
         const options = {
             weekday: 'long', // Get short day name (e.g., "Tue")
