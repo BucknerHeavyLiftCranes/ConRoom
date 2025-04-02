@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* Library Imports */
 import cors from "cors"
 // import dotenv from "dotenv"
@@ -13,6 +14,13 @@ import Reservation from "./model/Reservation.js";
 import { fakeRooms } from "../../tests/fakeRooms.js";
 import { fakeReservations } from "../../tests/fakeReservations.js";
 import { log } from "console";
+
+const app = express();
+app.use(cors())
+app.use(errorHandler)
+app.use("/api/reservations", reservationRouter);
+app.use("/api/rooms", roomRouter);
+app.use(express.json());
 
 // dotenv.config({ path: './backend/.env' }); // loads in env variables - to be used via the process object // container already loads env vars so this is not needed
 
@@ -134,29 +142,6 @@ import { log } from "console";
 // }
 }
 
-
-
-async function logRooms() {
-    try {
-        const allRooms = await getAllRooms()
-        if (allRooms.length !== 0){
-            console.log(allRooms)
-        }else{
-            console.log("There are no rooms in this database")
-        }
-    } catch (err) {
-        console.error({ message: err.message, stack: err.stack });
-    }
-}
-
-
-
-const app = express();
-app.use(cors())
-app.use(errorHandler)
-app.use("/api/reservations", reservationRouter);
-app.use("/api/rooms", roomRouter);
-app.use(express.json());
 
 app.get("/", (req, res) => {
     res.status(200).json({
