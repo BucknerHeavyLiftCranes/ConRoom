@@ -1,6 +1,5 @@
 import { reservationKey } from '../../../constants/keys/keys.js'
 import { useState, useEffect } from 'react'
-import ActionButton from '../../components/ActionButtonModule/ActionButton'
 import ReservationDetails from '../../components/ReservationDetailsModule/ReservationDetails'
 import { MeetingDetails } from '../../models/MeetingDetails.js'
 import styles from './Home.module.css'
@@ -8,12 +7,6 @@ import DateTimeDisplay from '../../components/DateTimeDisplayModule/DateTimeDisp
 
 function Home() {
   const [meetingCards, setMeetingCards] = useState([]);
-
-
-
-  const startExternalLogin = async () => {
-    console.log("SIGN IN")
-  }
   
 
   /**
@@ -64,18 +57,10 @@ function Home() {
   };
 
 
-
   return (
     <>
-    <DateTimeDisplay/>
-      <h1 className={styles.pageTitle}>Home</h1>
-      <div>
-        This is the home page
-      </div>    
-      <ActionButton 
-        label="Log In"
-        action={startExternalLogin}
-      />
+      <DateTimeDisplay/>
+      <h1 className={styles.pageTitle}>Home</h1>    
 
       {meetingCards.map((meeting, id) => (
 
