@@ -7,11 +7,11 @@ import styles from './DateTimeDisplay.module.css'
  * @returns A date and time display.
  */
 function DateTimeDisplay() {
-    const [time, setTime] = useState(new Date());
+    const [dateTime, setDateTime] = useState(new Date());
 
     useEffect(() => {
         const intervalID =  setInterval(() => {
-            setTime(new Date());
+            setDateTime(new Date());
         }, 1000);
 
         return () => {clearInterval(intervalID)};
@@ -21,9 +21,9 @@ function DateTimeDisplay() {
     
 
     const formatTime = () => {
-        const hours = time.getHours().toString().padStart(2, 0);
-        const mins = time.getMinutes().toString().padStart(2, 0);
-        // const secs = time.getSeconds().toString().padStart(2, 0);
+        const hours = dateTime.getHours().toString().padStart(2, 0);
+        const mins = dateTime.getMinutes().toString().padStart(2, 0);
+        // const secs = dateTime.getSeconds().toString().padStart(2, 0);
 
         return `${hours}:${mins}`;
         // return `${hours}:${mins}:${secs}`;
@@ -47,7 +47,7 @@ function DateTimeDisplay() {
             // year: 'numeric' // Get full year (e.g., "2025")
         };
     
-        return time.toLocaleDateString('en-US', options);
+        return dateTime.toLocaleDateString('en-US', options);
     }
 
 
