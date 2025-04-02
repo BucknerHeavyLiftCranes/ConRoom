@@ -1,6 +1,7 @@
 import BodyBackgroundWrapper from './components/BodyBackgroundWrapper.jsx';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home/Home.jsx';
+import Login from './pages/LoginModule/Login.jsx';
 // import viteLogo from '/vite.svg'
 // import './App.css'
 
@@ -10,7 +11,8 @@ function App() {
       <Router>
         <BodyBackgroundWrapper />
         <Routes>
-          <Route path="/" element={<Home />} />
+        <Route path="/" element={<Login />} />
+          <Route path="/home" element={<Home />} />
         </Routes>
       </Router>
     </>
