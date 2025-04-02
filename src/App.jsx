@@ -1,7 +1,7 @@
 import BodyBackgroundWrapper from './components/BodyBackgroundWrapper.jsx';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home/Home.jsx';
-import Login from './pages/LoginModule/Login.jsx';
+import Login from './pages/auth/LoginModule/Login.jsx';
 // import viteLogo from '/vite.svg'
 // import './App.css'
 
