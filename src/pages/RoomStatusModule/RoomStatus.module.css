@@ -1,0 +1,43 @@
+.statusContainer {
+    display: flex;
+    justify-content: space-evenly;
+    background-color: #b31f26;
+    border: 10px solid black;
+    height: 100vh;
+    width: 100vw;
+    
+}
+
+.statusBox {
+    display: flex;
+    flex-direction: column;
+    border-right: 10px solid black;
+    padding-right: 100px;
+    height: 100vh;
+    width: 100vw;
+    
+}
+
+.roomName {
+    font-weight: bold;
+}
+
+.roomStatus {
+    font-weight: bold;
+    justify-self: flex-end;
+}
+
+.infoBox {
+    background-color: aquamarine;
+    /* margin: 0 auto; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+}
+
+.upcomingMeetingsContainer {
+
+}
