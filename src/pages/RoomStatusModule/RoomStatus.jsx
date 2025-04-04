@@ -4,7 +4,13 @@ import BriefMeetingDetails from "../../components/BriefMeetingDetails/BriefMeeti
 import { MeetingDetails } from "../../models/MeetingDetails"
 import { useEffect, useState } from "react"
 
-function RoomStatus() {
+/**
+ * 
+ * @param {Object} props 
+ * @param {} [props.room] details about the room being monitored.
+ * @returns 
+ */
+function RoomStatus({ room }) {
   const REFRESH_INTERVAL = 30000 // 30 seconds
   const [isBusy, setIsBusy] = useState(false) // isBusy to change styling
   const [currentStatus, setCurrentStatus] = useState("OPEN") // currentStatus to display "BUSY"
@@ -144,5 +150,9 @@ function RoomStatus() {
     </div>
   )
 }
+
+// RoomStatus.propTypes = {
+//   room: propType.shape()
+// }
 
 export default RoomStatus
