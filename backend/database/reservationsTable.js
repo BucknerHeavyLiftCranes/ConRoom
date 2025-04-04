@@ -247,7 +247,7 @@ export const getReservationsByStatus = async (status) => {
         const allReservations = await getAllReservations()
 
         const allReservationsForThisStatus = 
-        allReservations.filter((reservation) => reservation.status === status)
+        allReservations.filter((reservation) => reservation.status() === status)
     
         return allReservationsForThisStatus
       } catch (err) {
@@ -359,7 +359,6 @@ export const updateReservation = async (reservationData) => {
     *   start: string, 
     *   end: string, 
     *   canceled: boolean, 
-    *   status: string 
     * 
  * }>}
  * details of the deleted reservation
@@ -410,7 +409,7 @@ export const toggleReservationCanceledStatus = async (reservation) => {
         reservation.toggleCanceledStatus()
 
         const canceledReservation = await updateReservation(reservation)
-        const canceledStatus = canceledReservation.status.toLowerCase()
+        const canceledStatus = canceledReservation.status().toLowerCase()
 
         console.log("==============================================")
         console.log(`Reservation ${canceledStatus} successfully.`);
