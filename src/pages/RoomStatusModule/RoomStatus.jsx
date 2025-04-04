@@ -71,7 +71,7 @@ function RoomStatus({ room }) {
     "Hillary", // room
     "2025-04-04", // date
     "01:22", // start
-    "01:23", // end
+    "12:30", // end
     false
   )
 
@@ -88,7 +88,7 @@ function RoomStatus({ room }) {
       }
     })
 
-    if(!mustChangeMeeting){ //if we don;t have to update the meeting, just exit the function
+    if(!mustChangeMeeting){ //if we don't have to update the meeting, just exit the function
       return
     }
    
