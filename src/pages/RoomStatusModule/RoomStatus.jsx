@@ -5,6 +5,7 @@ import { MeetingDetails } from "../../models/MeetingDetails"
 import { useEffect, useState } from "react"
 
 function RoomStatus() {
+  const REFRESH_INTERVAL = 30000 // 30 seconds
   const [isBusy, setIsBusy] = useState(false) // isBusy to change styling
   const [currentStatus, setCurrentStatus] = useState("OPEN") // currentStatus to display "BUSY"
   const [currentMeeting, setCurrentMeeting] = useState(null) // currentMeeting to display current meeting data
@@ -81,12 +82,12 @@ function RoomStatus() {
       }
     })
 
-    if(!mustChangeMeeting){
+    if(!mustChangeMeeting){ //if we don;t have to update the meeting, just exit the function
       return
     }
    
     for (let fakeMeeting of fakeMeetings) {
-      if (fakeMeeting.status() == "In Progress") { // assuming code works as intended, there can only ever be on 'In Progress' meeting.
+      if (fakeMeeting.status() == "In Progress") { // assuming code works as intended, there can only ever be one 'In Progress' meeting.
         setIsBusy(true)
         setCurrentStatus("BUSY")
         setCurrentMeeting(fakeMeeting)
@@ -101,10 +102,10 @@ function RoomStatus() {
 
 
   useEffect(() => {
-    const intervalID =  setInterval(() => {
+    const intervalID = setInterval(() => {
       // console.log(currentMeeting ? `${currentMeeting.title} is ${currentMeeting.status()}` : "This room is free")
       updateRoomStatus();
-    }, 5000); //30000);
+    }, REFRESH_INTERVAL);
 
     return () => {clearInterval(intervalID)};
 
