@@ -3,6 +3,7 @@
 import cors from "cors"
 // import dotenv from "dotenv"
 import express from "express"
+import { router as authRouter } from "./routes/authRoutes.js";
 import { router as roomRouter } from "./routes/roomRoutes.js";
 import { router as reservationRouter } from "./routes/reservationRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
@@ -18,6 +19,7 @@ import { log } from "console";
 const app = express();
 app.use(cors())
 app.use(errorHandler)
+app.use("/api/auth", authRouter);
 app.use("/api/reservations", reservationRouter);
 app.use("/api/rooms", roomRouter);
 app.use(express.json());
