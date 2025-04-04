@@ -1,43 +1,115 @@
-.statusContainer {
+.roomStatusContainer {
+    /* background-color: aqua; */
     display: flex;
-    justify-content: space-evenly;
-    background-color: #b31f26;
+    justify-content: center;
     border: 10px solid black;
     height: 100vh;
     width: 100vw;
     
 }
 
-.statusBox {
+.busyStatus {
+    flex: 3;
+    background-color: hsl(24, 100%, 50%);
     display: flex;
     flex-direction: column;
     border-right: 10px solid black;
-    padding-right: 100px;
     height: 100vh;
     width: 100vw;
-    
 }
 
+.openStatus {
+    flex: 3;
+    background-color: hsl(109, 100%, 45%);;
+    display: flex;
+    flex-direction: column;
+    border-right: 10px solid black;
+    height: 100vh;
+    width: 100vw;
+}
+
+.closedStatus {
+    flex: 3;
+    background-color: #d10913;
+    display: flex;
+    flex-direction: column;
+    border-right: 10px solid black;
+    height: 100vh;
+    width: 100vw;
+}
+
+
 .roomName {
+    font-size: 2rem;
+    padding-left: 10px;
+    text-decoration: underline;
+    text-underline-offset: 7px;
     font-weight: bold;
+}
+
+.hiddenDetails {
+    display: none;
+}
+
+.visibleDetails {
+    display: block;
+    padding-left: 10px;
+    font-weight: bold;
+    font-size: 50px;
 }
 
 .roomStatus {
+    font-size: 10rem;
     font-weight: bold;
-    justify-self: flex-end;
+    padding-left: 10px;
+    margin-top: auto; /* Pushes it to the bottom */
 }
 
 .infoBox {
-    background-color: aquamarine;
+    flex: 1;
+    /* background-color: aquamarine; */
     /* margin: 0 auto; */
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    margin: 0 50px;
+    
+}
+
+.dateTime {
+    background-color: #6e8c00;
+    /* width: 50vw; */
+}
+
+.upcomingMeetingsContainer {
+    color: black;
+    /* background-color: rgb(255, 216, 216); */
+    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    width: 100vw;
 }
 
-.upcomingMeetingsContainer {
+.date {
+    align-self: flex-start;
+}
+.briefMeetingDetials {
+    background-color: #6e8c00;
+    width: 100%;
+    text-align: center;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+}
+
+.meetingTitle {
+    row-gap: 1;
+}
+
+.meetingTime {
 
 }
