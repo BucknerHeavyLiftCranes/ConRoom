@@ -1,3 +1,4 @@
+import { ResponseError } from "../../errors/ApiError";
 /** shorthand for `import.meta.env` */
 // const env = import.meta.env;
 
@@ -71,5 +72,17 @@ export const requestAccessToken = async (authCode) => {
     } catch (err) {
         console.error({message: err.message, stack: err.stack})
         
+    }
+}
+
+/**
+ * Validate an API response.
+ * @param {Response} response API response
+ * @param {string} message error message if response is not ok.
+ * @throws {ResponseError} when API returns a bad response, otherwise returns control back to caller function.
+ */
+export const checkResponse = (response, message) => {
+    if (!response.ok) {
+        throw new ResponseError(message)
     }
 }
