@@ -8,4 +8,4 @@ export const reservationKey = `http://127.0.0.1:5173/api/reservations`
 export const roomKey = `http://127.0.0.1:5173/api/rooms`
 
 /** @type {string} path to server authorization API. */
-export const authKey = `http://127.0.0.1:5173//api/auth`
+export const authKey = `http://127.0.0.1:5173/api/auth`
