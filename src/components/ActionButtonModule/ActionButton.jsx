@@ -6,7 +6,7 @@ import styles from './ActionButton.module.css'
  * A button that performs a specified action.
  * @param {Object} props
  * @param {string} [props.label] Label for the button.
- * @param {Object} [props.overrideStyles] If given, overrides default styling of the button.
+ * @param {string} [props.overrideStyles] If given, overrides default styling of the button.
  * @param {Function} [props.action] Action (function) performed when the button is clicked.
  * @returns Functional labeled button that - optionally - performs an action.
  */
