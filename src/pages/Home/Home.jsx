@@ -4,22 +4,22 @@ import ReservationDetails from '../../components/ReservationDetailsModule/Reserv
 import { MeetingDetails } from '../../models/MeetingDetails.js'
 import styles from './Home.module.css'
 import DateTimeDisplay from '../../components/DateTimeDisplayModule/DateTimeDisplay.jsx'
-import { requestAccessToken } from '../../services/authService.js'
+import { extractPayload } from '../../services/apiService.js'
 
 function Home() {
   const [meetingCards, setMeetingCards] = useState([]);
 
-  const getAccessToken = async () => {
-    const params = new URLSearchParams(window.location.search);
-    /** @type {string} authorization code given by Microsoft to be exchanged for a token. */
-    const authCode = params.get("code");
-    // requestAccessToken(authCode)
+  // const getAccessToken = async () => {
+  //   const params = new URLSearchParams(window.location.search);
+  //   /** @type {string} authorization code given by Microsoft to be exchanged for a token. */
+  //   const authCode = params.get("code");
+  //   // requestAccessToken(authCode)
 
-  }
+  // }
 
-  useEffect(() => {
-    getAccessToken()
-  }, []);
+  // useEffect(() => {
+  //   getAccessToken()
+  // }, []);
   
 
   /**
@@ -31,12 +31,12 @@ function Home() {
       const response = await fetch(reservationKey)
       // console.log(response)
 
-      if (!response.ok){
-        throw new Error("Couldn't fetch meeting details")
-      }
+      // if (!response.ok){
+      //   throw new Error("Couldn't fetch meeting details")
+      // }
 
       /** @type {any[]} */
-      const allMeetings = await response.json()
+      const allMeetings = await extractPayload(response, "Couldn't fetch meeting details")//await response.json()
 
       return allMeetings.map(data => 
         MeetingDetails.fromObject(data)

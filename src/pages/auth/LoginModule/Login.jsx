@@ -1,6 +1,6 @@
 import { authKey } from '../../../../constants/keys/keys.js'
 import ActionButton from '../../../components/ActionButtonModule/ActionButton.jsx'
-import { checkResponse, loginRedirect } from '../../../services/authService.js'
+import { extractPayload } from '../../../services/apiService.js'
 import styles from './Login.module.css'
 
 function Login() {
@@ -9,8 +9,8 @@ function Login() {
         try {
             // loginRedirect()
             // const response = await fetch(`${authKey}/login`)
-            // checkResponse(response, `Failed to log in: ${response.statusText}`)
-            // console.log(await response.json())
+            // responseData = extractPayload(response, `Failed to log in: ${response.statusText}`)
+            // console.log(responseData)
             window.location.href = `${authKey}/login`;
 
         } catch (err) {
