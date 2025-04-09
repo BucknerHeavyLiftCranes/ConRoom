@@ -29,11 +29,19 @@ function Login() {
         
         <br/>
         
+        <div className={styles.buttonControls}>
         <ActionButton 
-            label="Sign In"
+            label="Login as Admin"
             action={startExternalLogin}
-            overrideStyles="frontPageButton"
+            overrideStyles="frontPageAdminButton"
         />
+
+        <ActionButton 
+            label="Login as Room"
+            action={() => {}}
+            overrideStyles="frontPageRoomButton"
+        />
+        </div>
     </div>
   )
 }
