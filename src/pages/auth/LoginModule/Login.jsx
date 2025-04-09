@@ -1,21 +1,22 @@
 import { authKey } from '../../../../constants/keys/keys.js'
 import ActionButton from '../../../components/ActionButtonModule/ActionButton.jsx'
-import { extractPayload } from '../../../services/apiService.js'
 import styles from './Login.module.css'
 
 function Login() {
     
-    const startExternalLogin = async () => {
+    const startExternalAdminLogin = async () => {
         try {
-            // loginRedirect()
-            // const response = await fetch(`${authKey}/login`)
-            // responseData = extractPayload(response, `Failed to log in: ${response.statusText}`)
-            // console.log(responseData)
             window.location.href = `${authKey}/login`;
-
         } catch (err) {
             console.error({message: err.message, stack: err.stack})
-            
+        }
+    }
+
+    const startExternalRoomLogin = async () => {
+        try {
+            // window.location.href = `${authKey}/login`;
+        } catch (err) {
+            console.error({message: err.message, stack: err.stack})
         }
     }
 
@@ -32,13 +33,13 @@ function Login() {
         <div className={styles.buttonControls}>
         <ActionButton 
             label="Login as Admin"
-            action={startExternalLogin}
+            action={startExternalAdminLogin}
             overrideStyles="frontPageAdminButton"
         />
 
         <ActionButton 
             label="Login as Room"
-            action={() => {}}
+            action={startExternalRoomLogin}
             overrideStyles="frontPageRoomButton"
         />
         </div>
