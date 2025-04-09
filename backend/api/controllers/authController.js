@@ -8,7 +8,7 @@ import jwt from "jsonwebtoken"
 let authCode = null
 /** @type {string} access token given in exchange for authorization code. */
 let accessToken = null
-/** @type {string} refresg token given to get ne access tokens without user reauthorization. */
+/** @type {string} refresh token given to get ne access tokens without user reauthorization. */
 let refreshToken = null
 
 const getEnv = () => ({
@@ -26,16 +26,18 @@ const getEnv = () => ({
 //Perform Microsoft SSO Authentication to log a user in and return a secure access token for authorized site access.
 
 /**
+ * @public
  * Construct authorization URL and start login process.
+ * @route /api/auth/login
  */
 export const loginFlow = expressAsyncHandler(async (req, res) => {
-    console.log("Login Started")
+    console.log("Logging In")
     const env = getEnv()
 
     const authURL = new URL(env.authUrl);
     authURL.searchParams.append('client_id', env.clientId); 
     authURL.searchParams.append('response_type', env.responseType);
-    authURL.searchParams.append('redirect_uri', env.redirectUri);
+    authURL.searchParams.append('redirect_uri', env.redirectUri); // /api/auth -> which triggers the rest of the login flow
     authURL.searchParams.append('scope', env.scope);
     authURL.searchParams.append('state', env.state);
 
@@ -44,7 +46,9 @@ export const loginFlow = expressAsyncHandler(async (req, res) => {
 
 
 /**
+ * @private
  * Request access token (if necessary) and send redirect to home page.
+ * @route /api/auth
  */
 export const authFlow = expressAsyncHandler(async (req, res) => {
     console.log("Authorization Started")
@@ -74,7 +78,7 @@ export const authFlow = expressAsyncHandler(async (req, res) => {
     // if code is valid but no token, redirects to token endpoint
     } else if(authCode != null && accessToken == null){ 
         console.log('Redirecting to token endpoint')
-        res.redirect('/api/token')
+        res.redirect('/api/auth/token')
     
     //if code and token are valid, sends decoded user info
     }else if(authCode != null && accessToken != null){
@@ -95,7 +99,9 @@ export const authFlow = expressAsyncHandler(async (req, res) => {
 
 
 /**
- * Exchange authorization code for access if it doesn't already exist.
+ * @private
+ * Exchange authorization code for access token (if it doesn't already exist).
+ * @route /api/auth/token
  */
 export const getAccessToken = expressAsyncHandler(async (req, res) => {
     const env = getEnv()
@@ -133,4 +139,14 @@ export const getAccessToken = expressAsyncHandler(async (req, res) => {
         refreshToken = response.data.refresh_token
         res.redirect('/api/auth')
     }
+})
+
+/**
+ * @private
+ * Log current user (room or admin) out and set key variables to null.
+ * @route /api/auth/logout
+ */
+export const logoutFlow = expressAsyncHandler(async (req, res) => {
+    const env = getEnv()
+    console.log("Logging Out")
 })
