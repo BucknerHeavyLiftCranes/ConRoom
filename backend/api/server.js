@@ -17,12 +17,12 @@ import { fakeReservations } from "../../tests/fakeReservations.js";
 import { log } from "console";
 
 const app = express();
-app.use(cors())
-app.use(errorHandler)
+app.use(cors()) // 🚨 Too open, add limits before putting in production
+app.use(express.json());
 app.use("/api/auth", authRouter);
 app.use("/api/reservations", reservationRouter);
 app.use("/api/rooms", roomRouter);
-app.use(express.json());
+app.use(errorHandler)
 
 // dotenv.config({ path: './backend/.env' }); // loads in env variables - to be used via the process object // container already loads env vars so this is not needed
 
