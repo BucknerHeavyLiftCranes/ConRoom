@@ -135,7 +135,7 @@ export default class Reservation{
 
     /**
      * Converts a Reservation instance to a MeetingDetails object for frontend use.
-     * @returns 
+     * @returns {Object} MeetingDetails-like object
      */
     async toMeetingDetails() {
         return {
@@ -218,22 +218,22 @@ export default class Reservation{
         }
 
         // Convert reservation date & time into UTC Date object
-        const reservationstart = new Date(`${this.date}T${this.start}Z`);
-        const reservationend = new Date(`${this.date}T${this.end}Z`);
+        const reservationStart = new Date(`${this.date}T${this.start}Z`);
+        const reservationEnd = new Date(`${this.date}T${this.end}Z`);
 
         // Get the current time in UTC
         /**@type {Date} the current time*/
         const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
 
         // Convert timestamps to seconds
-        const reservationstartInSeconds = Math.floor(reservationstart.getTime() / 1000);
-        const reservationendInSeconds = Math.floor(reservationend.getTime() / 1000);
+        const reservationStartInSeconds = Math.floor(reservationStart.getTime() / 1000);
+        const reservationEndInSeconds = Math.floor(reservationEnd.getTime() / 1000);
         const nowInSeconds = Math.floor(now.getTime() / 1000);
 
         // Determine status
-        if (nowInSeconds < reservationstartInSeconds) {
+        if (nowInSeconds < reservationStartInSeconds) {
             return "Confirmed"; // Meeting hasn't started
-        } else if (nowInSeconds >= reservationstartInSeconds && nowInSeconds < reservationendInSeconds) {
+        } else if (nowInSeconds >= reservationStartInSeconds && nowInSeconds < reservationEndInSeconds) {
             return "In Progress"; // Meeting is ongoing
         } else {
             return "Completed"; // Meeting has ended

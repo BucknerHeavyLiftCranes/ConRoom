@@ -11,6 +11,10 @@ let accessToken = null
 /** @type {string} refresh token given to get ne access tokens without user reauthorization. */
 let refreshToken = null
 
+/**
+ * 
+ * @returns onject containg microsoft sso env variables
+ */
 const getEnv = () => ({
     authUrl: process.env.AUTH_URL,
     tenant: process.env.AUTH_TENANT,
@@ -75,7 +79,7 @@ export const authFlow = expressAsyncHandler(async (req, res) => {
         res.status(500)
         throw new Error('Error fetching code from SSO')
     
-    // if code is valid but no token, redirects to token endpoint
+    // if code is valid but no token, redirect to token endpoint
     } else if(authCode != null && accessToken == null){ 
         console.log('Redirecting to token endpoint')
         res.redirect('/api/auth/token')

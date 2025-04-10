@@ -27,7 +27,7 @@ app.use(errorHandler)
 // dotenv.config({ path: './backend/.env' }); // loads in env variables - to be used via the process object // container already loads env vars so this is not needed
 
 // try {
-//     // await setupDatabase()
+    await setupDatabase()
 //     // await clearDatabase()
 //     // await dropReservationsTable()
     

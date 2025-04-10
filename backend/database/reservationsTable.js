@@ -61,7 +61,7 @@ export const getReservationById = async (reservationId) => {
         const reservationData = result.recordset?.[0];
 
         if (reservationData){
-            return Reservation.toModel(reservationData) // convert each database record to a Room object
+            return Reservation.toModel(reservationData) // convert each database record to a Reservation object
         }else{
             return undefined
         }
