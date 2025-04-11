@@ -8,7 +8,7 @@ import expressAsyncHandler from "express-async-handler"; // no need for try-catc
 let authCode = null
 /** @type {string | undefined} access token given in exchange for authorization code. */
 let accessToken = null
-/** @type {string | undefined} refresh token given to get ne access tokens without user reauthorization. */
+/** @type {string | undefined} refresh token used to get new access tokens without user reauthorization. */
 let refreshToken = null
 
 /**
