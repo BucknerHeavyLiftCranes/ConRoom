@@ -1,15 +1,47 @@
 import expressAsyncHandler from "express-async-handler"; // no need for try-catch
-import jwt from "jsonwebtoken"
+// import jwt from "jsonwebtoken"
 
 /** Object that maps to backend env MS SSO config variables. */
 
 // Local variables for authorization
-/** @type {string} authorization code to be exchanged for access token. */
+/** @type {string | undefined} authorization code to be exchanged for access token. */
 let authCode = null
-/** @type {string} access token given in exchange for authorization code. */
+/** @type {string | undefined} access token given in exchange for authorization code. */
 let accessToken = null
-/** @type {string} refresh token given to get ne access tokens without user reauthorization. */
+/** @type {string | undefined} refresh token given to get ne access tokens without user reauthorization. */
 let refreshToken = null
+
+/**
+ * Set the access token.
+ */
+const setAccessToken = (token) => {
+    accessToken = token
+}
+
+/**
+ * Get the access token (for use in other files that need token for secure API calls).
+ * @returns accessToken for making secure API calls
+ */
+export const getAccessToken = () => {
+    return accessToken
+}
+
+
+/**
+ * Set the refresh token.
+ */
+const setRefreshToken = (token) => {
+    refreshToken = token
+}
+
+/**
+ * Get the refresh token (for getting new access tokens - to be called in other files that need to make new access tokens).
+ * @returns accessToken for making secure API calls
+ */
+export const getRefreshToken = () => {
+    return refreshToken
+}
+
 
 /**
  * 
@@ -17,7 +49,7 @@ let refreshToken = null
  */
 const getEnv = () => ({
     authUrl: process.env.AUTH_URL,
-    tenant: process.env.AUTH_TENANT,
+    tenant: process.env.AUTH_SSO_TENANT,
     clientId: process.env.AUTH_CLIENT_ID,
     responseType: process.env.AUTH_RESPONSE_TYPE,
     clientSecret: process.env.AUTH_CLIENT_SECRET,
@@ -86,14 +118,11 @@ export const authFlow = expressAsyncHandler(async (req, res) => {
     
     //if code and token are valid, sends decoded user info
     }else if(authCode != null && accessToken != null){
-        const decodedAccessToken = jwt.decode(accessToken)
 
-        const userData = {
-            user_email: decodedAccessToken.unique_name
-        }
+        console.log("Access Token:", accessToken)
+        console.log("Refresh Token:", refreshToken)
 
         console.log('Redirecting to frontend')
-        console.log(userData)
         res.redirect(env.frontendUrl);
     }else{
         res.status(500)
@@ -107,7 +136,7 @@ export const authFlow = expressAsyncHandler(async (req, res) => {
  * Exchange authorization code for access token (if it doesn't already exist).
  * @route /api/auth/token
  */
-export const getAccessToken = expressAsyncHandler(async (req, res) => {
+export const createAccessToken = expressAsyncHandler(async (req, res) => {
     const env = getEnv()
     
     console.log("Getting Access Token")
@@ -139,8 +168,8 @@ export const getAccessToken = expressAsyncHandler(async (req, res) => {
             throw new Error("Failed to fetch access token");
         }
 
-        accessToken = response.data.access_token
-        refreshToken = response.data.refresh_token
+        setAccessToken(response.data.access_token)
+        setRefreshToken(response.data.refresh_token)
         res.redirect('/api/auth')
     }
 })
@@ -151,6 +180,6 @@ export const getAccessToken = expressAsyncHandler(async (req, res) => {
  * @route /api/auth/logout
  */
 export const logoutFlow = expressAsyncHandler(async (req, res) => {
-    const env = getEnv()
+    // const env = getEnv()
     console.log("Logging Out")
 })
