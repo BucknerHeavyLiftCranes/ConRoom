@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { HTTP_STATUS_CODES } from "../../../constants/constants.js"
 
 const errorHandler = (err, req, res, next) => { // must include "next" for proper param placing but it won't be used when an error is thrown because execution is stopped.
