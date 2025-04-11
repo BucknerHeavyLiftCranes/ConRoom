@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* Library Imports */
 import cors from "cors"
+import cookieParser from "cookie-parser";
 // import dotenv from "dotenv"
 import express from "express"
 import { router as authRouter } from "./routes/authRoutes.js";
@@ -17,11 +18,15 @@ import { fakeReservations } from "../../tests/fakeReservations.js";
 import { log } from "console";
 
 const app = express();
+
+app.use(cookieParser());
+app.use(express.json());
 app.use(cors({
     origin: 'http://localhost:5174', // or wherever your frontend is hosted
     credentials: true
   })); // 🚨 Too open, add limits before putting in production
-app.use(express.json());
+
+/** Custom Middleware */
 app.use("/api/auth", authRouter);
 app.use("/api/reservations", reservationRouter);
 app.use("/api/rooms", roomRouter);
