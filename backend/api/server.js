@@ -17,7 +17,10 @@ import { fakeReservations } from "../../tests/fakeReservations.js";
 import { log } from "console";
 
 const app = express();
-app.use(cors()) // 🚨 Too open, add limits before putting in production
+app.use(cors({
+    origin: 'http://localhost:5174', // or wherever your frontend is hosted
+    credentials: true
+  })); // 🚨 Too open, add limits before putting in production
 app.use(express.json());
 app.use("/api/auth", authRouter);
 app.use("/api/reservations", reservationRouter);
@@ -27,7 +30,7 @@ app.use(errorHandler)
 // dotenv.config({ path: './backend/.env' }); // loads in env variables - to be used via the process object // container already loads env vars so this is not needed
 
 // try {
-    await setupDatabase()
+    // await setupDatabase() // UNCOMMENT THIS LATER 🚨🚨🚨
 //     // await clearDatabase()
 //     // await dropReservationsTable()
     
