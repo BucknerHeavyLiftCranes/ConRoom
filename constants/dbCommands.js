@@ -12,16 +12,17 @@ const DB_COMMANDS = {
 
 
     /* CREATE TABLE COMMANDS*/
-    // createUsersTable: `
-    //     IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'users')
-    //     BEGIN
-    //         CREATE TABLE users (
-    //             user_id INT IDENTITY(1,1) PRIMARY KEY,
-    //             name VARCHAR(255),
-    //             email VARCHAR(255) UNIQUE
-    //         );
-    //     END;
-    // `,
+    createAdminsTable: `
+        IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'admins')
+        BEGIN
+            CREATE TABLE admins (
+                id INT IDENTITY(1,1) PRIMARY KEY,
+                name VARCHAR(255),
+                email VARCHAR(255) UNIQUE
+                refresh_token VARCHAR(2000) UNIQUE -- MUST HASH THIS FOR SECURITY
+            );
+        END;
+    `,
 
     createRoomsTable: `
         IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'rooms')
@@ -124,6 +125,75 @@ const DB_COMMANDS = {
         IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'reservations')
         BEGIN
             DROP TABLE reservations;
+        END
+    `,
+    
+
+
+    /* ADMINS TABLE CRUD COMMANDS */
+    getAllAdmins: `
+        IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'admins')
+        BEGIN
+            SELECT * FROM admins;
+        END
+    `,
+
+    getAdminById:`
+        IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'admins')
+        BEGIN
+            SELECT * FROM admins WHERE id = @id;
+        END
+    `,
+
+    getAdminByEmail:`
+        IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'admins')
+        BEGIN
+            SELECT * FROM admins WHERE email = @email;
+        END
+    `,
+
+    getAdminByRefreshToken:`
+        IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'admins')
+        BEGIN
+            SELECT * FROM admins WHERE refresh_token = @refresh_token;
+        END
+    `,
+
+    createNewAdmin: `
+        IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'admins')
+        BEGIN
+            IF NOT EXISTS (SELECT 1 FROM admins WHERE email = @email)
+            BEGIN
+                INSERT INTO admins (id, name, email, refresh_token)
+                OUTPUT INSERTED.* 
+                VALUES (@id, @name, @email, @refresh_token);
+            END;
+        END;
+    `,
+
+    updateAdminRefreshToken: `
+        IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'admins')
+        BEGIN
+            -- Check if admin exists by finding its unique id
+            IF EXISTS (SELECT 1 FROM admins WHERE id = @id)
+            BEGIN
+                -- Check if another admin with the same refresh token already exists
+                IF NOT EXISTS (SELECT 1 FROM admins WHERE refresh_token = @refresh_token AND id != @id)
+                BEGIN
+                    UPDATE admins
+                    SET  refresh_token = @refresh_token
+                    WHERE id = @id;
+
+                    SELECT * FROM admins WHERE id = @id;
+                END
+            END
+        END
+    `,
+
+    deleteAdmin: `
+        IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'admins')
+        BEGIN
+            DELETE FROM admins WHERE id = @id;
         END
     `,
 

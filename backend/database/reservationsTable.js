@@ -8,6 +8,7 @@ import { GetRoomError } from "../../errors/RoomError.js";
 import { CreateReservationError, DeleteReservationError, GetReservationError, ReservationCanceledError, ReservationInProgressError, UpdateReservationError } from "../../errors/ReservationError.js";
 import { ReservationValidationError } from "../../errors/ReservationError.js";
 import UndeterminedStatusError from "../../errors/UndeterminedStatusError.js";
+import { DatabaseConnectionError } from "../../errors/ConnectionError.js";
 
 /**@type {mssql.ConnectionPool} */
 let pool
@@ -17,7 +18,8 @@ try{
         pool = await connectToDatabase()
     }
 }catch (err) {
-    console.log(`Failed to connect to database: ${err}`)
+    console.error({ message: err.message, stack: err.stack });
+    throw new DatabaseConnectionError("Failed to connect to database")
 }
 
 
