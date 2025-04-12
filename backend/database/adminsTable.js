@@ -124,10 +124,8 @@ export const getAdminByRefreshToken = async (refreshToken) => {
  * @returns {promise<Admin>} the newly created admin (converted to an Admin object).
  */
 export const createAdmin = async (adminData) => {
-    await validateAdmin(adminData)
-
-  
     try{
+        await validateAdmin(adminData)
         const result = await pool.request()
         .input('id', mssql.VarChar(255), adminData.id)
         .input('name', mssql.VarChar(255), adminData.name)
@@ -143,7 +141,6 @@ export const createAdmin = async (adminData) => {
         console.log("==================================================================")
         console.log(`Admin created successfully: ${result.rowsAffected} row(s) added.`);
         console.log("==================================================================")
-
 
         const newAdmin = Admin.fromObject(newAdminData)
 
@@ -198,6 +195,21 @@ export const updateAdminRefreshToken = async (id, newRefreshToken) => {
         throw new UpdateAdminError(`Failed to update admin refresh token`);
     }
 };
+
+/**
+ * Create or update the admin (depending on if they already exists).
+ * @param {Admin} adminData the details of the new admin.
+ * @returns new or updated admin.
+ */
+export const createOrUpdateAdmin = async (adminData) => {
+    const adminExists = await getAdminById(adminData.id)
+
+    if(adminExists){
+        return await updateAdminRefreshToken(adminData.id, adminData.refreshToken)
+    }else{
+       return await createAdmin(adminData)
+    }
+}
 
 
 /**

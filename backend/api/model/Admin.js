@@ -1,4 +1,3 @@
-
 /**
  * Admin in the system (adhering to Microsoft's profile layout + the refresh token for silent authentication).
  */

@@ -26,8 +26,22 @@ async function createBucknerConroomDatabase() {
     }
 }
 
+
 /**
- * Create `Rooms` table in the database.
+ * Create `admins` table in the database.
+ */
+async function createAdminsTable() {
+  try {
+      // Create a request and execute the SQL command stored in DB_COMMANDS.createRoomsTable
+      await pool.request().query(DB_COMMANDS.createAdminsTable);
+  } catch (err) {
+    throw new RoomError(`ADMINS TABLE CREATION ERROR: ${err}`)
+  }
+}
+
+
+/**
+ * Create `rooms` table in the database.
  */
 async function createRoomsTable() {
     try {
@@ -39,7 +53,7 @@ async function createRoomsTable() {
 }
 
 /**
- * Create `Reservations` table in the database (with the appropriate indexes).
+ * Create `reservations` table in the database (with the appropriate indexes).
  */
 async function createReservationsTable() {
     try {
@@ -57,7 +71,20 @@ async function createReservationsTable() {
 }
 
 /**
- * Delete Rooms table from the database.
+ * Delete `admins` table from the database.
+ */
+export async function dropAdminsTable() {
+  try {
+    /* Create reservations table */
+    await pool.request().query(DB_COMMANDS.dropAdminsTable);
+
+  } catch (err) {
+    throw new RoomError(`ADMINS TABLE DELETION ERROR: ${err}`)
+  }
+}
+
+/**
+ * Delete `rooms` table from the database.
  */
 export async function dropRoomsTable() {
   try {
@@ -70,7 +97,7 @@ export async function dropRoomsTable() {
 }
 
 /**
- * Delete Reservations table from the database (along with the appropriate indexes).
+ * Delete `reservations` table from the database (along with the appropriate indexes).
  */
 export async function dropReservationsTable() {
   try {
@@ -89,6 +116,7 @@ export async function dropReservationsTable() {
 export async function setupDatabase(){
     try {
         await createBucknerConroomDatabase()
+        await createAdminsTable()
         await createRoomsTable()
         await createReservationsTable()
         console.log("Database setup completed!")
@@ -102,6 +130,7 @@ export async function setupDatabase(){
  */
 export async function clearDatabase(){
   try {
+      await dropAdminsTable()
       await dropReservationsTable()
       await dropRoomsTable()
       console.log("Database cleared!")

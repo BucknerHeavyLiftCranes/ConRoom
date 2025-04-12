@@ -16,10 +16,10 @@ const DB_COMMANDS = {
         IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'admins')
         BEGIN
             CREATE TABLE admins (
-                id INT IDENTITY(1,1) PRIMARY KEY,
-                name VARCHAR(255),
-                email VARCHAR(255) UNIQUE
-                refresh_token VARCHAR(2000) UNIQUE -- MUST HASH THIS FOR SECURITY
+                id VARCHAR(255) PRIMARY KEY NOT NULL,
+                name VARCHAR(255) NOT NULL,
+                email VARCHAR(255) UNIQUE NOT NULL,
+                refresh_token VARCHAR(2000) UNIQUE NOT NULL -- MUST HASH THIS FOR SECURITY
             );
         END;
     `,
@@ -107,12 +107,12 @@ const DB_COMMANDS = {
 
 
     /* DROP TABLE COMMANDS*/
-    // dropUsersTable: `
-    //     IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'users')
-    //     BEGIN
-    //         DROP TABLE users;
-    //     END
-    // `,
+    dropAdminsTable: `
+        IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'admins')
+        BEGIN
+            DROP TABLE admins;
+        END
+    `,
 
     dropRoomsTable: `
         IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'rooms')
