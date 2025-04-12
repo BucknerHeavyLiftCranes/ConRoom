@@ -1,5 +1,5 @@
 import expressAsyncHandler from "express-async-handler"; // no need for try-catch
-// import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken"
 
 /** Object that maps to backend env MS SSO config variables. */
 
@@ -8,8 +8,8 @@ import expressAsyncHandler from "express-async-handler"; // no need for try-catc
 let authCode = null
 /** @type {string | undefined} access token given in exchange for authorization code. */
 let accessToken = null
-/** @type {string | undefined} refresh token used to get new access tokens without user reauthorization. */
-let refreshToken = null
+/** @type {string | undefined} id token used to access secure user data. */
+let idToken = null
 
 /**
  * Set the access token.
@@ -28,24 +28,28 @@ export const getAccessToken = () => {
 
 
 /**
- * Set the refresh token.
+ * Set the id token.
  */
-const setRefreshToken = (token) => {
-    refreshToken = token
+const setIdToken = (token) => {
+    idToken = token
 }
 
 /**
- * Get the refresh token (for getting new access tokens - to be called in other files that need to make new access tokens).
- * @returns accessToken for making secure API calls
+ * Get the id token (for getting new access tokens - to be called in other files that need to make new access tokens).
+ * @returns idToken for accessing user data
  */
 export const getRefreshToken = () => {
-    return refreshToken
+    return idToken
+}
+
+export const getUserData = () => {
+    return jwt.decode(idToken)
 }
 
 
 /**
- * 
- * @returns onject containg microsoft sso env variables
+ * Load in env variables use in Microsoft SSO.
+ * @returns object containing Microsoft SSO environment variables.
  */
 const getEnv = () => ({
     authUrl: process.env.AUTH_URL,
@@ -56,7 +60,8 @@ const getEnv = () => ({
     redirectUri: process.env.AUTH_REDIRECT_URI,
     scope: process.env.AUTH_SCOPE,
     state: process.env.AUTH_STATE,
-    frontendUrl: process.env.FRONTEND_URL
+    frontendUrl: process.env.FRONTEND_URL,
+    mode: process.env.MODE
   });
 
 //Perform Microsoft SSO Authentication to log a user in and return a secure access token for authorized site access.
@@ -83,7 +88,7 @@ export const loginFlow = expressAsyncHandler(async (req, res) => {
 
 /**
  * @private
- * Request access token (if necessary) and send redirect to home page.
+ * Request access token (if necessary), put it in a cookie, and redirect to home page.
  * @route /api/auth
  */
 export const authFlow = expressAsyncHandler(async (req, res) => {
@@ -92,7 +97,7 @@ export const authFlow = expressAsyncHandler(async (req, res) => {
 
     if(req.query.state != null) {
         if (req.query.state !== env.state) {
-            res.status(403)
+            res.status(401)
             throw new Error ("You are not authorized to access this site.")
           }
     }else{
@@ -118,12 +123,24 @@ export const authFlow = expressAsyncHandler(async (req, res) => {
     
     //if code and token are valid, sends decoded user info
     }else if(authCode != null && accessToken != null){
+        const one_day = 24 * 60 * 60 * 1000 // 1 day
+        const two_minutes =  60 * 1000 * 2 // 1 minute
 
-        console.log("Access Token:", accessToken)
-        console.log("Refresh Token:", refreshToken)
+        // console.log("Access Token:", accessToken)
+        // console.log("Id Token:", idToken)
 
-        console.log('Redirecting to frontend')
-        res.redirect(env.frontendUrl);
+
+        console.log('Storing token in cookie & Redirecting to frontend')
+
+        // Set the browser cookies for secure frontend backend integration and redirect to home page.
+        res.cookie('access_token', accessToken, {
+            httpOnly: true,
+            secure: true, //IF sameSite IS NONE, THIS MUST BE TRUE env.mode === 'production',
+            sameSite: 'None', // or 'Lax' depending on flow, 'Strict' only if app and server run on the same host
+            maxAge: two_minutes // controls how long browser keeps you logged in
+        }).redirect(env.frontendUrl); // let frontend handle redirect
+
+        // res.status(200).json({message: "Logged In"})
     }else{
         res.status(500)
         throw new Error('Undetermined Error')
@@ -154,7 +171,7 @@ export const createAccessToken = expressAsyncHandler(async (req, res) => {
             client_secret: env.clientSecret
         })
 
-        const response = await fetch(`/${env.tenant}/oauth2/v2.0/token HTTP/1.1`, {
+        const response = await fetch(`https://login.microsoftonline.com/${env.tenant}/oauth2/v2.0/token`, {
             method: 'POST',
             headers: {
                 /** @type {string} request type the API is expecting. */
@@ -168,11 +185,26 @@ export const createAccessToken = expressAsyncHandler(async (req, res) => {
             throw new Error("Failed to fetch access token");
         }
 
-        setAccessToken(response.data.access_token)
-        setRefreshToken(response.data.refresh_token)
-        res.redirect('/api/auth')
+        const tokenData = await response.json()
+        console.log(tokenData)
+
+        setAccessToken(tokenData.access_token)
+        setIdToken(tokenData.id_token)
+        res.redirect(`/api/auth?state=${env.state}`)
     }
 })
+
+
+export const authenticateUser = expressAsyncHandler(async (req, res) => {
+    const token = req.cookies.access_token;
+    if (!token){
+         res.status(401).json({ authenticated: false });
+    }else{
+        // Optionally verify token here (JWT decode etc.)
+        res.status(200).json({ authenticated: true });
+    }
+})
+
 
 /**
  * @private
@@ -180,6 +212,16 @@ export const createAccessToken = expressAsyncHandler(async (req, res) => {
  * @route /api/auth/logout
  */
 export const logoutFlow = expressAsyncHandler(async (req, res) => {
-    // const env = getEnv()
+    const env = getEnv()
     console.log("Logging Out")
+    authCode = null
+    setAccessToken(null)
+    setIdToken(null)
+    res.clearCookie('access_token', {
+        httpOnly: true,
+            secure: true, // env.mode === 'production', // IF sameSite IS NONE, THIS MUST BE TRUE //
+            sameSite: 'None', // or 'Lax' depending on flow, 'Strict' only if app and server run on the same host
+    });
+
+    res.redirect(`https://login.microsoftonline.com/${env.tenant}/oauth2/v2.0/logout`)
 })
