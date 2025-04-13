@@ -21,14 +21,14 @@ export const AuthProvider = ({ children }) => {
          */
         const verifyUser = async () => {
         try {
-            const response = await fetch(`${authKey}/me`, {
+            const response = await fetch(`${authKey}/validate`, {
             credentials: 'include'
             });
     
             if (response.ok) {
-            setAuthenticated(true);
+              setAuthenticated(true);
             } else {
-            setAuthenticated(false);
+              setAuthenticated(false);
             }
         } catch (err) {
             console.log({ message: err.message, stack: err.stack });
