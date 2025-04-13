@@ -2,9 +2,10 @@ import BodyBackgroundWrapper from './components/BodyBackgroundWrapper.jsx';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home/Home.jsx';
 import Login from './pages/auth/LoginModule/Login.jsx';
-import { AuthProvider } from '../context/AuthProvider.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
-// import viteLogo from '/vite.svg'
+import Logout from './pages/auth/LogoutModule/Logout.jsx';
+import { AuthProvider } from '../context/AuthProvider.jsx';
+
 // import './App.css'
 
 function App() {
@@ -29,6 +30,15 @@ function App() {
               element={
                 <ProtectedRoute redirectTo='/'>
                   <Home />
+                </ProtectedRoute>
+              } 
+            />
+
+            <Route 
+              path="/logout" 
+              element={
+                <ProtectedRoute redirectTo='/'>
+                  <Logout />
                 </ProtectedRoute>
               } 
             />
