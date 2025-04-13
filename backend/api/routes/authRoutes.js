@@ -1,14 +1,23 @@
 import express from "express"
-import { loginFlow, authFlow, createAccessToken, authenticateUser, logoutFlow } from "../controllers/authController.js"
+import { 
+      loginFlow, 
+      authFlow, 
+      createAccessToken, 
+      // refreshAccessToken, 
+      validateSession, 
+      logoutFlow } from "../controllers/authController.js"
+import validateAccessToken from "../middleware/validateAccessToken.js"
 
 export const router = express.Router()
 
-router.get("/login", loginFlow)
-
 router.get("/", authFlow)
+
+router.get("/login", loginFlow)
 
 router.get('/token', createAccessToken)
 
-router.get('/me', authenticateUser)
+// router.get('/refresh', refreshAccessToken)
+
+router.get('/validate', validateAccessToken, validateSession)
 
 router.get('/logout', logoutFlow)
