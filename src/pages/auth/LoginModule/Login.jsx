@@ -1,9 +1,24 @@
 import { authKey } from '../../../../constants/keys/keys.js'
+import { useAuth } from '../../../../context/exports/useAuth.js'
 import ActionButton from '../../../components/ActionButtonModule/ActionButton.jsx'
 import styles from './Login.module.css'
+import { Navigate } from 'react-router-dom';
 
 function Login() {
+
+    const { authenticated, loading } = useAuth();
+
+    if (loading) {
+        return <div>Loading...</div>; // or a spinner
+    }
+
+    if (authenticated) {
+        return <Navigate to="/home" replace />;
+    }
     
+    /**
+     * Redirect current user to external Microsoft login
+     */
     const startExternalAdminLogin = async () => {
         try {
             window.location.href = `${authKey}/login`;
@@ -12,6 +27,9 @@ function Login() {
         }
     }
 
+    /**
+     * Redirect current room to external Microsoft login
+     */
     const startExternalRoomLogin = async () => {
         try {
             // window.location.href = `${authKey}/login`;
