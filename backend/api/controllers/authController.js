@@ -1,50 +1,20 @@
+/** @typedef {import('express').Request} Request */
+/** @typedef {import('express').Response} Response */
+
 import expressAsyncHandler from "express-async-handler"; // no need for try-catch
-import jwt from "jsonwebtoken"
+import ms from "ms";
+import { createOrUpdateAdmin, updateAdminRefreshToken } from "../../database/adminsTable.js";
+import Admin from "../model/Admin.js";
+import { ResponseError } from "../../../errors/ApiError.js";
 
-/** Object that maps to backend env MS SSO config variables. */
-
-// Local variables for authorization
+// Global variables for authorization
 /** @type {string | undefined} authorization code to be exchanged for access token. */
-let authCode = null
+// let authCode = null
 /** @type {string | undefined} access token given in exchange for authorization code. */
-let accessToken = null
+// let accessToken = null
+
 /** @type {string | undefined} id token used to access secure user data. */
-let idToken = null
-
-/**
- * Set the access token.
- */
-const setAccessToken = (token) => {
-    accessToken = token
-}
-
-/**
- * Get the access token (for use in other files that need token for secure API calls).
- * @returns accessToken for making secure API calls
- */
-export const getAccessToken = () => {
-    return accessToken
-}
-
-
-/**
- * Set the id token.
- */
-const setIdToken = (token) => {
-    idToken = token
-}
-
-/**
- * Get the id token (for getting new access tokens - to be called in other files that need to make new access tokens).
- * @returns idToken for accessing user data
- */
-export const getRefreshToken = () => {
-    return idToken
-}
-
-export const getUserData = () => {
-    return jwt.decode(idToken)
-}
+// let idToken = null
 
 
 /**
@@ -61,6 +31,7 @@ const getEnv = () => ({
     scope: process.env.AUTH_SCOPE,
     state: process.env.AUTH_STATE,
     frontendUrl: process.env.FRONTEND_URL,
+    loginPageUrl: process.env.LOGIN_PAGE_URL,
     mode: process.env.MODE
   });
 
@@ -85,7 +56,6 @@ export const loginFlow = expressAsyncHandler(async (req, res) => {
     res.redirect(authURL.toString())
 })
 
-
 /**
  * @private
  * Request access token (if necessary), put it in a cookie, and redirect to home page.
@@ -95,7 +65,7 @@ export const authFlow = expressAsyncHandler(async (req, res) => {
     console.log("Authorization Started")
     const env = getEnv()
 
-    if(req.query.state != null) {
+    if (req.query.state != null) {
         if (req.query.state !== env.state) {
             res.status(401)
             throw new Error ("You are not authorized to access this site.")
@@ -104,41 +74,26 @@ export const authFlow = expressAsyncHandler(async (req, res) => {
         res.status(400)
             throw new Error ("state is null")
     }
-
-
-    //stores code received from sso
-    if(req.query.code != null){
-        authCode = req.query.code
-    }
+    
+    const authCode = req.query.code
+    const accessToken = req.cookies.access_token
+    
     //checks to see if code is set. Throws error if not
-    if(authCode == null){
+    if (authCode == null){
         console.log('Error fetching code from SSO')
         res.status(500)
         throw new Error('Error fetching code from SSO')
     
     // if code is valid but no token, redirect to token endpoint
-    } else if(authCode != null && accessToken == null){ 
+    } else if (authCode != null && accessToken == null){ 
         console.log('Redirecting to token endpoint')
-        res.redirect('/api/auth/token')
+        res.redirect(`/api/auth/token?code=${authCode}`)
     
     //if code and token are valid, sends decoded user info
-    }else if(authCode != null && accessToken != null){
-        const one_day = 24 * 60 * 60 * 1000 // 1 day
-        const two_minutes =  60 * 1000 * 2 // 1 minute
+    }else if (authCode != null && accessToken != null){
+        console.log('Redirecting to frontend')
 
-        // console.log("Access Token:", accessToken)
-        // console.log("Id Token:", idToken)
-
-
-        console.log('Storing token in cookie & Redirecting to frontend')
-
-        // Set the browser cookies for secure frontend backend integration and redirect to home page.
-        res.cookie('access_token', accessToken, {
-            httpOnly: true,
-            secure: true, //IF sameSite IS NONE, THIS MUST BE TRUE env.mode === 'production',
-            sameSite: 'None', // or 'Lax' depending on flow, 'Strict' only if app and server run on the same host
-            maxAge: two_minutes // controls how long browser keeps you logged in
-        }).redirect(env.frontendUrl); // let frontend handle redirect
+        res.redirect(env.frontendUrl); // let frontend handle redirect
 
         // res.status(200).json({message: "Logged In"})
     }else{
@@ -150,28 +105,33 @@ export const authFlow = expressAsyncHandler(async (req, res) => {
 
 /**
  * @private
- * Exchange authorization code for access token (if it doesn't already exist).
+ * Exchange authorization code for access and refresh tokens.
+ * Fetch user info from Microsoft, create/update admin in DB,
+ * set session cookies, and redirect to /auth for finalization.
  * @route /api/auth/token
+ * @method GET
  */
 export const createAccessToken = expressAsyncHandler(async (req, res) => {
     const env = getEnv()
     
     console.log("Getting Access Token")
+
+    const authCode = req.query.code
     
-    if(authCode == null){
+    if (authCode == null){
         res.status(500)
         throw new Error('Authentication code is null')
     }else{ // fetch access token
         const urlParams = new URLSearchParams({
-            tenant: env.tenant,
             client_id: env.clientId,
+            scope: env.scope,
             code: authCode,
             redirect_uri: env.redirectUri,
             grant_type: 'authorization_code',
-            client_secret: env.clientSecret
+            client_secret: env.clientSecret,
         })
 
-        const response = await fetch(`https://login.microsoftonline.com/${env.tenant}/oauth2/v2.0/token`, {
+        const tokenResponse = await fetch(`https://login.microsoftonline.com/${env.tenant}/oauth2/v2.0/token`, {
             method: 'POST',
             headers: {
                 /** @type {string} request type the API is expecting. */
@@ -180,25 +140,148 @@ export const createAccessToken = expressAsyncHandler(async (req, res) => {
             body: urlParams.toString(),
         })
 
-        if (!response.ok) {
+        if (!tokenResponse.ok) {
             res.status(400)
             throw new Error("Failed to fetch access token");
         }
 
-        const tokenData = await response.json()
-        console.log(tokenData)
+        const tokenData = await tokenResponse.json()
 
-        setAccessToken(tokenData.access_token)
-        setIdToken(tokenData.id_token)
-        res.redirect(`/api/auth?state=${env.state}`)
+        /** @type {string} */
+        const accessToken = tokenData.access_token
+
+        /** @type {string} */
+        const refreshToken = tokenData.refresh_token
+
+        /** @type {number} */
+        const accessTokenExperationTime = tokenData.expires_in
+
+        /** @type {boolean} */
+        const shouldResetUserId =  Boolean(refreshToken)
+
+        if (!accessToken) {
+            res.status(400)
+            throw new Error('No access token received from Microsoft');
+        }
+
+        if (!refreshToken) {
+            res.status(400)
+            throw new Error('No refresh token received from Microsoft');
+        }
+
+
+        // Fetch user data from Microsoft and create a new admin in the database
+        const userInfoResponse = await fetch('https://graph.microsoft.com/v1.0/me', {
+        headers: {
+            Authorization: `Bearer ${accessToken}`
+        }
+        });
+
+        const userInfo = await userInfoResponse.json();
+
+        if (!userInfoResponse.ok) {
+            res.status(userInfoResponse.status)
+            throw new Error(`Failed to fetch user profile from Microsoft: ${JSON.stringify(userInfo)}`);
+        }
+    
+        const { id, displayName, mail } = userInfo;
+
+        const email = mail || userInfo.userPrincipalName; // `mail` can sometimes be null — fallback on `userPrincipalName`
+        const name = displayName || "Unknown User"; // `displayName` can sometimes be null — fallback on `Unknown User`
+        
+        if (!email) {
+            throw new Error('Unable to determine admin email from Microsoft account');
+        }
+
+        const admin = Admin.fromObject({
+            id,
+            name,
+            email,
+            refreshToken
+        });
+
+        const savedAdmin = await createOrUpdateAdmin(admin);
+        console.log(savedAdmin) // 🚨🚨🚨 DELETE LATER 🚨🚨🚨
+
+        // create new cookies for access token and user id
+        setAuthCookies(res, accessToken, savedAdmin.id, accessTokenExperationTime, shouldResetUserId)
+
+        // redirect back to finish authentication
+        res.redirect(`/api/auth?code=${authCode}&state=${env.state}`)
     }
 })
 
 
-export const authenticateUser = expressAsyncHandler(async (req, res) => {
-    const token = req.cookies.access_token;
-    if (!token){
+/**
+ * Refresh Microsoft access token using a stored refresh token.
+ * @param {string} userId id of the user
+ * @param {string} refreshToken token needed to refresh access token.
+ * @throws {`ResponseError`} thrown if request for new access token fails.
+ * @returns {Promise<{ accessToken: string, idToken: string, refreshToken?: string, expiresIn: number }>} new access token (and possible new refresh token - must account for either response).
+ * @throws {ResponseError} If refresh fails or response is malformed.
+ */
+export const refreshAccessToken = async (userId, refreshToken) => {
+    try {
+        const env = getEnv();
+        const urlParams = new URLSearchParams({
+            client_id: env.clientId,
+            scope: env.scope,
+            refresh_token: refreshToken,
+            grant_type: 'refresh_token',
+            client_secret: env.clientSecret,
+        })
+
+        const response = await fetch(`https://login.microsoftonline.com/${env.tenant}/oauth2/v2.0/token`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: urlParams.toString()
+        });
+        
+        const responseData = await response.json() // { access_token, refresh_token, expires_in, id_token }
+
+        if (!response.ok) {
+                throw new ResponseError(`Error ${response.status}: ${JSON.stringify(responseData)}`);
+        }
+
+        if (!responseData.access_token) {
+            throw new ResponseError('Access token missing from refresh response');
+        }
+
+        if (!responseData.id_token) {
+            throw new ResponseError('ID token missing from refresh response');
+        }
+
+        // accessToken = responseData.access_token
+        // idToken = responseData.id_token
+
+        if (responseData.refresh_token) {
+            console.log(`Refresh token rotated for user ${userId}`);
+        }
+
+        return {
+            accessToken: responseData.access_token,
+            idToken: responseData.id_token,
+            refreshToken: responseData.refresh_token, // optional
+            expiresIn: responseData.expires_in
+        };
+    } catch (err) {
+        console.log({ message: err.message, stack: err.stack })
+        throw new Error(err)
+    }
+};
+
+
+/**
+ * @private
+ * Determine user's logged in status.
+ * @route /api/auth/me
+ */
+export const validateSession = expressAsyncHandler(async (req, res) => {
+    const AvailableAccessToken = req.cookies.access_token;
+
+    if (!AvailableAccessToken){
          res.status(401).json({ authenticated: false });
+         
     }else{
         // Optionally verify token here (JWT decode etc.)
         res.status(200).json({ authenticated: true });
@@ -214,14 +297,83 @@ export const authenticateUser = expressAsyncHandler(async (req, res) => {
 export const logoutFlow = expressAsyncHandler(async (req, res) => {
     const env = getEnv()
     console.log("Logging Out")
-    authCode = null
-    setAccessToken(null)
-    setIdToken(null)
+
+    const userId = req.cookies.user_id
+
+    if (userId) {
+        await updateAdminRefreshToken(userId, null);
+        console.log(`Cleared refresh token for user ${userId}`);
+    }else{
+        res.status(400)
+        .json({ message: "No active session to log out from." })
+    }
+
+    clearAuthCookies(res)
+
+    console.log("Redirected to Microsoft logout");
+    res.redirect(`https://login.microsoftonline.com/${env.tenant}/oauth2/v2.0/logout`)
+
+    // redirects user back to login page (must be approved first).
+        // res.redirect(`https://login.microsoftonline.com/${env.tenant}/oauth2/v2.0/logout?post_logout_redirect_uri=${env.loginPageUrl}`) 
+})
+
+/**
+ * Set cookies for app session management.
+ * @param {Response} res express API response object.
+ * @param {string} accessToken user's access token.
+ * @param {string} userId user's id.
+ * @param {number} expiresInSeconds access token expiration time (in seconds).
+ * @param {boolean} shouldResetUserId reset user_Id cookie (only if we get a new refresh token).
+ */
+export const setAuthCookies = (res, accessToken, userId, expiresInSeconds, shouldResetUserId) => {
+    const baseCookieOptions = {
+        httpOnly: true, // Browser (JavaScript) can't access it, only http requests.
+        secure: true, // env.mode === 'production', // IF 'sameSite' IS NONE, 'secure' MUST BE TRUE.
+        sameSite: 'None', // or 'Lax' depending on flow, 'Strict' only if app and server run on the same host.
+    };
+
+    const accessTokenCookieOptions = {
+        ...baseCookieOptions, 
+        maxAge: expiresInSeconds * 1000 // Controls how long browser keeps you logged in .
+    }
+    
+
+    const userIdCookieOptions = {
+        ...baseCookieOptions, 
+        maxAge: ms("90d") // Lifetime of refresh token. Ensures we can refresh access token until session truly ends (ms gives time in milliseconds).
+    }
+
+    // Set the browser cookies for secure frontend-backend integration and communication.
+    if (accessToken) {
+        res.cookie('access_token', accessToken, accessTokenCookieOptions)
+    }else{
+        res.json(400)
+        throw new Error (`No access token was given`)
+    }
+    if (shouldResetUserId){
+        if (userId){
+            res.cookie('user_id', userId, userIdCookieOptions)
+        }else{
+            res.json(400)
+            throw new Error (`No user id was given`)
+        }
+    }
+}
+
+/**
+ * Clear app's cookies upon session invalidation.
+ * @param {Response} res express API response object.
+ */
+export const clearAuthCookies = (res) => {
     res.clearCookie('access_token', {
         httpOnly: true,
             secure: true, // env.mode === 'production', // IF sameSite IS NONE, THIS MUST BE TRUE //
             sameSite: 'None', // or 'Lax' depending on flow, 'Strict' only if app and server run on the same host
     });
 
-    res.redirect(`https://login.microsoftonline.com/${env.tenant}/oauth2/v2.0/logout`)
-})
+    res.clearCookie('user_id', {
+        httpOnly: true,
+            secure: true, // env.mode === 'production', // IF sameSite IS NONE, THIS MUST BE TRUE //
+            sameSite: 'None', // or 'Lax' depending on flow, 'Strict' only if app and server run on the same host
+    });
+}
