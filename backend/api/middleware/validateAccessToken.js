@@ -20,7 +20,7 @@ const validateAccessToken = expressAsyncHandler(async (req, res, next) => {
             clearAuthCookies(res)
             // return res.status(401).json({ message: "No user session. Please log in." });
             return req.accepts('html')
-            ? res.redirect('/')
+            ? res.status(401).send('<script>window.location.href="/";</script>')
             : res.status(401).setHeader("X-Reauth-Required", "true").json({ message: "No user session. Please log in." });
         }
     
@@ -31,7 +31,7 @@ const validateAccessToken = expressAsyncHandler(async (req, res, next) => {
             clearAuthCookies(res);
             // return res.status(401).json({ message: "Session invalid. Please log in." });
             return req.accepts('html')
-            ? res.redirect('/')
+            ? res.status(401).send('<script>window.location.href="/";</script>')
             : res.status(401).setHeader("X-Reauth-Required", "true").json({ message: "Session invalid. Please log in." });
         }
     
@@ -47,7 +47,7 @@ const validateAccessToken = expressAsyncHandler(async (req, res, next) => {
     
         // 🍪 Set fresh cookies
         setAuthCookies(res, newAccessToken, userId, expiresIn, Boolean(newRefreshToken));
-    
+        req.accessToken = newAccessToken
         // ✅ Proceed to route
         next();
         
@@ -55,7 +55,7 @@ const validateAccessToken = expressAsyncHandler(async (req, res, next) => {
         console.error("Token refresh failed:", err.message);
         clearAuthCookies(res);
         return req.accepts('html')
-            ? res.redirect('/')
+            ? res.status(401).send('<script>window.location.href="/";</script>')
             : res.status(401).setHeader("X-Reauth-Required", "true").json({ message: "Session expired. Please log in again." });
 
     }
