@@ -201,7 +201,6 @@ export const createAccessToken = expressAsyncHandler(async (req, res) => {
         });
 
         const savedAdmin = await createOrUpdateAdmin(admin);
-        console.log(savedAdmin) // 🚨🚨🚨 DELETE LATER 🚨🚨🚨
 
         // create new cookies for access token and user id
         setAuthCookies(res, accessToken, savedAdmin.id, accessTokenExperationTime, shouldResetUserId)
@@ -365,15 +364,13 @@ export const setAuthCookies = (res, accessToken, userId, expiresInSeconds, shoul
  * @param {Response} res express API response object.
  */
 export const clearAuthCookies = (res) => {
-    res.clearCookie('access_token', {
+    const sharedOptions = {
         httpOnly: true,
             secure: true, // env.mode === 'production', // IF sameSite IS NONE, THIS MUST BE TRUE //
             sameSite: 'None', // or 'Lax' depending on flow, 'Strict' only if app and server run on the same host
-    });
+    };
 
-    res.clearCookie('user_id', {
-        httpOnly: true,
-            secure: true, // env.mode === 'production', // IF sameSite IS NONE, THIS MUST BE TRUE //
-            sameSite: 'None', // or 'Lax' depending on flow, 'Strict' only if app and server run on the same host
-    });
+    res.clearCookie('access_token', sharedOptions);
+
+    res.clearCookie('user_id', sharedOptions);
 }
