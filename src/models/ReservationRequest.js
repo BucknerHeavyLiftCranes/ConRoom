@@ -70,7 +70,7 @@ export class ReservationRequest {
      * Confirm reservation request before sending it to the backend.
      */
     validateReservationRequest() {
-        if(!(this.hasValidDuration() && this.hasNotPassed())) {
+        if (!(this.hasValidDuration() && this.hasNotPassed())) {
             throw new CreateReservationRequestError("The is not a valid reservation")
         }
     }
