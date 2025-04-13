@@ -7,10 +7,38 @@ import { ResponseError } from "../../errors/ApiError";
  * @throws {ResponseError} when API returns a bad response.
  * @returns {Promise<any>} the data from the response.
  */
-export const extractPayload = async (response, message = "Failed to extract payload from response") => {
+export const extractResponsePayload = async (
+    response, 
+    message = "Failed to extract payload from response"
+) => {
+    const payload = await response.json();
+
     if (!response.ok) {
-        throw new ResponseError(message)
+        throw new ResponseError(`${message}: ${JSON.stringify(payload)}`);
     }
-    
-    return await response.json()
+
+    return payload;
 }
+
+/**
+ * A wrapper around fetch function that handles session expiration smootjly.
+ * Redirects to login if user is unauthenticated or token is expired.
+ * @param {string} url The endpoint to fetch.
+ * @param {object} [options={}] Fetch options (method, headers, etc.)
+ * @returns {Promise<Response>} The fetch response.
+ */
+export const fetchWithAuth = async (url, options = {}) => {
+    const response = await fetch(url, {
+      ...options,
+      credentials: 'include' // Important for cookies!
+    });
+  
+    if (response.status === 401 && response.headers.get("X-Reauth-Required") === "true") {
+      // Redirect user to login page
+      window.location.href = "/";
+      return; // Negate risk of code below running
+    }
+  
+    return response;
+  };
+  
