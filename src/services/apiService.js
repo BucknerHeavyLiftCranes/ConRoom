@@ -11,13 +11,21 @@ export const extractResponsePayload = async (
     response, 
     message = "Failed to extract payload from response"
 ) => {
-    const payload = await response.json();
+    try {
+        if (!response) {
+            return;
+        }
 
-    if (!response.ok) {
-        throw new ResponseError(`${message}: ${JSON.stringify(payload)}`);
+        const payload = await response.json();
+
+        if (!response.ok) {
+            throw new ResponseError(`${message}: ${JSON.stringify(payload)}`);
+        }
+
+        return payload;     
+    } catch (err) {
+        console.error({ message: err.message, stack: err.stack });
     }
-
-    return payload;
 }
 
 /**
@@ -28,17 +36,21 @@ export const extractResponsePayload = async (
  * @returns {Promise<Response>} The fetch response.
  */
 export const fetchWithAuth = async (url, options = {}) => {
-    const response = await fetch(url, {
-      ...options,
-      credentials: 'include' // Important for cookies!
-    });
-  
-    if (response.status === 401 && response.headers.get("X-Reauth-Required") === "true") {
-      // Redirect user to login page
-      window.location.href = "/";
-      return; // Negate risk of code below running
+    try {
+        const response = await fetch(url, {
+            ...options,
+            credentials: 'include' // Important for cookies!
+          });
+        
+          if (response.status === 401 && response.headers.get("X-Reauth-Required") === "true") {
+            // Redirect user to login page
+            window.location.href = "/";
+            return null; // Negate risk of code below running
+          }
+        
+          return response;
+    } catch (err) {
+        console.error({ message: err.message, stack: err.stack });
     }
-  
-    return response;
   };
   

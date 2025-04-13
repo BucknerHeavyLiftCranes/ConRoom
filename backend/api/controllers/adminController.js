@@ -8,22 +8,22 @@ import expressAsyncHandler from "express-async-handler"; // no need for try-catc
  * @route api/admin/current
  */
 export const getUserDetails = expressAsyncHandler(async (req, res) => {
-      try {
-        const accessToken = req.cookies.access_token
+    try {
+        const accessToken = req.cookies.access_token ?? req.accessToken
 
         if (!accessToken) {
             return res.status(400).json({ message: 'No access token found in cookies.' });
         }
 
         const response = await fetch('https://graph.microsoft.com/v1.0/me', {
-          headers: {
+            headers: {
             'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
-          }
+            }
         });
 
         const userDetails = await response.json()
-    
+
         if (!response.ok) {
             if (response.status === 401) {
                 res.status(401);
@@ -51,9 +51,9 @@ export const getUserDetails = expressAsyncHandler(async (req, res) => {
             name,
             email
         })
-      } catch (err) {
+    } catch (err) {
         console.log({message: err.message, stack: err.stack});
         res.status(500)
         throw new Error ('Internal server error while retrieving user details');
-        }
+    }
 })
