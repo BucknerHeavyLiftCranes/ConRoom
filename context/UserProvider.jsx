@@ -1,7 +1,9 @@
 // src/context/UserContext.js
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { UserContext } from './exports/UserContext'
 import PropTypes from 'prop-types';
+import { adminKey } from '../constants/keys/keys';
+import { verifyAndExtractResponsePayload } from '../src/services/apiService';
 
 
 /**
@@ -17,9 +19,29 @@ export const UserProvider = ({ children }) => {
    * @type {[{id: string, name: string, email: string}|null, function]} [user, setUser]
    */
   const [user, setUser] = useState(null); // { id, name, email }
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const startUserSession = async () => {
+      try {
+        const response = await fetch(`${adminKey}/current`, {
+          credentials: "include"
+        });
+  
+        const userData = await verifyAndExtractResponsePayload(response, "Failed to set user details upon login")
+        setUser(userData);
+      } catch (err) {
+        console.error("Failed to rehydrate user session", err);
+      } finally {
+        setLoading(false)
+      }
+    };
+  
+    startUserSession();
+  }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, loading }}>
       {children}
     </UserContext.Provider>
   );

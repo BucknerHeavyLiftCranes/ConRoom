@@ -4,31 +4,16 @@ import ReservationDetails from '../../components/ReservationDetailsModule/Reserv
 import { MeetingDetails } from '../../models/MeetingDetails.js'
 import styles from './Home.module.css'
 import DateTimeDisplay from '../../components/DateTimeDisplayModule/DateTimeDisplay.jsx'
-import { extractResponsePayload, fetchWithAuth } from '../../services/apiService.js'
+import { verifyAndExtractResponsePayload, fetchWithAuth } from '../../services/apiService.js'
 import ActionButton from '../../components/ActionButtonModule/ActionButton.jsx'
 import { useUser } from '../../../context/exports/useUser.js'
 import { useNavigate } from 'react-router-dom'
 
 function Home() {
   const [meetingCards, setMeetingCards] = useState([]);
-  const { user, setUser } = useUser()
+  const { user, loading } = useUser()
   const navigate = useNavigate()
-
-  const startUserSession = async () => {
-    const response = await fetchWithAuth(`${adminKey}/current`)
-
-    const userData = await extractResponsePayload(response, "Failed to get user's details upon login")
-
-    setUser(userData) // now everywhere in the app will know who the user is.
-
-  }
-
-  useEffect(() => {
-    startUserSession()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
   
-
   /**
    * Fetch meeting details for all reservations.
    * @returns {Promise<MeetingDetails[]>} All reservation meeting details in the system.
@@ -43,7 +28,7 @@ function Home() {
       // }
 
       /** @type {any[]} */
-      const allMeetings = await extractResponsePayload(response, "Couldn't fetch meeting details")//await response.json()
+      const allMeetings = await verifyAndExtractResponsePayload(response, "Couldn't fetch meeting details")//await response.json()
 
       return allMeetings.map(data => 
         MeetingDetails.fromObject(data)
@@ -81,7 +66,7 @@ function Home() {
   const getUserInfo = async () => {
     const response = await fetchWithAuth(`${adminKey}/current`);
 
-    const userInfo = await extractResponsePayload(response, "Failed to get current user's information.")
+    const userInfo = await verifyAndExtractResponsePayload(response, "Failed to get current user's information.")
     console.log(userInfo)
   }
 
@@ -89,7 +74,9 @@ function Home() {
   return (
     <>
       <DateTimeDisplay/>
-      <header className={styles.pageTitle}>{user?.name || "Guest"}</header>
+      <header className={styles.pageTitle}>
+        {user?.name || (loading ? "" : "Guest")}
+      </header>
       <ActionButton
         label='Log User Info'
         action={getUserInfo}

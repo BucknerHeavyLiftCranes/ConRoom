@@ -7,13 +7,13 @@ import { ResponseError } from "../../errors/ApiError";
  * @throws {ResponseError} when API returns a bad response.
  * @returns {Promise<any>} the data from the response.
  */
-export const extractResponsePayload = async (
+export const verifyAndExtractResponsePayload = async (
     response, 
     message = "Failed to extract payload from response"
 ) => {
     try {
         if (!response) {
-            return;
+            return undefined;
         }
 
         const payload = await response.json();
