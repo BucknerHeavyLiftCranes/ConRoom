@@ -25,7 +25,7 @@ export async function connectToDatabase() {
     try {
       if (!conn) { // pool has never been initialized
         conn = await mssql.connect(dbConfig);  // Initialize the pool connection
-        if(!(conn instanceof mssql.ConnectionPool)){
+        if (!(conn instanceof mssql.ConnectionPool)){
           console.log(conn)
           throw new DatabaseConnectionError("The connection was not made")
         }

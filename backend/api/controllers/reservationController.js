@@ -11,7 +11,7 @@ SO RELEVANT ERROR INFO IS SENT OVER THE API */
 export const handleGetAllReservation = expressAsyncHandler(async (req, res) => {
     const allReservations = await getAllReservations()
 
-    if(allReservations == []){
+    if (allReservations == []){
         res.status(204).json([])
     }
 
@@ -28,7 +28,7 @@ export const handleDeleteReservation = expressAsyncHandler(async (req, res) => {
     const reservationId = Number(req.params.id)
     const  deletedMeeting = await deleteReservation(reservationId)
 
-    if(!deletedMeeting){
+    if (!deletedMeeting){
         res.status(404)
         throw DeleteReservationError("Error getting details for deleted reservation")
     }

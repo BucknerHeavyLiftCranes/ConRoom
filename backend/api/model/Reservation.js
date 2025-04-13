@@ -99,7 +99,7 @@ export default class Reservation{
      * Toggle the reservation's active status.
      */
     toggleCanceledStatus(){
-        if(!this.isCancelable()) {
+        if (!this.isCancelable()) {
             throw new UpdateReservationError("This reservation cannot be canceled at this time.")
         }
         this.canceled = !this.canceled
@@ -213,7 +213,7 @@ export default class Reservation{
      * @returns {string} 1 of 4 statuses [`Confirmed`, `In Progress`, `Completed`, `Canceled`].
      */
     getStatus(){
-        if(this.canceled){
+        if (this.canceled){
             return "Canceled"
         }
 

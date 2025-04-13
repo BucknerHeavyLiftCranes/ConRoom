@@ -31,7 +31,7 @@ export const getAllReservations = async () => {
     try {
         const result = await pool.request().query(DB_COMMANDS.getAllReservations);
         
-        if(!result.recordset){
+        if (!result.recordset){
             return []
         }
         const allReservationsData = result.recordset;
@@ -241,7 +241,7 @@ export const getAllActiveReservations = async () => {
 export const getReservationsByStatus = async (status) => { 
     try {
         const validStatus = ["Confirmed", "In Progress", "Completed", "Canceled"]
-        if(!(validStatus.includes(validStatus))){
+        if (!(validStatus.includes(validStatus))){
             throw new UndeterminedStatusError(`Status '${status}' cannot be determined. 
                 Valid statuses are: \n${validStatus.join(", ")}`)
         }
@@ -310,7 +310,7 @@ export const updateReservation = async (reservationData) => {
 
         const reservationExists = await getReservationById(reservationData.reservationId)
         
-        if(reservationExists){
+        if (reservationExists){
             await validateReservation(reservationData)
         }else{
             throw new GetReservationError("This reservation doesn't exist")
@@ -405,7 +405,7 @@ export const toggleReservationCanceledStatus = async (reservation) => {
     try {
 
         // const reservationExists = await getReservationById(reservation.reservationId)
-        // if(!reservationExists){
+        // if (!reservationExists){
         //     throw GetReservationError("This reservation doesn't exists")
         // } // MAY BE REDUNDANT SINCE updateReservation ALREADY CHECKS THIS
 
@@ -448,7 +448,7 @@ export const validateReservation = async (reservation) => {
         // 3. Fetch room details & validate open hours
         const reservationRoom = await getRoomById(reservation.roomId)
             // 4. The room exists
-            if(reservationRoom){
+            if (reservationRoom){
                 if (!reservationRoom.isOpen(reservation.start, reservation.end)){
                     throw new InvalidTimeError(`Room (${reservationRoom.roomName}) will be closed during this time.`);
                 }

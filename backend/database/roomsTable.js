@@ -196,7 +196,7 @@ export const updateRoom = async (roomData) => {
     try{
         const roomExists = await getRoomById(roomData.roomId)
 
-        if(roomExists){
+        if (roomExists){
             await validateRoom(roomData)
         }
 
@@ -281,13 +281,13 @@ const validateRoom = async (room) => {
         const duplicateRoomEmail = await getRoomByEmail(room.roomEmail)
 
         if (duplicateRoomName && duplicateRoomName.roomId != room.roomId){ 
-            if(duplicateRoomName.roomName.toLowerCase() === room.roomName.toLowerCase()){
+            if (duplicateRoomName.roomName.toLowerCase() === room.roomName.toLowerCase()){
                 throw new DuplicateRoomError("A room with this name already exists")
             }
         }
 
         if (duplicateRoomEmail && duplicateRoomEmail.roomId != room.roomId){ 
-            if(duplicateRoomEmail.roomEmail.toLowerCase() === room.roomEmail.toLowerCase()){
+            if (duplicateRoomEmail.roomEmail.toLowerCase() === room.roomEmail.toLowerCase()){
                 throw new DuplicateRoomError("A room with this email already exists")
             }
         }

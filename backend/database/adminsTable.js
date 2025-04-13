@@ -168,7 +168,7 @@ export const updateAdminRefreshToken = async (id, newRefreshToken) => {
 
         const adminWithNewRefreshTokenAlreadyExists = await getAdminByRefreshToken(newRefreshToken)
     
-        if(adminWithNewRefreshTokenAlreadyExists){
+        if (adminWithNewRefreshTokenAlreadyExists){
             throw DuplicateAdminError("An admin with this refresh token already exists")
         }
 
@@ -199,12 +199,12 @@ export const updateAdminRefreshToken = async (id, newRefreshToken) => {
 /**
  * Create or update the admin (depending on if they already exists).
  * @param {Admin} adminData the details of the new admin.
- * @returns new or updated admin.
+ * @returns {Promise<Admin>} new or updated admin.
  */
 export const createOrUpdateAdmin = async (adminData) => {
     const adminExists = await getAdminById(adminData.id)
 
-    if(adminExists){
+    if (adminExists){
         return await updateAdminRefreshToken(adminData.id, adminData.refreshToken)
     }else{
        return await createAdmin(adminData)
@@ -250,14 +250,14 @@ const validateAdmin = async (admin) => {
         const adminEmailExists = await getAdminByEmail(admin.email)
 
         // 1. Another admin with this email already exists
-        if(adminEmailExists && (adminEmailExists.id != admin.id)){
+        if (adminEmailExists && (adminEmailExists.id != admin.id)){
             throw new DuplicateAdminError("An admin with this email already exists")
         }
 
         // 2. Another admin with this refresh token already exists
         const adminRefreshTokenExists = await getAdminByRefreshToken(admin.refreshToken)
 
-        if(adminRefreshTokenExists && (adminRefreshTokenExists.id != admin.id)){
+        if (adminRefreshTokenExists && (adminRefreshTokenExists.id != admin.id)){
             throw new DuplicateAdminError("An admin with this refresh token already exists")
         }
     } catch (err) {
