@@ -284,15 +284,15 @@ async function deleteAdminById () {
 
 }
 
-app.get("/", (req, res) => {
-    res.status(200).json({
-        message: "Welcome to the official Buckner Conference Room Scheduler API",
-        routes: {
-            rooms: "/api/rooms", // takes you to the getAllRooms page
-            reservations: "/api/reservations" // takes you to the getAllReservations page
-        }
-    })
-})
+// app.get("/", (req, res) => {
+//     res.status(200).json({
+//         message: "Welcome to the official Buckner Conference Room Scheduler API",
+//         routes: {
+//             rooms: "/api/rooms", // takes you to the getAllRooms page
+//             reservations: "/api/reservations" // takes you to the getAllReservations page
+//         }
+//     })
+// })
 
 // console.log("TEST_VAR:", process.env.TEST_VAR);
 
