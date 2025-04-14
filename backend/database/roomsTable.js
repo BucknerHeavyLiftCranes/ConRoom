@@ -11,7 +11,7 @@ import {
         DeleteRoomError, 
         RoomValidationError
     } from "../../errors/RoomError.js"
-import { log } from "console"
+import { DatabaseConnectionError } from "../../errors/ConnectionError.js"
 
 let pool
 
@@ -20,7 +20,8 @@ try{
         pool = await connectToDatabase()
     }
 }catch (err) {
-    console.error(`Failed to connect to database: ${err}`)
+    console.error({ message: err.message, stack: err.stack });
+    throw new DatabaseConnectionError("Failed to connect to database")
 }
 
 
@@ -93,7 +94,7 @@ export const getRoomByName = async (roomName) => {
 
 
  /**
- * Fetch a specific room from the database by its room name.
+ * Fetch a specific room from the database by its room email.
  * @param {string} roomEmail unique email of the room.
  * @returns {Promise<Room | undefined>} a room in the database.
  */
@@ -118,7 +119,7 @@ export const getRoomByEmail = async (roomEmail) => {
 
 
 /**
- * Fetch a specific room from the database by its room name and email.
+ * Fetch a specific room from the database by its name and email.
  * @param {string} roomName unique name of the room.
  * @param {string} roomEmail unique email of the room.
  * @returns {Promise<Room | undefined>} a room in the database.
@@ -133,7 +134,7 @@ export const getRoomByEmail = async (roomEmail) => {
         const roomData = result.recordset?.[0];
 
         if (roomData){
-            return Room.toModel(roomData) // convert each database record to a Room object
+            return Room.toModel(roomData) // convert a database record to a Room instance
         }else{
             return undefined
         }
@@ -195,7 +196,7 @@ export const updateRoom = async (roomData) => {
     try{
         const roomExists = await getRoomById(roomData.roomId)
 
-        if(roomExists){
+        if (roomExists){
             await validateRoom(roomData)
         }
 
@@ -244,7 +245,7 @@ export const deleteRoom = async (roomId) => {
 try{
     const deletedRoom = await getRoomById(roomId)
 
-    if (!deleteRoom){
+    if (!deletedRoom){
         throw new GetRoomError(`This room doesn't exist`);
     }
     const result = await pool.request()
@@ -280,13 +281,13 @@ const validateRoom = async (room) => {
         const duplicateRoomEmail = await getRoomByEmail(room.roomEmail)
 
         if (duplicateRoomName && duplicateRoomName.roomId != room.roomId){ 
-            if(duplicateRoomName.roomName.toLowerCase() === room.roomName.toLowerCase()){
+            if (duplicateRoomName.roomName.toLowerCase() === room.roomName.toLowerCase()){
                 throw new DuplicateRoomError("A room with this name already exists")
             }
         }
 
         if (duplicateRoomEmail && duplicateRoomEmail.roomId != room.roomId){ 
-            if(duplicateRoomEmail.roomEmail.toLowerCase() === room.roomEmail.toLowerCase()){
+            if (duplicateRoomEmail.roomEmail.toLowerCase() === room.roomEmail.toLowerCase()){
                 throw new DuplicateRoomError("A room with this email already exists")
             }
         }

@@ -23,7 +23,7 @@
 }
 
 /*For the front page of the website*/
-.frontPageButton {
+.frontPageAdminButton {
     width: 15rem; 
     display: flex;
     justify-content: center;
@@ -40,10 +40,86 @@
     transition: background-color 0.2s ease;
 }
 
-.frontPageButton:hover{
+.frontPageAdminButton:hover{
     background-color: hsl(357, 70%, 51%);
 }
 
-.frontPageButton:active{
+.frontPageAdminButton:active{
+    transform: scale(0.95);
+}
+
+/*For the front page of the website*/
+.frontPageRoomButton {
+    width: 15rem; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 25px;
+    background-color: hsl(177, 70%, 41%);
+    border: none;
+    border-radius: 10px;
+    padding: 20px 40px;
+    margin: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.frontPageRoomButton:hover{
+    background-color: hsl(177, 70%, 51%);
+}
+
+.frontPageRoomButton:active{
+    transform: scale(0.95);
+}
+
+.yesButton{
+    width: 15rem; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 25px;
+    background-color: hsl(124, 100%, 35%);
+    border: none;
+    border-radius: 10px;
+    padding: 20px 40px;
+    margin: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.yesButton:hover {
+    background-color: hsl(124, 100%, 45%);
+}
+
+.yesButton:active {
+    transform: scale(0.95);
+}
+
+.noButton{
+    width: 15rem; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 25px;
+    background-color: hsl(0, 85%, 46%);
+    border: none;
+    border-radius: 10px;
+    padding: 20px 40px;
+    margin: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.noButton:hover {
+    background-color: hsl(0, 85%, 56%);
+}
+
+.noButton:active {
     transform: scale(0.95);
 }

@@ -5,6 +5,7 @@ import FullScreenPopup from '../FullScreenPopupModule/FullScreenPopup.jsx'
 import styles from './ReservationDetails.module.css'
 import { reservationKey } from '../../../constants/keys/keys.js'
 import { MeetingDetails } from '../../models/MeetingDetails.js'
+// import { checkResponse } from '../../services/authService.js'
 
 /**
  * Reservation details about a given meeting.
@@ -29,6 +30,7 @@ function ReservationDetails({ meetingDetails, onDelete }) {
                 method: 'DELETE',
             });
     
+            // checkResponse(response, `Failed to delete reservation: ${response.statusText}`)
             if (!response.ok) {
                 throw new Error(`Failed to delete reservation: ${response.statusText}`);
             }

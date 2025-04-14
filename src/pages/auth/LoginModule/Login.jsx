@@ -1,15 +1,40 @@
+import { authKey } from '../../../../constants/keys/keys.js'
+import { useAuth } from '../../../../context/exports/useAuth.js'
 import ActionButton from '../../../components/ActionButtonModule/ActionButton.jsx'
-import { loginRedirect } from '../../../services/authService.js'
 import styles from './Login.module.css'
+import { Navigate } from 'react-router-dom';
 
 function Login() {
+
+    const { authenticated, loading } = useAuth();
+
+    if (loading) {
+        return <div>Loading...</div>; // or a spinner
+    }
+
+    if (authenticated) {
+        return <Navigate to="/home" replace />;
+    }
     
-    const startExternalLogin = async () => {
+    /**
+     * Redirect current user to external Microsoft login
+     */
+    const startExternalAdminLogin = async () => {
         try {
-            loginRedirect()
+            window.location.href = `${authKey}/login`;
         } catch (err) {
             console.error({message: err.message, stack: err.stack})
-            
+        }
+    }
+
+    /**
+     * Redirect current room to external Microsoft login
+     */
+    const startExternalRoomLogin = async () => {
+        try {
+            // window.location.href = `${authKey}/login`;
+        } catch (err) {
+            console.error({message: err.message, stack: err.stack})
         }
     }
 
@@ -23,11 +48,19 @@ function Login() {
         
         <br/>
         
+        <div className={styles.buttonControls}>
         <ActionButton 
-            label="Sign In"
-            action={startExternalLogin}
-            overrideStyles="frontPageButton"
+            label="Login as Admin"
+            action={startExternalAdminLogin}
+            overrideStyles="frontPageAdminButton"
         />
+
+        <ActionButton 
+            label="Login as Room"
+            action={startExternalRoomLogin}
+            overrideStyles="frontPageRoomButton"
+        />
+        </div>
     </div>
   )
 }

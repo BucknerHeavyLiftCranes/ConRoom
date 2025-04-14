@@ -25,7 +25,7 @@ function BodyBackgroundWrapper() {
           break;
       }
 
-      console.log(`The background here is: ${document.body.className || "default-background"}`)
+      // console.log(`The background here is: ${document.body.className || "default-background"}`)
       // if (location.pathname === "/") {
       //   document.body.classList.add("home-background");
       // } else if (location.pathname === "/about") {

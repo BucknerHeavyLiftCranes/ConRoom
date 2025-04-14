@@ -1,4 +1,4 @@
-.loginContainer {
+.logoutContainer {
     width: 100vw;
     display: flex;
     flex-direction: column;
@@ -11,4 +11,11 @@
     font-size: 50px;
     font-weight: bold;
     text-align: center;
+}
+
+.buttonControls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5em;
 }

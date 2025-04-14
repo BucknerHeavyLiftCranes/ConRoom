@@ -96,7 +96,7 @@ export default class Reservation{
      * Toggle the reservation's active status.
      */
     toggleCanceledStatus(){
-        if(!this.isCancelable()) {
+        if (!this.isCancelable()) {
             throw new UpdateReservationError("This reservation cannot be canceled at this time.")
         }
         this.canceled = !this.canceled
@@ -130,7 +130,7 @@ export default class Reservation{
 
     /**
      * Converts a Reservation instance to a MeetingDetails object for frontend use.
-     * @returns 
+     * @returns {Object} MeetingDetails-like object
      */
     async toMeetingDetails() {
         return {
@@ -208,8 +208,6 @@ export default class Reservation{
      */
     status(){
         if(this.canceled){
-            return "Canceled"
-        }
 
         // Convert reservation date & time into UTC Date object
         const reservationStart = new Date(`${this.date}T${this.start}Z`);

@@ -14,7 +14,7 @@
 }
 
 ::selection {
-  background-color: hsla(48, 100%, 60%, 0.7); /* Yellow highlight */
+  background-color: hsla(56, 100%, 50%, 0.76); /* Yellow highlight */
   color: black; /* Text color */
 }
 
