@@ -183,7 +183,7 @@ export const updateAdminRefreshToken = async (id, newRefreshToken) => {
         }
 
         console.log("==================================================================")
-        console.log(`Admin refresh token updated successfully: ${result.rowsAffected} row(s) added.`);
+        console.log(`Admin refresh token updated successfully: ${result.rowsAffected} row(s) updated.`);
         console.log("==================================================================")
 
 
