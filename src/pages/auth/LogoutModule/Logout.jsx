@@ -21,7 +21,7 @@ function Logout() {
   return (
     <div className={styles.logoutContainer}>
       <header className={styles.pageTitle}>
-        Are you sure you want log out, {user?.name.split(" ")[0] || (loading ? "..." : "Guest")}
+        Are you sure you want log out, {user?.name.split(" ")[0] || (loading ? "" : "Guest")}
         
       </header>
       
