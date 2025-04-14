@@ -1,25 +1,60 @@
+import { useState } from 'react'
 import PropTypes from 'prop-types'
 import ActionButton from '../ActionButtonModule/ActionButton'
+import FullScreenPopup from '../FullScreenPopupModule/FullScreenPopup.jsx'
 import styles from './ReservationDetails.module.css'
+import { reservationKey } from '../../../constants/keys/keys.js'
+import { MeetingDetails } from '../../models/MeetingDetails.js'
 
-function ReservationDetails({ meetingDetails }) {
-
+/**
+ * Reservation details about a given meeting.
+ * @param {Object} props
+ * @param {MeetingDetails} [props.meetingDetails] details about the meeting.
+ * @param {Function} [props.onDelete] handler for deleting the reservation from the UI.
+ * @returns a module to display, edit, and delete a meeting.
+ */
+function ReservationDetails({ meetingDetails, onDelete }) {
+    const [deletedMeeting, setDeletedMeeting] = useState(null);
     const editReservation = (meetingDetails) => {
         console.log(`Editing Reservation with id: ${meetingDetails.id}`) // placeholder logic
     }
 
-    const deleteReservation = () => {
-        console.log(`Deleting Reservation with id: ${meetingDetails.id}`) // placeholder logic
+    const deleteReservation = async () => {
+        try {
+            if (!(window.confirm(`Are you sure you want to delete this reservation?\nThis action is irreversible!`))) {
+                return
+            }
+
+            const response = await fetch(`${reservationKey}/${meetingDetails.id}`, {
+                method: 'DELETE',
+            });
+    
+            if (!response.ok) {
+                throw new Error(`Failed to delete reservation: ${response.statusText}`);
+            }
+
+
+            let deletedMeetingData = await response.json()
+            deletedMeetingData = MeetingDetails.fromObject(deletedMeetingData)
+            
+            setDeletedMeeting(deletedMeetingData)
+
+        } catch (err) {
+            console.error(err)
+            console.error({message: err.message, stack: err.stack});
+            window.alert("Failed to delete reservation")
+        }
     }
+
 
     return (
         <div className={styles.detailsContainer}>
             <h3 className={styles.meetingLabel}>{meetingDetails.title}</h3>
             <p className={styles.roomLabel}><strong>Room:</strong> {meetingDetails.room}</p>
             <p className={styles.dateLabel}><strong>Date:</strong> {meetingDetails.date}</p>
-            <p className={styles.timeLabel}><strong>Time:</strong> {meetingDetails.timeSpan}</p>
-            <p className={styles.durationLabel}><strong>Duration:</strong> {meetingDetails.duration}</p>
-            <p className={styles.statusLabel}><strong>Status:</strong> {meetingDetails.status}</p>
+            <p className={styles.timeLabel}><strong>Time:</strong> {meetingDetails.getFormattedTimeRange()}</p>
+            <p className={styles.durationLabel}><strong>Duration:</strong> {meetingDetails.calculateDuration()}</p>
+            <p className={styles.statusLabel}><strong>Status:</strong> {meetingDetails.status()}</p>
             <div className={styles.buttonControls}>
                 <ActionButton 
                     label="Edit"
@@ -27,9 +62,25 @@ function ReservationDetails({ meetingDetails }) {
                 />
                 <ActionButton 
                     label="Delete"
-                    action={() => {deleteReservation(meetingDetails)}}
+                    action={() => {deleteReservation()}}
                 />
             </div>
+            <FullScreenPopup isOpen={deletedMeeting !== null} onClose={() => {
+                onDelete(deletedMeeting.id)
+                setDeletedMeeting(null)
+                }}>
+              <h2>Reservation Deleted</h2>
+               {deletedMeeting ? (
+                   <>
+                       <p><strong>Title:</strong> {deletedMeeting.title}</p>
+                       <p><strong>Room:</strong> {deletedMeeting.room}</p>
+                       <p><strong>Date:</strong> {deletedMeeting.date}</p>
+                       <p><strong>Time:</strong> {deletedMeeting.getFormattedTimeRange()}</p>
+                   </>
+               ) : (
+                   <p>Loading...</p>  /* Fallback content while deletedMeeting is null */
+               )}
+           </FullScreenPopup>
         </div>
     )
 }
@@ -41,10 +92,11 @@ ReservationDetails.propTypes = {
         title: PropTypes.string.isRequired,
         room: PropTypes.string.isRequired,
         date: PropTypes.string.isRequired,
-        timeSpan: PropTypes.string.isRequired,
-        duration: PropTypes.string.isRequired,
+        getFormattedTimeRange: PropTypes.func.isRequired,
+        calculateDuration: PropTypes.func.isRequired,
         status: PropTypes.string.isRequired,
-      }).isRequired,
+    }).isRequired,
+    onDelete: PropTypes.func.isRequired
 };
 
 export default ReservationDetails

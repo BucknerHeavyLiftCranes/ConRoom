@@ -1,29 +1,37 @@
+/* eslint-disable no-unused-vars */
 /* Library Imports */
 import cors from "cors"
 // import dotenv from "dotenv"
 import express from "express"
-import { router as adminRouter } from "./routes/adminRoutes.js";
-import { router as userRouter } from "./routes/userRoutes.js";
+import { router as roomRouter } from "./routes/roomRoutes.js";
+import { router as reservationRouter } from "./routes/reservationRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 import { clearDatabase, dropReservationsTable, setupDatabase } from "../database/dbSetup.js";
-import { getAllRooms, createRoom, updateRoom, deleteRoom, getRoomByNameAndEmail } from "../database/roomsTable.js";
+import { getAllRooms, createRoom, updateRoom, deleteRoom, getRoomByNameAndEmail, getRoomById } from "../database/roomsTable.js";
 import { createReservation, deleteReservation, getAllReservations, getReservationById, toggleReservationCanceledStatus, updateReservation } from "../database/reservationsTable.js";
-import  Room  from "../model/Room.js";
-import Reservation from "../model/Reservation.js";
+import  Room  from "./model/Room.js";
+import Reservation from "./model/Reservation.js";
 import { fakeRooms } from "../../tests/fakeRooms.js";
 import { fakeReservations } from "../../tests/fakeReservations.js";
 import { log } from "console";
 
+const app = express();
+app.use(cors())
+app.use(errorHandler)
+app.use("/api/reservations", reservationRouter);
+app.use("/api/rooms", roomRouter);
+app.use(express.json());
+
 // dotenv.config({ path: './backend/.env' }); // loads in env variables - to be used via the process object // container already loads env vars so this is not needed
 
-try {
-    // await setupDatabase()
-    // await clearDatabase()
-    // await dropReservationsTable()
+// try {
+//     // await setupDatabase()
+//     // await clearDatabase()
+//     // await dropReservationsTable()
     
-} catch (err) {
-    console.error({ message: err.message, stack: err.stack });
-}
+// } catch (err) {
+//     console.error({ message: err.message, stack: err.stack });
+// }
 
 /* Testing Rooms Table CRUD Operations */
 {
@@ -62,18 +70,6 @@ try {
 // } catch (err) {
 //     console.error({ message: err.message, stack: err.stack });
 // }
-
-
-// try {
-//     const allRooms = await getAllRooms()
-//     if (allRooms.length !== 0){
-//         console.log(allRooms)
-//     }else{
-//         console.log("There are no rooms in this database")
-//     }
-// } catch (err) {
-//     console.error({ message: err.message, stack: err.stack });
-// }
 }
 
 /* Testing Reservations Table CRUD Operations */
@@ -81,37 +77,36 @@ try {
 // Create a reservation
 // let fakeReservation
 // try {
-//     // for (fakeReservation of fakeReservations){
-//     //     await createReservation(fakeReservation)
-//     // }   
+//     for (fakeReservation of fakeReservations){
+//         await createReservation(fakeReservation)
+//     }   
 
-//     const newReservation = new Reservation({
-//         title: "Cheesecake Factory Dinner",
-//         roomId: 5,
-//         userEmail: "CF@abc.com", 
-//         date: "2025-03-25",
-//         startTime: '18:23:00',
-//         endTime: '19:30:00'
-//     })
-//     await createReservation(newReservation)
-    // await logReservations()
+//     // const newReservation = new Reservation({
+//     //     title: "Monthly Inspection",
+//     //     roomId: 3,
+//     //     userEmail: "G@abc.com", 
+//     //     date: "2025-12-10",
+//     //     start: '08:00',
+//     //     end: '15:00'
+//     // })
+//     // await createReservation(newReservation)
 // } catch (err) {
 //     // console.log(`Reservation '${fakeReservation.title}' could NOT be made.`)
 //     console.error({ message: err.message, stack: err.stack });
 // }
 
 // Update reservation
-try {
-        // const reservationToUpdate = (await getReservationById(5)).fromModel()
-        // const updatedReservation = new Reservation({...reservationToUpdate, startTime:"18:41:00", endTime: "18:41:15"})
-        // // console.log(updatedReservation)
+// try {
+//         const reservationToUpdate = (await getReservationById()).fromModel()
+//         const updatedReservation = new Reservation({...reservationToUpdate, date: "2025-03-27", start:"07:30:00", end: "17:00:00"})
+//         // console.log(updatedReservation)
 
-        // await updateReservation(updatedReservation)
-        await logReservations()
+//         await updateReservation(updatedReservation)
+//         // await logReservations()
         
-    } catch (err) {
-        console.error({ message: err.message, stack: err.stack });
-    }
+// } catch (err) {
+//     console.error({ message: err.message, stack: err.stack });
+// }
 
 
 // Get the room for a reservation
@@ -126,7 +121,7 @@ try {
 
 // Delete a reservation
 // try {
-//     const deletedReservation = await getReservationById(4)
+//     const deletedReservation = await getReservationById(8)
 
 //     await deleteReservation(deletedReservation.reservationId)
 //     await logReservations()
@@ -148,72 +143,19 @@ try {
 }
 
 
-
-async function logRooms() {
-    try {
-        const allRooms = await getAllRooms()
-        if (allRooms.length !== 0){
-            console.log(allRooms)
-        }else{
-            console.log("There are no rooms in this database")
+app.get("/", (req, res) => {
+    res.status(200).json({
+        message: "Welcome to the official Buckner Conference Room Scheduler API",
+        routes: {
+            rooms: "/api/rooms", // takes you to the getAllRooms page
+            reservations: "/api/reservations" // takes you to the getAllReservations page
         }
-    } catch (err) {
-        console.error({ message: err.message, stack: err.stack });
-    }
-}
-
-async function logReservations() {
-    try {
-        const allReservations = await getAllReservations()
-        if (allReservations.length !== 0){
-            console.log(allReservations)
-        }else{
-            console.log("There are no reservations in this database")
-        }
-    } catch (err) {
-        console.error({ message: err.message, stack: err.stack });
-    }
-}
-
-// await logRooms()
-// await logReservations()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-const app = express();
-app.use(cors())
-app.use(errorHandler)
-app.use("/api/users", userRouter);
-app.use("/api/admins", adminRouter);
-app.use(express.json());
+    })
+})
 
 // console.log("TEST_VAR:", process.env.TEST_VAR);
 
 const PORT = process.env.PORT || 3000;
-
-app.get("/", (req, res) => {
-    res.json({userStatus: `User logged in`,
-        port: PORT 
-    })
-})
 
 
 app.listen(PORT, () => {

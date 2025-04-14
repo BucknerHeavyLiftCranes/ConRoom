@@ -13,6 +13,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+::selection {
+  background-color: hsla(48, 100%, 60%, 0.7); /* Yellow highlight */
+  color: black; /* Text color */
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -33,6 +38,15 @@ body {
 /* Different bodys for diff pages */
 
 .home-background{
+  background-color: rgb(255, 255, 255);
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+.roomStatus-background{
   background-color: rgb(255, 255, 255);
   margin: 0;
   display: flex;

@@ -1,9 +1,16 @@
 .actionButton{
+    width: fit-content; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-weight: bold;
     background-color: hsl(357, 70%, 41%);
     border: none;
     border-radius: 100px;
     padding: 10px 40px;
     margin: 5px;
+    cursor: pointer;
     transition: background-color 0.2s ease;
 }
 
@@ -12,5 +19,31 @@
 }
 
 .actionButton:active{
+    transform: scale(0.95);
+}
+
+/*For the front page of the website*/
+.frontPageButton {
+    width: 15rem; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 25px;
+    background-color: hsl(357, 70%, 41%);
+    border: none;
+    border-radius: 10px;
+    padding: 20px 40px;
+    margin: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.frontPageButton:hover{
+    background-color: hsl(357, 70%, 51%);
+}
+
+.frontPageButton:active{
     transform: scale(0.95);
 }
