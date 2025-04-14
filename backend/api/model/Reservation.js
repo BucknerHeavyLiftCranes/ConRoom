@@ -208,6 +208,8 @@ export default class Reservation{
      */
     status(){
         if(this.canceled){
+            return "Canceled"
+        }
 
         // Convert reservation date & time into UTC Date object
         const reservationStart = new Date(`${this.date}T${this.start}Z`);
