@@ -13,7 +13,6 @@ import { getRoomById } from "../../database/roomsTable.js";
  * @param {string} [params.start] - The start time of the reservation (format: 'HH:MM').
  * @param {string} [params.end] - The end time of the reservation (format: 'HH:MM').
  * @param {boolean} [params.canceled] - Whether or not the reservation is active.
- * @param {string} params.status - The current status of the reservation. Valid statuses are: 'Confirmed', 'In Progress', 'Completed', 'Canceled'.
  */
 export default class Reservation{
     constructor({
@@ -42,8 +41,6 @@ export default class Reservation{
         this.end = this.extractTime(end);
         /**@type {boolean} active status of the reservation. */
         this.canceled = Boolean(canceled);
-        /**@type {string} reservation status [`Confirmed`, `In Progress`, `Completed`, `Canceled`]*/
-        this.status = this.getStatus();
     }
 
     /**
@@ -92,7 +89,7 @@ export default class Reservation{
      * @returns {boolean} whether a reservation can be canceled.
      */
     isCancelable(){
-        return this.status === "Confirmed" || this.status === "Canceled"
+        return this.status() === "Confirmed" || this.status() === "Canceled"
     }
 
     /**
@@ -103,7 +100,6 @@ export default class Reservation{
             throw new UpdateReservationError("This reservation cannot be canceled at this time.")
         }
         this.canceled = !this.canceled
-        this.status = this.getStatus()
     }
  
     /**
@@ -117,7 +113,6 @@ export default class Reservation{
      * @param {string} reservationData.start_time - Start time of the reservation (format: "HH:MM").
      * @param {string} reservationData.end_time - End time of the reservation (format: "HH:MM").
      * @param {number} reservationData.canceled - Whether or not the reservation is active.
-     * @param {string} reservationData.status - Status of the reservation (either  `Confirmed`, `In Progress`, `Completed`, or `Canceled`).
      * @returns {Reservation} A Reservation object.
      */
     static toModel(reservationData) {
@@ -149,7 +144,6 @@ export default class Reservation{
             start: this.start,
             end: this.end,
             canceled: this.canceled,
-            status: this.getStatus()
         }
     }
 
@@ -212,10 +206,8 @@ export default class Reservation{
      * Determine reservation's status based on its date and start/end times.
      * @returns {string} 1 of 4 statuses [`Confirmed`, `In Progress`, `Completed`, `Canceled`].
      */
-    getStatus(){
-        if (this.canceled){
-            return "Canceled"
-        }
+    status(){
+        if(this.canceled){
 
         // Convert reservation date & time into UTC Date object
         const reservationStart = new Date(`${this.date}T${this.start}Z`);

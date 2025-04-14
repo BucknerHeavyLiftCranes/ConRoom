@@ -1,5 +1,6 @@
 .dateTimeDisplay{
-    min-width: 100vw;
+    background-color: white;
+    /* min-width: 100vw; */
     padding: 10px 0;
     display: flex;
     flex-direction: column;

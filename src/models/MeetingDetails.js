@@ -2,7 +2,7 @@
  * Details of a reservation for a room.
  */
 export class MeetingDetails { //maybe just use Reservation model instead
-    constructor(id, title, room, date, start, end, status) {
+    constructor(id, title, room, date, start, end, canceled) {
       /** @type {number} reservation id for the meeting. */
       this.id = id ? id : undefined
       /** @type {string} title of the meeting. */
@@ -15,8 +15,11 @@ export class MeetingDetails { //maybe just use Reservation model instead
       this.start = start;
       /** @type {string} meeting end time. */
       this.end = end;
-      /** @type {string} */
-      this.status = status;
+      /** @type {boolean} active status of the meeting. */
+      this.canceled = canceled;
+
+      //Private fields
+      this._rawDate = date // needed for the status function
     }
 
     /**
@@ -31,8 +34,8 @@ export class MeetingDetails { //maybe just use Reservation model instead
         obj.roomName, 
         obj.date, 
         obj.start, 
-        obj.end, 
-        obj.status);
+        obj.end,
+        obj.canceled);
   }
 
 
@@ -83,4 +86,37 @@ export class MeetingDetails { //maybe just use Reservation model instead
     getFormattedTimeRange() {
         return `${this.formatTime(this.start)} - ${this.formatTime(this.end)}`;
     }
+
+
+    /**
+     * Determine reservation's status based on its date and start/end times.
+     * @returns {string} 1 of 4 statuses [`Confirmed`, `In Progress`, `Completed`, `Canceled`].
+     */
+    status(){
+      if(this.canceled){
+          return "Canceled"
+      }
+
+      // Convert reservation date & time into UTC Date object
+      const reservationStart = new Date(`${this._rawDate}T${this.start}`)// new Date(`${this.date}T${this.start}Z`);
+      const reservationEnd = new Date(`${this._rawDate}T${this.end}`);
+
+      // Get the current time in UTC
+      /**@type {Date} the current time*/
+      const now = new Date() //new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+
+      // Convert timestamps to seconds
+      const reservationStartInSeconds = Math.floor(reservationStart.getTime() / 1000);
+      const reservationEndInSeconds = Math.floor(reservationEnd.getTime() / 1000);
+      const nowInSeconds = Math.floor(now.getTime() / 1000);
+
+      // Determine status
+      if (nowInSeconds < reservationStartInSeconds) {
+          return "Confirmed"; // Meeting hasn't started
+      } else if (nowInSeconds >= reservationStartInSeconds && nowInSeconds < reservationEndInSeconds) {
+          return "In Progress"; // Meeting is ongoing
+      } else {
+          return "Completed"; // Meeting has ended
+      }
+  }
 }

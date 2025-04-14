@@ -56,7 +56,7 @@ function ReservationDetails({ meetingDetails, onDelete }) {
             <p className={styles.dateLabel}><strong>Date:</strong> {meetingDetails.date}</p>
             <p className={styles.timeLabel}><strong>Time:</strong> {meetingDetails.getFormattedTimeRange()}</p>
             <p className={styles.durationLabel}><strong>Duration:</strong> {meetingDetails.calculateDuration()}</p>
-            <p className={styles.statusLabel}><strong>Status:</strong> {meetingDetails.status}</p>
+            <p className={styles.statusLabel}><strong>Status:</strong> {meetingDetails.status()}</p>
             <div className={styles.buttonControls}>
                 <ActionButton 
                     label="Edit"

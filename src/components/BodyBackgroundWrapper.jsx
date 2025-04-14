@@ -16,6 +16,10 @@ function BodyBackgroundWrapper() {
         case "/home":
           document.body.classList.add("home-background");
           break;
+
+          case "/room":
+            document.body.classList.add("roomStatus-background");
+            break;
       
         default:
           break;

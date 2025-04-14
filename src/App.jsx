@@ -2,10 +2,10 @@ import BodyBackgroundWrapper from './components/BodyBackgroundWrapper.jsx';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home/Home.jsx';
 import Login from './pages/auth/LoginModule/Login.jsx';
+import RoomStatus from './pages/RoomStatusModule/RoomStatus.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import Logout from './pages/auth/LogoutModule/Logout.jsx';
 import { AuthProvider } from '../context/AuthProvider.jsx';
-
 // import './App.css'
 
 function App() {
