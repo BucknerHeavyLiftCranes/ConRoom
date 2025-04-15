@@ -19,9 +19,10 @@ const validateAccessToken = expressAsyncHandler(async (req, res, next) => {
         if (!userId) {
             clearAuthCookies(res)
             // return res.status(401).json({ message: "No user session. Please log in." });
-            return req.accepts('html')
-            ? res.status(401).send('<script>window.location.href="/";</script>')
-            : res.status(401).setHeader("X-Reauth-Required", "true").json({ message: "No user session. Please log in." });
+            return res
+                    .status(401)
+                    .setHeader("X-Reauth-Required", "true")
+                    .json({ message: "No user session. Please log in." });
         }
     
         // ✅ Get user from DB
@@ -30,9 +31,10 @@ const validateAccessToken = expressAsyncHandler(async (req, res, next) => {
         if (!currentAdmin || !currentAdmin.refreshToken) {
             clearAuthCookies(res);
             // return res.status(401).json({ message: "Session invalid. Please log in." });
-            return req.accepts('html')
-            ? res.status(401).send('<script>window.location.href="/";</script>')
-            : res.status(401).setHeader("X-Reauth-Required", "true").json({ message: "Session invalid. Please log in." });
+            return res
+                    .status(401)
+                    .setHeader("X-Reauth-Required", "true")
+                    .json({ message: "Session invalid. Please log in." });
         }
     
         // 🔁 Attempt to refresh
@@ -54,10 +56,10 @@ const validateAccessToken = expressAsyncHandler(async (req, res, next) => {
     } catch (err) {
         console.error("Token refresh failed:", err.message);
         clearAuthCookies(res);
-        return req.accepts('html')
-            ? res.status(401).send('<script>window.location.href="/";</script>')
-            : res.status(401).setHeader("X-Reauth-Required", "true").json({ message: "Session expired. Please log in again." });
-
+        return res
+                .status(401)
+                .setHeader("X-Reauth-Required", "true")
+                .json({ message: "Session expired. Please log in again." });
     }
 });
 

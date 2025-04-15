@@ -17,8 +17,8 @@ export const getUserDetails = expressAsyncHandler(async (req, res) => {
 
         const response = await fetch('https://graph.microsoft.com/v1.0/me', {
             headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json',
             }
         });
 
@@ -33,7 +33,7 @@ export const getUserDetails = expressAsyncHandler(async (req, res) => {
             const errorDetails = userDetails;
             console.error("Microsoft Graph API Error:", errorDetails);
             res.status(500)
-            throw new Error('Failed to get user details from Microsoft');
+            throw new Error(`Failed to get user details from Microsoft: ${errorDetails}`);
         }
 
 
