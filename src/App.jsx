@@ -35,6 +35,15 @@ function App() {
             />
 
             <Route 
+              path="/room" 
+              element={
+                <ProtectedRoute redirectTo='/'>
+                  <RoomStatus />
+                </ProtectedRoute>
+              } 
+            />
+
+            <Route 
               path="/logout" 
               element={
                 <ProtectedRoute redirectTo='/'>

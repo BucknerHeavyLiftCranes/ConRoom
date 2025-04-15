@@ -5,9 +5,9 @@ import { MeetingDetails } from "../../models/MeetingDetails"
 import { useEffect, useState } from "react"
 
 /**
- * 
+ * Page displaying the status of a room and upcoming meetings for a certain time period
  * @param {Object} props 
- * @param {} [props.room] details about the room being monitored.
+ * @param {} [props.room] Details about the room being monitored.
  * @returns 
  */
 function RoomStatus({ room }) {

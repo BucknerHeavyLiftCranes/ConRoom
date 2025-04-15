@@ -1,8 +1,8 @@
 .roomStatusContainer {
-    /* background-color: aqua; */
+    background-color: white;
     display: flex;
     justify-content: center;
-    border: 10px solid black;
+    /* border: 10px solid black; */
     height: 100vh;
     width: 100vw;
     
@@ -81,7 +81,7 @@
 
 .dateTime {
     background-color: #6e8c00;
-    /* width: 50vw; */
+    width: 100%;
 }
 
 .upcomingMeetingsContainer {
