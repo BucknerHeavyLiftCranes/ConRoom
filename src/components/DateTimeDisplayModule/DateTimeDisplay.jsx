@@ -25,18 +25,18 @@ function DateTimeDisplay() {
      * @returns the current time (HH:MM)
      */
     const formatTime = () => {
-        const hours = dateTime.getHours().toString().padStart(2, 0);
+        let hours = dateTime.getHours().toString().padStart(2, 0);
         const mins = dateTime.getMinutes().toString().padStart(2, 0);
         // const secs = dateTime.getSeconds().toString().padStart(2, 0);
 
-        return `${hours}:${mins}`;
+        // return `${hours}:${mins}`;
         // return `${hours}:${mins}:${secs}`;
     
         // if (format) {
-        //     // 12-hour format
-        //     const meridiem = hours >= 12 ? "PM" : "AM";
-        //     hours = hours % 12 || 12; // Convert to 12-hour format
-        //     return `${hours}:${mins} ${meridiem}`;
+        // 12-hour format
+        // const meridiem = hours >= 12 ? "PM" : "AM";
+        hours = hours % 12 || 12; // Convert to 12-hour format
+        return `${hours}:${mins}`; //return `${hours}:${mins} ${meridiem}`;
         // } else {
             // 24-hour format
             // return `${hours}:${mins}`;
