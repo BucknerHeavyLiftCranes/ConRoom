@@ -70,6 +70,13 @@ function Home() {
     console.log(userInfo)
   }
 
+  const getAllEvents = async () => {
+    const response = await fetchWithAuth(makeRoute("calendar/all"));
+
+    const eventsInfo = await verifyAndExtractResponsePayload(response, "Failed to get current user's information.")
+    console.log(eventsInfo)
+  }
+
 
   return (
     <>
@@ -81,6 +88,11 @@ function Home() {
       <ActionButton
         label='Log User Info'
         action={getUserInfo}
+      />
+
+<ActionButton
+        label='Log Calendar Events'
+        action={getAllEvents}
       />
 
       <ActionButton

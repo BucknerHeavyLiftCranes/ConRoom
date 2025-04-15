@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import express from "express"
 import { router as authRouter } from "./routes/authRoutes.js";
 import { router as adminRouter } from "./routes/adminRoutes.js";
+import { router as calendarRouter } from "./routes/calendarRoutes.js";
 import { router as roomRouter } from "./routes/roomRoutes.js";
 import { router as reservationRouter } from "./routes/reservationRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
@@ -32,6 +33,7 @@ app.use(cors({
 /** Custom Middleware */
 app.use("/api/auth", authRouter);
 app.use("/api/admin", adminRouter);
+app.use("/api/calendar", calendarRouter);
 app.use("/api/reservations", reservationRouter);
 app.use("/api/rooms", roomRouter);
 app.use(errorHandler)
