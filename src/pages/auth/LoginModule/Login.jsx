@@ -21,6 +21,10 @@ function Login() {
      */
     const startExternalAdminLogin = async () => {
         try {
+            if (authenticated) {
+                console.log("User is authenticated")
+                return <Navigate to="/home" replace />; // incase app reloads and accidently throws user back to login page when they are already authenticated.
+            }
             window.location.href = makeRoute("auth/login");
         } catch (err) {
             console.error({message: err.message, stack: err.stack})
