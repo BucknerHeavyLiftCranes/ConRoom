@@ -1,6 +1,6 @@
 import { useUser } from '../../../../context/exports/useUser'
 import styles from './Logout.module.css'
-import { authKey } from '../../../../constants/keys/keys'
+import { makeRoute } from '../../../../constants/keys/keys'
 import ActionButton from '../../../components/ActionButtonModule/ActionButton'
 import { useNavigate } from 'react-router-dom'
 
@@ -13,7 +13,7 @@ function Logout() {
    */
   const endUserSession = async () => {
       setUser(null) // remove knowledge of user from the website
-      window.location.href = `${authKey}/logout`
+      window.location.href = makeRoute("auth/logout")
   
   }
   

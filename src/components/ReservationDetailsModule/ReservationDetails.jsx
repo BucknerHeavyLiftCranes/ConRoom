@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import ActionButton from '../ActionButtonModule/ActionButton'
 import FullScreenPopup from '../FullScreenPopupModule/FullScreenPopup.jsx'
 import styles from './ReservationDetails.module.css'
-import { reservationKey } from '../../../constants/keys/keys.js'
+import { makeRoute } from '../../../constants/keys/keys.js'
 import { MeetingDetails } from '../../models/MeetingDetails.js'
 // import { checkResponse } from '../../services/authService.js'
 
@@ -26,7 +26,7 @@ function ReservationDetails({ meetingDetails, onDelete }) {
                 return
             }
 
-            const response = await fetch(`${reservationKey}/${meetingDetails.id}`, {
+            const response = await fetch(makeRoute(`reservations/${meetingDetails.id}`), {
                 method: 'DELETE',
             });
     

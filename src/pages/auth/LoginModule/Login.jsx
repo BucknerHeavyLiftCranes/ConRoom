@@ -1,4 +1,4 @@
-import { authKey } from '../../../../constants/keys/keys.js'
+import { makeRoute } from '../../../../constants/keys/keys.js'
 import { useAuth } from '../../../../context/exports/useAuth.js'
 import ActionButton from '../../../components/ActionButtonModule/ActionButton.jsx'
 import styles from './Login.module.css'
@@ -21,7 +21,7 @@ function Login() {
      */
     const startExternalAdminLogin = async () => {
         try {
-            window.location.href = `${authKey}/login`;
+            window.location.href = makeRoute("auth/login");
         } catch (err) {
             console.error({message: err.message, stack: err.stack})
         }

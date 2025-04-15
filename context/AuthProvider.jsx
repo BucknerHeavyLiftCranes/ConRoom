@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { AuthContext } from './exports/AuthContext';
 import PropTypes from 'prop-types';
-import { authKey } from '../constants/keys/keys';
+import { makeRoute } from '../constants/keys/keys';
 import { fetchWithAuth } from '../src/services/apiService';
 
 
@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
          */
         const verifyUser = async () => {
         try {
-            const response = await fetchWithAuth(`${authKey}/validate`, {
+            const response = await fetchWithAuth(makeRoute("auth/validate"), {
             credentials: 'include'
             });
     

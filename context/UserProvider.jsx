@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { UserContext } from './exports/UserContext'
 import PropTypes from 'prop-types';
-import { adminKey } from '../constants/keys/keys';
+import { makeRoute } from '../constants/keys/keys';
 import { fetchWithAuth, verifyAndExtractResponsePayload } from '../src/services/apiService';
 
 
@@ -24,7 +24,7 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     const startUserSession = async () => {
       try {
-        const response = await fetchWithAuth(`${adminKey}/current`, {
+        const response = await fetchWithAuth(makeRoute("admin/current"), {
           credentials: "include"
         });
   
