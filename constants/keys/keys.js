@@ -19,7 +19,7 @@
 
 /**
  * Construct route to any API.
- * @param {string} endpoint name of unique route
+ * @param {string} endpoint name of unique endpoint
  * @returns absolute API path
  */
 export const makeRoute = (endpoint) => {
