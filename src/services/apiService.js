@@ -29,8 +29,8 @@ export const verifyAndExtractResponsePayload = async (
 }
 
 /**
- * A wrapper around fetch function that handles session expiration smootjly.
- * Redirects to login if user is unauthenticated or token is expired.
+ * A wrapper around fetch function that handles session expiration smoothily.
+ * Redirects to login if user is unauthenticated and/or token is expired.
  * @param {string} url The endpoint to fetch.
  * @param {object} [options={}] Fetch options (method, headers, etc.)
  * @returns {Promise<Response>} The fetch response.
@@ -38,8 +38,9 @@ export const verifyAndExtractResponsePayload = async (
 export const fetchWithAuth = async (url, options = {}) => {
     try {
         const response = await fetch(url, {
-            ...options,
-            credentials: 'include' // Important for cookies!
+            credentials: 'include', // Important for cookies!
+            headers: { Accept: "application/json", ...(options.headers || {}) },
+            ...options
           });
         
           if (response.status === 401 && response.headers.get("X-Reauth-Required") === "true") {
