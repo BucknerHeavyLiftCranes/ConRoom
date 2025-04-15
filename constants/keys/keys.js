@@ -18,9 +18,9 @@
 
 
 /**
- * Construct route to any API.
- * @param {string} endpoint name of unique endpoint
- * @returns absolute API path
+ * Construct the route to any API.
+ * @param {string} endpoint Name of unique endpoint.
+ * @returns Absolute API path.
  */
 export const makeRoute = (endpoint) => {
     return `http://localhost:5173/api/${endpoint}`
