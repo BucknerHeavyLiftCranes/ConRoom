@@ -73,7 +73,8 @@ function Home() {
 
   return (
     <>
-      <DateTimeDisplay/>
+      <div className={styles.dateTime}><DateTimeDisplay/></div>
+      <h1 className={styles.pageTitle}>Home</h1>
       <header className={styles.pageTitle}>
         {user?.name || (loading ? "" : "Guest")}
       </header>
@@ -86,8 +87,7 @@ function Home() {
         label='Log Out'
         action={() => {setTimeout(() => {navigate('/logout')}, 800)}}
       />
-
-      <h1 className={styles.pageTitle}>Home</h1>    
+    
 
       {meetingCards.map((meeting, id) => (
 
