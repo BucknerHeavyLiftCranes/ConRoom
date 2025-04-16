@@ -1,7 +1,7 @@
 import styles from "./RoomStatus.module.css"
 import DateTimeDisplay from '../../components/DateTimeDisplayModule/DateTimeDisplay'
 import BriefEventDetails from "../../components/BriefMeetingDetails/BriefEventDetails.jsx"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { fetchWithAuth, verifyAndExtractResponsePayload } from "../../services/apiService.js"
 import { makeRoute } from '../../services/apiService.js'
 import { OutlookEventDetails } from "../../models/OutlookEventDetails.js"
@@ -16,7 +16,10 @@ import { useUser } from "../../../context/exports/useUser.js"
  */
 function RoomStatus() {
   const REFRESH_INTERVAL = 10000 //30000 // 30 seconds
+  const timeLeftRef = useRef(REFRESH_INTERVAL);
+  const [ timeLeft, setTimeLeft ] = useState(REFRESH_INTERVAL)
   const { user, loading } = useUser()
+  const [eventsLoading, setEventsLoading] = useState(true)
   const [isBusy, setIsBusy] = useState(false) // isBusy to change styling
   const [currentStatus, setCurrentStatus] = useState("OPEN") // currentStatus to display "BUSY"
   const [currentEvent, setCurrentEvent] = useState(null) // currentEvent to display current meeting data
@@ -109,21 +112,43 @@ function RoomStatus() {
       return sortEventsByStartTime(events)
     } catch (err) {
       console.error(err)
-      return []
-      
+      return [] 
+    } finally {
+      setEventsLoading(false)
     }
   }
 
   useEffect(() => {
     const intervalID = setInterval(() => {
       (async () => {
-        const allEvents = await updateRoomStatus();
-        setEvents(allEvents);
+        try {
+          const allEvents = await updateRoomStatus();
+          setEvents(allEvents);   
+        } catch (err) {
+          console.error(err)
+        }
       })();
     }, REFRESH_INTERVAL);
   
     return () => clearInterval(intervalID);
   }, []);
+
+  useEffect(() => {
+    const intervalID = setInterval(() => {
+      if (timeLeftRef.current === 0) {
+        timeLeftRef.current = REFRESH_INTERVAL
+      }
+      timeLeftRef.current -= 1000;
+      // console.log("Countdown:", timeLeftRef.current);
+      setTimeLeft(timeLeftRef.current);
+    }, 1000);
+  
+    return () => clearInterval(intervalID);
+  }, []);
+
+  // if (eventsLoading) {
+  //   return (<p className={styles.roomName}>{user?.name || (loading ? "" : "Guest")}</p>)
+  // }
 
 
   return (
@@ -147,6 +172,8 @@ function RoomStatus() {
 
           <BriefEventDetails
             events={events}
+            eventsLoading={eventsLoading}
+            timeLeft={timeLeft}
           />
           
 

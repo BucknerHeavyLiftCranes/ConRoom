@@ -8,10 +8,17 @@ import PropTypes from 'prop-types'
  * @param {Object} props
  * @param {OutlookEventDetails[]} [props.events] List of events
  */
-function BriefEventDetails({ events }) {
+function BriefEventDetails({ events, eventsLoading, timeLeft }) {
     if(!events) {
         console.error("NEITHER AN EVENTS[] NOR EMPTY[] WAS RECIEVED");
         return <p><strong><em>No Events Today</em></strong></p>
+    }
+
+    if (eventsLoading) {
+        return (
+            <p style={{ color: 'black', marginBottom: '10px', fontWeight: 'bold' }}>
+                {timeLeft === 0 ? "Loading now" : `Loading in: ${timeLeft / 1000} seconds`}
+            </p>)
     }
     
     if (events.length === 0){ 
@@ -40,7 +47,7 @@ function BriefEventDetails({ events }) {
         
     // </>
     <>
-        <p style={{ color: 'black', marginBottom: '10px' }}>Upcoming</p>
+        <p style={{ color: 'black', marginBottom: '10px', fontWeight: 'bold' }}>Upcoming</p>
         {events.map((event) => (
             <div key={event.id} className={styles.eventCard}>
                 <p className={styles.eventDate}>{event.startDate}</p>
@@ -57,7 +64,9 @@ function BriefEventDetails({ events }) {
 
 
 BriefEventDetails.propTypes = {
-    events: PropTypes.array.isRequired
+    events: PropTypes.array.isRequired,
+    eventsLoading: PropTypes.bool.isRequired,
+    timeLeft: PropTypes.number.isRequired,
 }
 
 export default BriefEventDetails
