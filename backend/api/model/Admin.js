@@ -33,7 +33,7 @@ export default class Admin {
             id,
             name,
             email,
-            refreshToken ?? refresh_token // handles coming from Outlook (refreshToken) or DB (refresh_token)
+            refreshToken ?? refresh_token // handles token coming from Outlook (refreshToken) or DB (refresh_token)
         );
     }
         
