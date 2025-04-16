@@ -1,6 +1,15 @@
 import { ResponseError } from "../../errors/ApiError";
 
 /**
+ * Construct the route to any API.
+ * @param {string} endpoint Name of unique endpoint.
+ * @returns Absolute API path.
+ */
+export const makeRoute = (endpoint) => {
+    return `http://localhost:5173/api/${endpoint}`
+}
+
+/**
  * Validate an API response and return its payload.
  * @param {Response} response API response.
  * @param {string} message error message thrown if response is not ok.

@@ -1,6 +1,6 @@
 import { useUser } from '../../../../context/exports/useUser'
 import styles from './Logout.module.css'
-import { makeRoute } from '../../../../constants/keys/keys'
+import { makeRoute } from '../../../services/apiService.js'
 import ActionButton from '../../../components/ActionButtonModule/ActionButton'
 import { useNavigate } from 'react-router-dom'
 

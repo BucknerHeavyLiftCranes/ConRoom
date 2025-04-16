@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { AuthContext } from './exports/AuthContext';
 import PropTypes from 'prop-types';
-import { makeRoute } from '../constants/keys/keys';
+import { makeRoute } from '../src/services/apiService.js';
 import { fetchWithAuth } from '../src/services/apiService';
 
 

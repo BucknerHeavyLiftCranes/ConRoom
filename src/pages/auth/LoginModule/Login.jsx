@@ -1,4 +1,4 @@
-import { makeRoute } from '../../../../constants/keys/keys.js'
+import { makeRoute } from '../../../services/apiService.js'
 import { useAuth } from '../../../../context/exports/useAuth.js'
 import ActionButton from '../../../components/ActionButtonModule/ActionButton.jsx'
 import styles from './Login.module.css'

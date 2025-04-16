@@ -1,4 +1,4 @@
-import { makeRoute } from '../../../constants/keys/keys.js'
+import { makeRoute } from '../../services/apiService.js'
 import { useState, useEffect } from 'react'
 import ReservationDetails from '../../components/ReservationDetailsModule/ReservationDetails'
 import { MeetingDetails } from '../../models/MeetingDetails.js'
@@ -8,6 +8,7 @@ import { verifyAndExtractResponsePayload, fetchWithAuth } from '../../services/a
 import ActionButton from '../../components/ActionButtonModule/ActionButton.jsx'
 import { useUser } from '../../../context/exports/useUser.js'
 import { useNavigate } from 'react-router-dom'
+import { OutlookEventDetails } from '../../models/OutlookEventDetails.js'
 
 function Home() {
   const [meetingCards, setMeetingCards] = useState([]);
@@ -77,6 +78,21 @@ function Home() {
     console.log(eventsInfo)
   }
 
+  // eslint-disable-next-line no-unused-vars
+  const testEvent = new OutlookEventDetails(
+    "id",
+    "Test Meeting 3",
+    {date: "4/15/2025", time: "19:00"},
+    {date: "4/15/2025", time: "20:00"},
+  )
+
+  // console.log(testEvent)
+  // console.log(testEvent.getFormattedTimeRange())
+  // console.log(testEvent.start.date)
+  // console.log(testEvent.formatDate(testEvent.start.date))
+  // console.log(testEvent.duration())
+  // console.log(`${testEvent.subject}: ${testEvent.status()}`)
+
 
   return (
     <>
@@ -90,7 +106,7 @@ function Home() {
         action={getUserInfo}
       />
 
-<ActionButton
+      <ActionButton
         label='Log Calendar Events'
         action={getAllEvents}
       />
