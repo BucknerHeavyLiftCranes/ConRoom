@@ -10,9 +10,35 @@ export const HTTP_STATUS_CODES = {
     SERVER_ERROR: 500
 }
 
-// const STATUS_MAP = {
-//     1: "Confirmed",
-//     2: "In Progress",
-//     3: "Completed",
-//     4: "Canceled",
-// }
+export const timeZones = {
+    est: "Eastern Standard Time",
+    edt: "Eastern Daylight Time",
+    cst: "Central Standard Time",
+    cdt: "Central Daylight Time",
+    mst: "Mountain Standard Time",
+    mdt: "Mountain Daylight Time",
+    pst: "Pacific Standard Time",
+    pdt: "Pacific Daylight Time",
+    akst: "Alaska Standard Time",
+    akdt: "Alaska Daylight Time",
+    hst: "Hawaii Standard Time",
+    hdt: "Hawaii Daylight Time", // Rarely used, Hawaii doesn't observe daylight saving time
+};
+
+/**
+ * Time Zone Converters for all the time zones.
+ * @namespace tzc
+ */
+export const tzc = {
+    estFormatter: new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/New_York',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+    })
+}
+  
