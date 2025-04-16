@@ -6,6 +6,7 @@ import { fetchWithAuth, verifyAndExtractResponsePayload } from "../../services/a
 import { makeRoute } from '../../services/apiService.js'
 import { OutlookEventDetails } from "../../models/OutlookEventDetails.js"
 import { ResponseError } from "../../../errors/ApiError.js"
+import { useUser } from "../../../context/exports/useUser.js"
 
 /**
  * Page displaying the status of a room and upcoming meetings for a certain time period
@@ -15,6 +16,7 @@ import { ResponseError } from "../../../errors/ApiError.js"
  */
 function RoomStatus() {
   const REFRESH_INTERVAL = 10000 //30000 // 30 seconds
+  const { user, loading } = useUser()
   const [isBusy, setIsBusy] = useState(false) // isBusy to change styling
   const [currentStatus, setCurrentStatus] = useState("OPEN") // currentStatus to display "BUSY"
   const [currentEvent, setCurrentEvent] = useState(null) // currentEvent to display current meeting data
@@ -127,7 +129,7 @@ function RoomStatus() {
   return (
     <div className={styles.roomStatusContainer}>
       <div className={isBusy ? styles.busyStatus : styles.openStatus}>
-        <p className={styles.roomName}>Hillary</p>
+        <p className={styles.roomName}>{user?.name || (loading ? "" : "Guest")}</p>
 
         <div className={currentEvent ?  styles.visibleDetails : styles.hiddenDetails}>
           <p><span>Meeting: </span>{currentEvent ? currentEvent.subject : ""}</p>
