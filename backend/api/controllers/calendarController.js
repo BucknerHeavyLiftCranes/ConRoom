@@ -50,3 +50,7 @@ export const getAllEvents = expressAsyncHandler(async (req, res) => {
         throw new Error ('Internal server error while retrieving user details');
     }
 })
+
+export const createEvent = expressAsyncHandler(async (req, res) => {
+    
+})

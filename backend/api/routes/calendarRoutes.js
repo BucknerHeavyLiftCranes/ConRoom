@@ -1,11 +1,15 @@
 import express from "express"
 import validateAccessToken from "../middleware/validateAccessToken.js"
-import { getAllEvents } from "../controllers/calendarController.js"
+import { getAllEvents, createEvent } from "../controllers/calendarController.js"
 
 
 export const router = express.Router()
 
 router.get("/all", validateAccessToken, getAllEvents)
+
+// router.get("/thisWeek", validateAccessToken, getAllEventsForThisWeek)
+
+router.post("/create", validateAccessToken, createEvent)
 
 
 
