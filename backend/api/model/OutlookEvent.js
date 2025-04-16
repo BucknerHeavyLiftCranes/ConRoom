@@ -106,15 +106,16 @@ export default class OutlookEvent {
     formatDateTime(date, timezone){
         const dateAsDateObject = new Date(date)
         switch(timezone) {
-            case "Universal Coordinated Time":
-                return date
             case "Eastern Standard Time":
                 return {
                     date: tzc.estFormatter.format(dateAsDateObject).split(",")[0],
                     time: tzc.estFormatter.format(dateAsDateObject).split(",")[1].trim().slice(0, 5)
                 }
             default:
-                return date
+                return {
+                    date: tzc.utcFormatter.format(dateAsDateObject).split(",")[0],
+                    time: tzc.utcFormatter.format(dateAsDateObject).split(",")[1].trim().slice(0, 5)
+                }
         }
     }
 
