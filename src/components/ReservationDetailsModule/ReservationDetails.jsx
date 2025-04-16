@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import ActionButton from '../ActionButtonModule/ActionButton'
 import FullScreenPopup from '../FullScreenPopupModule/FullScreenPopup.jsx'
 import styles from './ReservationDetails.module.css'
-import { makeRoute } from '../../../constants/keys/keys.js'
+import { makeRoute } from '../../services/apiService.js'
 import { MeetingDetails } from '../../models/MeetingDetails.js'
 // import { checkResponse } from '../../services/authService.js'
 
