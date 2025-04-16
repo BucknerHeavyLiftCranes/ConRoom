@@ -1,7 +1,8 @@
 import expressAsyncHandler from "express-async-handler"
 import { ResponseError } from "../../../errors/ApiError.js";
+import OutlookEvent from "../model/OutlookEvent.js";
 
-export const getAllEvents = expressAsyncHandler(async (req, res, next) => {
+export const getAllEvents = expressAsyncHandler(async (req, res) => {
     try {
         const accessToken = req.cookies.access_token ?? req.accessToken
 
@@ -30,14 +31,18 @@ export const getAllEvents = expressAsyncHandler(async (req, res, next) => {
             throw new ResponseError(`Failed to get events from Microsoft: ${errorDetails}`);
         }
 
+        /**@type {any[]} all events in the response*/
+        const rawEvents = eventDetails.value;
 
-        const events = eventDetails.value;
-
-        if(!events) {
+        if(!rawEvents) {
             res.status(401)
             throw new ResponseError("Could not resolve 'events' from response");
         }
 
+        /**@type {OutlookEvent[]} all events in the response*/
+        const events = rawEvents.map( (rawEvent) => OutlookEvent.fromObject(rawEvent))
+
+        // res.status(200).json({events})
         res.status(200).json({events})
     } catch (err) {
         console.log({message: err.message, stack: err.stack});
