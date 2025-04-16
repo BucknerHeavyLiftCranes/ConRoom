@@ -86,6 +86,7 @@
 
 .upcomingMeetingsContainer {
     color: black;
+    overflow: scroll;
     /* background-color: rgb(255, 216, 216); */
     width: 100%;
     display: flex;

@@ -1,8 +1,11 @@
 import styles from "./RoomStatus.module.css"
 import DateTimeDisplay from '../../components/DateTimeDisplayModule/DateTimeDisplay'
-import BriefMeetingDetails from "../../components/BriefMeetingDetails/BriefMeetingDetails"
-import { MeetingDetails } from "../../models/MeetingDetails"
+import BriefEventDetails from "../../components/BriefMeetingDetails/BriefEventDetails.jsx"
 import { useEffect, useState } from "react"
+import { fetchWithAuth, verifyAndExtractResponsePayload } from "../../services/apiService.js"
+import { makeRoute } from '../../services/apiService.js'
+import { OutlookEventDetails } from "../../models/OutlookEventDetails.js"
+import { ResponseError } from "../../../errors/ApiError.js"
 
 /**
  * Page displaying the status of a room and upcoming meetings for a certain time period
@@ -10,124 +13,126 @@ import { useEffect, useState } from "react"
  * @param {} [props.room] Details about the room being monitored.
  * @returns 
  */
-function RoomStatus({ room }) {
-  const REFRESH_INTERVAL = 30000 // 30 seconds
+function RoomStatus() {
+  const REFRESH_INTERVAL = 10000 //30000 // 30 seconds
   const [isBusy, setIsBusy] = useState(false) // isBusy to change styling
   const [currentStatus, setCurrentStatus] = useState("OPEN") // currentStatus to display "BUSY"
-  const [currentMeeting, setCurrentMeeting] = useState(null) // currentMeeting to display current meeting data
-  const fakeMeeting1 = new MeetingDetails(
-    1, // id
-    "Team 5 Daily Scrum", // title
-    "Hillary", // room
-    "2025-04-03", // date
-    "12:30", // start
-    "13:30", // end
-    false // status
-  )
+  const [currentEvent, setCurrentEvent] = useState(null) // currentEvent to display current meeting data
+  const [events, setEvents] = useState([])
 
-  const fakeMeeting2 = new MeetingDetails(
-    2, // id
-    "Fidelity Investments Meeting", // title
-    "Hillary", // room
-    "2025-04-03", // date
-    "15:30", // start
-    "16:30", // end
-    false // status
-  )
+  /**
+   * Fetch all calendar events from Outlook for logged in account.
+   * @returns {Promise<OutlookEventDetails[]>} All events
+   */
+  const getAllEvents = async () => {
+    try{
+      const response = await fetchWithAuth(makeRoute("calendar/all"));
 
-  const fakeMeeting3 = new MeetingDetails(
-    3, // id
-    "How to integrate your Fron...", // title
-    "Hillary", // room
-    "2025-04-04", // date
-    "14:00", // start
-    "17:00", // end
-    false
-  )
-
-  const fakeMeeting4 = new MeetingDetails(
-    4, // id
-    "Ice Cream Social", // title
-    "Hillary", // room
-    "2025-04-05", // date
-    "16:00", // start
-    "17:00", // end
-    false
-  )
-
-  const fakeMeeting5 = new MeetingDetails(
-    5, // id
-    "Tax Bracket Analysis", // title
-    "Hillary", // room
-    "2025-04-04", // date
-    "00:00", // start
-    "01:21", // end
-    false
-  )
-
-  const fakeMeeting6 = new MeetingDetails(
-    6, // id
-    "Wine and Cheese Tasting", // title
-    "Hillary", // room
-    "2025-04-04", // date
-    "01:22", // start
-    "12:30", // end
-    false
-  )
-
-  const fakeMeetings = [fakeMeeting1, fakeMeeting2, fakeMeeting3, fakeMeeting4, fakeMeeting5, fakeMeeting6]
-
-  const updateRoomStatus = () => {
-    let mustChangeMeeting = false
-    
-    setCurrentMeeting((prevMeeting) => {
-      if (prevMeeting && prevMeeting.status() === "In Progress") {
-        return prevMeeting; // Don't update if it's already "In Progress"
-      }else{
-        mustChangeMeeting = true
+      /** @type {any[]} */
+      const eventsInfo = (await verifyAndExtractResponsePayload(response, "Failed to get current user's information."))
+                          .events
+      if(!eventsInfo) {
+        throw ResponseError("Could not fetch events")
       }
-    })
 
-    if(!mustChangeMeeting){ //if we don't have to update the meeting, just exit the function
-      return
-    }
-   
-    for (let fakeMeeting of fakeMeetings) {
-      if (fakeMeeting.status() == "In Progress") { // assuming code works as intended, there can only ever be one 'In Progress' meeting.
-        setIsBusy(true)
-        setCurrentStatus("BUSY")
-        setCurrentMeeting(fakeMeeting)
-        break;
-      } else {
-        setIsBusy(false)
-        setCurrentStatus("OPEN")
-        setCurrentMeeting(null)
+      if (eventsInfo.length === 0) {
+        return []
       }
+      
+      /** @type {OutlookEventDetails[]} */
+      const events = eventsInfo.map( (eventInfo) => OutlookEventDetails.fromObject(eventInfo))
+      // console.log(events)
+      return events
+    } catch (err) {
+      console.error(err)
+      return []
     }
   }
 
+  /**
+   * 
+   * @param {OutlookEventDetails} events 
+   * @returns 
+   */
+  const sortEventsByStartTime = (events) => {
+    return [...events].sort( (eventA, eventB) => {
+      return OutlookEventDetails.parseEventDateTime(eventA.start) - OutlookEventDetails.parseEventDateTime(eventB.start)
+    })
+  }
+
+
+  /**
+   * 
+   */
+  const updateRoomStatus = async () => {
+    try {
+      // let mustChangeEvent = false
+    
+      // setCurrentEvent((prevEvent) => {
+      //   if (prevEvent && prevEvent.status() === "In Progress") {
+      //     return prevEvent; // Don't update if it's already "In Progress"
+      //   }else{
+      //     mustChangeEvent = true
+      //   }
+      // })
+    
+      const events = await getAllEvents() // where the magic happens (syncing with Outlook)
+
+      if (events.length === 0) {
+          setIsBusy(false)
+          setCurrentStatus("OPEN")
+          setCurrentEvent(null)
+          return []
+      }
+
+      // console.log(events)
+
+      // if(!mustChangeEvent){ //if we don't have to update the meeting, just exit the function
+      //   return events
+      // }
+
+      for (let event of events) {
+        if (event.status() == "In Progress") { // assuming code works as intended, there can only ever be one 'In Progress' meeting.
+          setIsBusy(true)
+          setCurrentStatus("BUSY")
+          setCurrentEvent(event)
+          break;
+        } else {
+          setIsBusy(false)
+          setCurrentStatus("OPEN")
+          setCurrentEvent(null)
+        }
+      }
+
+      return sortEventsByStartTime(events)
+    } catch (err) {
+      console.error(err)
+      return []
+      
+    }
+  }
 
   useEffect(() => {
     const intervalID = setInterval(() => {
-      // console.log(currentMeeting ? `${currentMeeting.title} is ${currentMeeting.status()}` : "This room is free")
-      updateRoomStatus();
+      (async () => {
+        const allEvents = await updateRoomStatus();
+        setEvents(allEvents);
+      })();
     }, REFRESH_INTERVAL);
-
-    return () => {clearInterval(intervalID)};
-
+  
+    return () => clearInterval(intervalID);
   }, []);
 
 
   return (
     <div className={styles.roomStatusContainer}>
-      
       <div className={isBusy ? styles.busyStatus : styles.openStatus}>
         <p className={styles.roomName}>Hillary</p>
 
-        <div className={currentMeeting ?  styles.visibleDetails : styles.hiddenDetails}>
-          <p><span>Meeting: </span>{currentMeeting ? currentMeeting.title : ""}</p>
-          <p><span>Duration: </span>{currentMeeting ? currentMeeting.getFormattedTimeRange() : ""}</p>
-          <p><span>Status: </span>{currentMeeting ? currentMeeting.status() : ""}</p>
+        <div className={currentEvent ?  styles.visibleDetails : styles.hiddenDetails}>
+          <p><span>Meeting: </span>{currentEvent ? currentEvent.subject : ""}</p>
+          <p><span>Duration: </span>{currentEvent ? currentEvent.getFormattedTimeRange() : ""}</p>
+          <p><span>Status: </span>{currentEvent ? currentEvent.status() : ""}</p>
         </div>
 
         <header className={styles.roomStatus}>{currentStatus}</header>
@@ -136,11 +141,10 @@ function RoomStatus({ room }) {
      
       <div className={styles.infoBox}>
         <div className={styles.dateTime}><DateTimeDisplay/></div>
-        <p style={{color: 'black'}}>Upcoming</p>
         <div className={styles.upcomingMeetingsContainer}>
 
-          <BriefMeetingDetails
-            meetings={fakeMeetings}
+          <BriefEventDetails
+            events={events}
           />
           
 
@@ -150,9 +154,5 @@ function RoomStatus({ room }) {
     </div>
   )
 }
-
-// RoomStatus.propTypes = {
-//   room: propType.shape()
-// }
 
 export default RoomStatus
