@@ -36,7 +36,11 @@ function Login() {
      */
     const startExternalRoomLogin = async () => {
         try {
-            // window.location.href = `${authKey}/login`;
+            if (authenticated) {
+                console.log("User is authenticated")
+                return <Navigate to="/room" replace />; // incase app reloads and accidently throws user back to login page when they are already authenticated.
+            }
+            window.location.href = makeRoute("auth/roomLogin");
         } catch (err) {
             console.error({message: err.message, stack: err.stack})
         }
