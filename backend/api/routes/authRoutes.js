@@ -1,6 +1,7 @@
 import express from "express"
 import { 
-      loginFlow, 
+      loginFlow,
+      roomLoginFlow, 
       authFlow, 
       createAccessToken, 
       // refreshAccessToken, 
@@ -13,6 +14,8 @@ export const router = express.Router()
 router.get("/", authFlow)
 
 router.get("/login", loginFlow)
+
+router.get("/roomLogin", roomLoginFlow)
 
 router.get('/token', createAccessToken)
 

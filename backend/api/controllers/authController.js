@@ -1,5 +1,10 @@
 /** @typedef {import('express').Request} Request */
 /** @typedef {import('express').Response} Response */
+/**
+ * @typedef {Object} statePayload
+ * @property {string} originalState - Secret for determining API request origin.
+ * @property {string} redirectToRoom - Whether or not the login should redirect user to the Room Status page.
+ */
 
 import expressAsyncHandler from "express-async-handler"; // no need for try-catch
 import ms from "ms";
@@ -30,7 +35,8 @@ const getEnv = () => ({
     redirectUri: process.env.AUTH_REDIRECT_URI,
     scope: process.env.AUTH_SCOPE,
     state: process.env.AUTH_STATE,
-    frontendUrl: process.env.FRONTEND_URL,
+    homePageUrl: process.env.HOME_PAGE_URL,
+    roomStatusPageUrl: process.env.ROOM_STATUS_PAGE_URL,
     loginPageUrl: process.env.LOGIN_PAGE_URL,
     mode: process.env.MODE
   });
@@ -39,19 +45,36 @@ const getEnv = () => ({
 
 /**
  * @public
+ * Append query paramter to determine final redirect to Home page or Room Rtatus page.
+ * @route /api/auth/roomLogin
+ */
+export const roomLoginFlow = expressAsyncHandler(async (req, res) => {
+    res.redirect("/api/auth/login?redirectToRoom=true")
+})
+
+
+/**
+ * @public
  * Construct authorization URL and start login process.
  * @route /api/auth/login
  */
 export const loginFlow = expressAsyncHandler(async (req, res) => {
     console.log("Logging In")
+
     const env = getEnv()
+
+    /** @type {statePayload} */
+    const statePayload = {
+        originalState: env.state,
+        redirectToRoom: req.query.redirectToRoom === 'true'
+    };
 
     const authURL = new URL(env.authUrl);
     authURL.searchParams.append('client_id', env.clientId); 
     authURL.searchParams.append('response_type', env.responseType);
     authURL.searchParams.append('redirect_uri', env.redirectUri); // /api/auth -> which triggers the rest of the login flow
     authURL.searchParams.append('scope', env.scope);
-    authURL.searchParams.append('state', env.state);
+    authURL.searchParams.append('state', encodeURIComponent(JSON.stringify(statePayload)));
 
     res.redirect(authURL.toString())
 })
@@ -65,8 +88,12 @@ export const authFlow = expressAsyncHandler(async (req, res) => {
     console.log("Authorization Started")
     const env = getEnv()
 
-    if (req.query.state != null) {
-        if (req.query.state !== env.state) {
+    const rawState = req.query.state;
+    /** @type {statePayload} */
+    const parsedState = JSON.parse(decodeURIComponent(rawState));
+
+    if (rawState != null) {
+        if (parsedState.originalState !== env.state) {
             res.status(401)
             throw new Error ("You are not authorized to access this site.")
           }
@@ -87,13 +114,17 @@ export const authFlow = expressAsyncHandler(async (req, res) => {
     // if code is valid but no token, redirect to token endpoint
     } else if (authCode != null && accessToken == null){ 
         console.log('Redirecting to token endpoint')
-        res.redirect(`/api/auth/token?code=${authCode}`)
+            res.redirect(`/api/auth/token?code=${authCode}&state=${rawState}`)
     
     //if code and token are valid, sends decoded user info
     }else if (authCode != null && accessToken != null){
-        console.log('Redirecting to frontend')
-
-        res.redirect(env.frontendUrl); // let frontend handle redirect
+        if(parsedState.redirectToRoom  === true){
+            console.log('Redirecting to room status page')
+            res.redirect(env.roomStatusPageUrl)
+        } else {
+            console.log('Redirecting to home page')
+            res.redirect(env.homePageUrl); 
+        }
 
         // res.status(200).json({message: "Logged In"})
     }else{
@@ -115,6 +146,13 @@ export const createAccessToken = expressAsyncHandler(async (req, res) => {
     const env = getEnv()
     
     console.log("Getting Access Token")
+
+    const rawState = req.query.state
+
+    if (rawState == null){
+        res.status(500)
+        throw new Error('state is null')
+    }
 
     const authCode = req.query.code
     
@@ -206,7 +244,7 @@ export const createAccessToken = expressAsyncHandler(async (req, res) => {
         setAuthCookies(res, accessToken, savedAdmin.id, accessTokenExperationTime, shouldResetUserId)
 
         // redirect back to finish authentication
-        res.redirect(`/api/auth?code=${authCode}&state=${env.state}`)
+            res.redirect(`/api/auth?code=${authCode}&state=${rawState}`)
     }
 })
 
@@ -310,10 +348,10 @@ export const logoutFlow = expressAsyncHandler(async (req, res) => {
     clearAuthCookies(res)
 
     console.log("Redirected to Microsoft logout");
-    res.redirect(`https://login.microsoftonline.com/${env.tenant}/oauth2/v2.0/logout`)
+    // res.redirect(`https://login.microsoftonline.com/${env.tenant}/oauth2/v2.0/logout`)
 
     // redirects user back to login page (must be approved first).
-        // res.redirect(`https://login.microsoftonline.com/${env.tenant}/oauth2/v2.0/logout?post_logout_redirect_uri=${env.loginPageUrl}`) 
+    res.redirect(`https://login.microsoftonline.com/${env.tenant}/oauth2/v2.0/logout?post_logout_redirect_uri=${env.loginPageUrl}`) 
 })
 
 /**
