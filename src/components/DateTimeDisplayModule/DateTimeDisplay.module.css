@@ -12,9 +12,10 @@
 .time{
     color: hsl(0, 0%, 0%);
     font-size: 4rem;
+    font-weight: bold;
     font-family: Arial, Helvetica, sans-serif;
     text-align: center;
-    text-shadow: 3px 3px 5px hsla(0, 0%, 0%, 0.4);
+    /* text-shadow: 3px 3px 5px hsla(0, 0%, 0%, 0.4); */
     /* transition: opacity 0.20s; */
 }
 

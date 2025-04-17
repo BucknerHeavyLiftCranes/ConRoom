@@ -102,6 +102,10 @@ function Home() {
         {user?.name || (loading ? "" : "Guest")}
       </header>
       <ActionButton
+        label='See Room Status'
+        action={() => {setTimeout(() => {navigate('/room')}, 800)}}
+      />
+      <ActionButton
         label='Log User Info'
         action={getUserInfo}
       />

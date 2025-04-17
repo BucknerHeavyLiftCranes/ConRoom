@@ -1,6 +1,6 @@
 import styles from "./RoomStatus.module.css"
 import DateTimeDisplay from '../../components/DateTimeDisplayModule/DateTimeDisplay'
-import BriefEventDetails from "../../components/BriefMeetingDetails/BriefEventDetails.jsx"
+import BriefEventDetails from "../../components/BriefEventDetails/BriefEventDetails.jsx"
 import { useEffect, useRef, useState } from "react"
 import { fetchWithAuth, verifyAndExtractResponsePayload } from "../../services/apiService.js"
 import { makeRoute } from '../../services/apiService.js'
