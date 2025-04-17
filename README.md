@@ -1,2 +1,2 @@
-# ConRoom2
+# ConRoom
 Conference Room Schedule App

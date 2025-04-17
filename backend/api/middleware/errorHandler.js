@@ -1,6 +1,7 @@
+/* eslint-disable no-unused-vars */
 import { HTTP_STATUS_CODES } from "../../../constants/constants.js"
 
-const errorHandler = (err, req, res, next) => { // could include "next" but in this case will only be used when an error is thrown and execution stopped.
+const errorHandler = (err, req, res, next) => { // must include "next" for proper param placing but it won't be used when an error is thrown because execution is stopped.
     const statusCode = res.statusCode ? res.statusCode: 500;
     switch(statusCode){
         case HTTP_STATUS_CODES.VALIDATION_ERROR:

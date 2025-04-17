@@ -1,0 +1,42 @@
+.eventCard {
+    border: 2px solid black;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 16px 0;
+    width: 350px;
+    background-color: #fff;
+  }
+  
+  .eventDate {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #555;
+  }
+  
+  .eventContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+  }
+  
+  .eventTitle {
+    font-size: 1rem;
+    font-weight: 600;
+    color: black;
+    max-width: 60%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .eventTime {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #333;
+    white-space: nowrap;
+    text-align: right;
+  }
+  
+

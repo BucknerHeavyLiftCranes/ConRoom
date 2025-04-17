@@ -11,7 +11,8 @@
         "pkief.material-icon-theme",
         "ms-azuretools.vscode-docker",
         "esbenp.prettier-vscode",
-        "skyran.js-jsx-snippets"
+        "skyran.js-jsx-snippets",
+        "ms-vsliveshare.vsliveshare"
       ],
       "settings": {
         "eslint.enable": true,
