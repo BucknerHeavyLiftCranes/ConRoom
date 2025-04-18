@@ -43,7 +43,7 @@ function RoomStatus() {
       if (eventsInfo.length === 0) {
         return []
       }
-      
+      // console.log(eventsInfo)
       /** @type {OutlookEventDetails[]} */
       const events = eventsInfo.map( (eventInfo) => OutlookEventDetails.fromObject(eventInfo))
       // console.log(events)
@@ -98,6 +98,7 @@ function RoomStatus() {
 
       for (let event of events) {
         if (event.status() == "In Progress") { // assuming code works as intended, there can only ever be one 'In Progress' meeting.
+          console.log(event)
           setIsBusy(true)
           setCurrentStatus("BUSY")
           setCurrentEvent(event)
@@ -109,6 +110,7 @@ function RoomStatus() {
         }
       }
 
+      // console.log(events)
       return sortEventsByStartTime(events)
     } catch (err) {
       console.error(err)
@@ -158,7 +160,12 @@ function RoomStatus() {
 
         <div className={currentEvent ?  styles.visibleDetails : styles.hiddenDetails}>
           <p><span>Meeting: </span>{currentEvent ? currentEvent.subject : ""}</p>
-          <p><span>Duration: </span>{currentEvent ? currentEvent.getFormattedTimeRange() : ""}</p>
+          <p><span>Date: </span>
+            {currentEvent ?
+              (currentEvent.startDate === currentEvent.endDate ? currentEvent.startDate : `${currentEvent.startDate} - ${currentEvent.endDate}`) 
+            : ""}
+          </p>
+          <p><span>Time: </span>{currentEvent ? currentEvent.getFormattedTimeRange() : ""}</p>
           <p><span>Status: </span>{currentEvent ? currentEvent.status() : ""}</p>
         </div>
 
