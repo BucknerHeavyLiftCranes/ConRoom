@@ -9,11 +9,11 @@ function Login() {
     const { authenticated, loading } = useAuth();
 
     if (loading) {
-        return <div>Loading...</div>; // or a spinner
+        return null;
     }
 
     if (authenticated) {
-        return <Navigate to="/home" replace />;
+        return <Navigate to="/room" replace />; // Might delete this later
     }
     
     /**
