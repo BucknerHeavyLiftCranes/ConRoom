@@ -21,13 +21,14 @@ function BriefEventDetails({ events, eventsLoading, timeLeft }) {
             </p>)
     }
     
-    if (events.length === 0){ 
-        return <p><strong><em>No Events Today</em></strong></p>
-    }
 
     events = events.filter(
         (event) => event.status() != "In Progress" && event.status() != "Completed"
     ) // exclude past and ongoing events
+
+    if (events.length === 0){ 
+        return <p><strong><em>No Upcoming Meetings</em></strong></p>
+    }
  
   return (
     // <>
