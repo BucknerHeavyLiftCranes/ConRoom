@@ -16,13 +16,19 @@ function Logout() {
       window.location.href = makeRoute("auth/logout")
   
   }
+
+  if (loading) {
+    return null
+  }
+
+  if(!user.name) {
+    user.name = ""
+  }
   
-    
   return (
     <div className={styles.logoutContainer}>
       <header className={styles.pageTitle}>
-        Are you sure you want log out, {user?.name.split(" ")[0] || (loading ? "" : "Guest")}
-        
+        Are you sure you want log out, {user ? (loading ? "" : user.name.split(" ")[0]) : ""} 
       </header>
       
       <br/>
@@ -36,7 +42,7 @@ function Logout() {
 
           <ActionButton
             label="No"
-            action={() => {setTimeout(() => {navigate('/home')}, 800)}}
+            action={() => {setTimeout(() => {navigate(-1)}, 800)}}
             overrideStyles='noButton'
           />
       </div>
