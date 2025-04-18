@@ -45,7 +45,7 @@ const getEnv = () => ({
 
 /**
  * @public
- * Append query paramter to determine final redirect to Home page or Room Rtatus page.
+ * Append query parameter to determine final redirect to Home page or Room Status page.
  * @route /api/auth/roomLogin
  */
 export const roomLoginFlow = expressAsyncHandler(async (req, res) => {
