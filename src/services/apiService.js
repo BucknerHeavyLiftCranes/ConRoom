@@ -6,7 +6,7 @@ import { ResponseError } from "../../errors/ApiError";
  * @returns Absolute API path.
  */
 export const makeRoute = (endpoint) => {
-    return `http://localhost:5173/api/${endpoint}`
+    return `http://localhost:5173/api/${endpoint}` // Change this to production API
 }
 
 /**
