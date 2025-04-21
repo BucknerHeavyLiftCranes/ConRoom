@@ -1,13 +1,21 @@
-import {useState, useEffect} from 'react'
+import { useState, useEffect } from 'react'
 import styles from './DateTimeDisplay.module.css'
-
+import PropTypes from 'prop-types';
 
 /**
  * Displays current date and time (based on local machine).
+ * @param {Object} props
+ * @param {string} [props.format] time format (either `12-hour` or `24-hour`)
  * @returns A date and time display.
  */
-function DateTimeDisplay() {
+function DateTimeDisplay({ format="12-hour" }) {
+    if (format !== "12-hour" && format !== "24-hour") {
+        console.log(format)
+        throw new Error("Invalid time format passed")
+    }
+
     const [dateTime, setDateTime] = useState(new Date());
+    const isTwelveHourFormat = format === "12-hour" ? true : false
 
     useEffect(() => {
         const intervalID =  setInterval(() => {
@@ -32,15 +40,15 @@ function DateTimeDisplay() {
         // return `${hours}:${mins}`;
         // return `${hours}:${mins}:${secs}`;
     
-        // if (format) {
+        if (isTwelveHourFormat) {
         // 12-hour format
         // const meridiem = hours >= 12 ? "PM" : "AM";
         hours = hours % 12 || 12; // Convert to 12-hour format
         return `${hours}:${mins}`; //return `${hours}:${mins} ${meridiem}`;
-        // } else {
+        } else {
             // 24-hour format
-            // return `${hours}:${mins}`;
-        // }
+            return `${hours}:${mins}`;
+        }
     }
 
     /**
@@ -69,6 +77,10 @@ function DateTimeDisplay() {
             </div>
         </div>
     )
+}
+
+DateTimeDisplay.propTypes = {
+    format: PropTypes.string.isRequired
 }
 
 export default DateTimeDisplay
