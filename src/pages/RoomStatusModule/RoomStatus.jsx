@@ -7,23 +7,39 @@ import { makeRoute } from '../../services/apiService.js'
 import { OutlookEventDetails } from "../../models/OutlookEventDetails.js"
 import { ResponseError } from "../../../errors/ApiError.js"
 import { useUser } from "../../../context/exports/useUser.js"
+import ActionButton from "../../components/ActionButtonModule/ActionButton.jsx"
+// eslint-disable-next-line no-unused-vars
+import { StaticEventRequest } from "../../models/StaticEventRequest.js"
+// eslint-disable-next-line no-unused-vars
+import { EventRequest } from "../../models/EventRequest.js"
+// eslint-disable-next-line no-unused-vars
+import Logo from "../../components/LogoModule/Logo.jsx"
 
 /**
- * Page displaying the status of a room and upcoming meetings for a certain time period
- * @param {Object} props 
- * @param {} [props.room] Details about the room being monitored.
- * @returns 
+ * Page displaying the status of a room and its upcoming meetings.
  */
 function RoomStatus() {
   const REFRESH_INTERVAL = 10000 //30000 // 30 seconds
   const timeLeftRef = useRef(REFRESH_INTERVAL);
-  const [ timeLeft, setTimeLeft ] = useState(REFRESH_INTERVAL)
   const { user, loading } = useUser()
-  const [eventsLoading, setEventsLoading] = useState(true)
-  const [isBusy, setIsBusy] = useState(false) // isBusy to change styling
-  const [currentStatus, setCurrentStatus] = useState("OPEN") // currentStatus to display "BUSY"
-  const [currentEvent, setCurrentEvent] = useState(null) // currentEvent to display current meeting data
-  const [events, setEvents] = useState([])
+  const [ timeLeft, setTimeLeft ] = useState(REFRESH_INTERVAL)
+  const [ eventsLoading, setEventsLoading ] = useState(true)
+  const [ isBusy, setIsBusy ] = useState(false) // isBusy to change styling
+  const [ currentStatus, setCurrentStatus ] = useState("OPEN") // currentStatus to display "BUSY"
+  const [ currentEvent, setCurrentEvent ] = useState(null) // currentEvent to display current meeting data
+  const [ events, setEvents ] = useState([OutlookEventDetails])
+  const [ timeFormat, setTimeFormat ] = useState(() => {
+    // Run only on first render
+    const savedTimeFormat = localStorage.getItem('timeFormat');
+    // checks if format is 12-hour or 24-hour, defaults to 12-hour if neither
+    return savedTimeFormat === '12-hour' || savedTimeFormat === '24-hour' ? savedTimeFormat : '12-hour'; 
+  })
+
+  const [ isDarkMode, setIsDarkMode ] = useState(() => {
+    // Run only on first render
+    const savedMode = localStorage.getItem('darkMode');
+    return savedMode === 'true'; // Convert string to boolean
+  })
 
   /**
    * Fetch all calendar events from Outlook for logged in account.
@@ -45,7 +61,7 @@ function RoomStatus() {
       }
       // console.log(eventsInfo)
       /** @type {OutlookEventDetails[]} */
-      const events = eventsInfo.map( (eventInfo) => OutlookEventDetails.fromObject(eventInfo))
+      const events = eventsInfo.map((eventInfo) => OutlookEventDetails.fromObject(eventInfo))
       // console.log(events)
       return events
     } catch (err) {
@@ -56,8 +72,8 @@ function RoomStatus() {
 
   /**
    * 
-   * @param {OutlookEventDetails} events 
-   * @returns 
+   * @param {OutlookEventDetails[]} events All events returned by Outlook.
+   * @returns Events sorted by earliest to latest start date.
    */
   const sortEventsByStartTime = (events) => {
     return [...events].sort( (eventA, eventB) => {
@@ -148,14 +164,39 @@ function RoomStatus() {
     return () => clearInterval(intervalID);
   }, []);
 
-  // if (eventsLoading) {
-  //   return (<p className={styles.roomName}>{user?.name || (loading ? "" : "Guest")}</p>)
-  // }
+  useEffect(() => {
+    localStorage.setItem('darkMode', isDarkMode);
+  }, [isDarkMode]);
+
+  const toggleDarkMode = () => {
+    setIsDarkMode(prevMode => !prevMode)
+  }
+
+  useEffect(() => {
+    localStorage.setItem('timeFormat', timeFormat);
+  }, [timeFormat]);
+
+  const toggleTimeFormat = () => {
+    if (timeFormat === '12-hour') {
+      setTimeFormat('24-hour')
+    } else {
+      setTimeFormat('12-hour')
+    }
+  }
+
+  const makeThirtyMinuteEvent = () => {
+    // const staticEvent = new StaticEventRequest()
+  }
 
 
   return (
-    <div className={styles.roomStatusContainer}>
+    <div className={isDarkMode ? styles.roomStatusContainerDarkMode : styles.roomStatusContainer}>
       <div className={isBusy ? styles.busyStatus : styles.openStatus}>
+        {/* <Logo
+          source="../../../settings_icon.png"
+          alt="settings icon"
+          width={30}
+        /> */}
         <p className={styles.roomName}>{user?.name || (loading ? "" : "Guest")}</p>
 
         <div className={currentEvent ?  styles.visibleDetails : styles.hiddenDetails}>
@@ -174,19 +215,38 @@ function RoomStatus() {
       </div>
      
       <div className={styles.infoBox}>
-        <div className={styles.dateTime}><DateTimeDisplay/></div>
+        <div className={styles.dateTime}>
+          <DateTimeDisplay
+            format={timeFormat}
+            darkMode={isDarkMode}
+          />
+          </div>
         <div className={styles.upcomingMeetingsContainer}>
 
           <BriefEventDetails
             events={events}
             eventsLoading={eventsLoading}
             timeLeft={timeLeft}
+            darkMode={isDarkMode}
+          />
+
+          <ActionButton
+            label="Reserve (30 minutes)"
+            action={makeThirtyMinuteEvent}
+          />
+
+          <ActionButton
+            label={timeFormat === "12-hour" ? "24 Hour Format": "12 Hour Format"}
+            action={toggleTimeFormat}
+          />
+
+          <ActionButton
+            label={isDarkMode ? "Turn On Light Mode" : "Turn On Dark Mode"}
+            action={toggleDarkMode}
           />
           
-
         </div>
       </div>
-
     </div>
   )
 }

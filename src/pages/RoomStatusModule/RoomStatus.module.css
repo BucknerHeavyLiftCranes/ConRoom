@@ -8,6 +8,16 @@
     
 }
 
+.roomStatusContainerDarkMode {
+    background-color: hsl(0, 0%, 14%);
+    display: flex;
+    justify-content: center;
+    /* border: 10px solid black; */
+    height: 100vh;
+    width: 100vw;
+    
+}
+
 .busyStatus {
     flex: 3;
     background-color: hsl(24, 100%, 50%);

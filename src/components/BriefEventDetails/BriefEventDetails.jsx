@@ -4,21 +4,25 @@ import styles from './BriefEventDetails.module.css'
 import PropTypes from 'prop-types'
 
 /**
- * Title and time for all reservations in a room within a certain date range.
- * @param {Object} props
- * @param {OutlookEventDetails[]} [props.events] List of events
+ * Title, date, and time of an event.
+ * @param {{events: OutlookEventDetails[], eventsLoading: boolean, timeLeft: number, darkMode: boolean}}
  */
-function BriefEventDetails({ events, eventsLoading, timeLeft }) {
+function BriefEventDetails({ events, eventsLoading, timeLeft, darkMode }) {
     if(!events) {
         console.error("NEITHER AN EVENTS[] NOR EMPTY[] WAS RECIEVED");
-        return <p><strong><em>No Events Today</em></strong></p>
+        return (
+            <p style={ darkMode ? { color: 'white' } : { color: 'black' } }>
+                <strong><em>No Events Received</em></strong>
+            </p>
+        )
     }
 
     if (eventsLoading) {
         return (
-            <p style={{ color: 'black', marginBottom: '10px', fontWeight: 'bold' }}>
+            <p style={ darkMode ? { color: 'white', marginBottom: '10px', fontWeight: 'bold' } : { color: 'black', marginBottom: '10px', fontWeight: 'bold' } }>
                 {timeLeft === 0 ? "Loading now" : `Loading in: ${timeLeft / 1000} seconds`}
-            </p>)
+            </p>
+        )
     }
     
 
@@ -27,26 +31,14 @@ function BriefEventDetails({ events, eventsLoading, timeLeft }) {
     ) // exclude past and ongoing events
 
     if (events.length === 0){ 
-        return <p><strong><em>No Upcoming Meetings</em></strong></p>
+        return (
+            <p style={ darkMode ? { color: 'white' } : { color: 'black' } }>
+                <strong><em>No Upcoming Meetings</em></strong>
+            </p>
+        )
     }
  
   return (
-    // <>
-    //     <p style={{color: 'black'}}>Upcoming</p>
-    //     {events.map((event) => (
-    //                 <div 
-    //                 key={event.id}
-    //                 className={styles.detailsContainer}>
-    //                     <p className={styles.eventDate}>{event.startDate}</p>
-    //                     <div className={styles.titleAndTime}>
-    //                         <p className={styles.eventTitle}>{event.subject}</p>
-    //                         <p className={styles.eventTime}>{event.getFormattedTimeRange()}</p>
-    //                     </div>
-    //                 </div> // eventually, turn this into a React component           
-    //             ))
-    //     }
-        
-    // </>
     <>
         <p style={{ color: 'black', marginBottom: '10px', fontWeight: 'bold' }}>Upcoming</p>
         {events.map((event) => (
@@ -59,7 +51,6 @@ function BriefEventDetails({ events, eventsLoading, timeLeft }) {
             </div>
         ))}
     </>
-
   )
 }
 
@@ -68,6 +59,7 @@ BriefEventDetails.propTypes = {
     events: PropTypes.array.isRequired,
     eventsLoading: PropTypes.bool.isRequired,
     timeLeft: PropTypes.number.isRequired,
+    darkMode: PropTypes.bool.isRequired
 }
 
 export default BriefEventDetails

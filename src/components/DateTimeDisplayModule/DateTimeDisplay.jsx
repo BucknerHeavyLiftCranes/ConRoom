@@ -5,13 +5,19 @@ import PropTypes from 'prop-types';
 /**
  * Displays current date and time (based on local machine).
  * @param {Object} props
- * @param {string} [props.format] time format (either `12-hour` or `24-hour`)
+ * @param {string} [props.format] Time format (either `12-hour` or `24-hour`)
+ * @param {boolean} [props.darkMode] Whether page the date time display is on is in light or dark mode.
  * @returns A date and time display.
  */
-function DateTimeDisplay({ format="12-hour" }) {
-    if (format !== "12-hour" && format !== "24-hour") {
-        console.log(format)
-        throw new Error("Invalid time format passed")
+function DateTimeDisplay({ format="12-hour", darkMode }) {
+    try {
+        if (format !== "12-hour" && format !== "24-hour") {
+            console.log(format)
+            throw new Error("Invalid time format passed")
+        }
+    } catch (err) {
+        console.log(err)
+        format = "12-hour"
     }
 
     const [dateTime, setDateTime] = useState(new Date());
@@ -44,6 +50,7 @@ function DateTimeDisplay({ format="12-hour" }) {
         // 12-hour format
         // const meridiem = hours >= 12 ? "PM" : "AM";
         hours = hours % 12 || 12; // Convert to 12-hour format
+        hours = String(hours).padStart(2, 0)
         return `${hours}:${mins}`; //return `${hours}:${mins} ${meridiem}`;
         } else {
             // 24-hour format
@@ -68,11 +75,11 @@ function DateTimeDisplay({ format="12-hour" }) {
 
 
     return (
-        <div className={styles.dateTimeDisplay}>
-            <div className={styles.time}>
+        <div className={darkMode ? styles.dateTimeDisplayDarkMode: styles.dateTimeDisplay}>
+            <div className={darkMode ? styles.timeDarkMode : styles.time}>
                 <span>{formatTime()}</span>
             </div>
-            <div className={styles.date}>
+            <div className={ darkMode ? styles.dateDarkMode : styles.date}>
                 <span>{formatDate()}</span>
             </div>
         </div>
@@ -80,7 +87,8 @@ function DateTimeDisplay({ format="12-hour" }) {
 }
 
 DateTimeDisplay.propTypes = {
-    format: PropTypes.string.isRequired
+    format: PropTypes.string.isRequired,
+    darkMode: PropTypes.bool.isRequired
 }
 
 export default DateTimeDisplay
