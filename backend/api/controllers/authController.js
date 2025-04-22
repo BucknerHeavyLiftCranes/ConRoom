@@ -38,7 +38,8 @@ const getEnv = () => ({
     homePageUrl: process.env.HOME_PAGE_URL,
     roomStatusPageUrl: process.env.ROOM_STATUS_PAGE_URL,
     loginPageUrl: process.env.LOGIN_PAGE_URL,
-    mode: process.env.MODE
+    mode: process.env.MODE,
+    apiRoot: process.env.API_ROOT
   });
 
 //Perform Microsoft SSO Authentication to log a user in and return a secure access token for authorized site access.
@@ -113,8 +114,11 @@ export const authFlow = expressAsyncHandler(async (req, res) => {
     
     // if code is valid but no token, redirect to token endpoint
     } else if (authCode != null && accessToken == null){ 
+        const tokenURL = new URL(`${env.apiRoot}/auth/token`);
+        tokenURL.searchParams.append('code', authCode);
+        tokenURL.searchParams.append('state', rawState);
         console.log('Redirecting to token endpoint')
-            res.redirect(`/api/auth/token?code=${authCode}&state=${rawState}`)
+        res.redirect(tokenURL.toString())
     
     //if code and token are valid, sends decoded user info
     }else if (authCode != null && accessToken != null){
@@ -179,6 +183,8 @@ export const createAccessToken = expressAsyncHandler(async (req, res) => {
         })
 
         if (!tokenResponse.ok) {
+            const errorDetails = await tokenResponse.text(); // sometimes it's not JSON!
+            console.error("Microsoft token error:", errorDetails);
             res.status(400)
             throw new Error("Failed to fetch access token");
         }
