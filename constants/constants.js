@@ -30,7 +30,7 @@ export const timeZones = {
  * @namespace tzc
  */
 export const tzc = {
-    estFormatter: new Intl.DateTimeFormat('en-US', {
+    americaNewYorkFormatter: new Intl.DateTimeFormat('en-US', {
         timeZone: 'America/New_York',
         year: 'numeric',
         month: '2-digit',

@@ -108,8 +108,8 @@ export default class OutlookEvent {
         switch(timezone) {
             case "Eastern Standard Time":
                 return {
-                    date: tzc.estFormatter.format(dateAsDateObject).split(",")[0],
-                    time: tzc.estFormatter.format(dateAsDateObject).split(",")[1].trim().slice(0, 5)
+                    date: tzc.americaNewYorkFormatter.format(dateAsDateObject).split(",")[0],
+                    time: tzc.americaNewYorkFormatter.format(dateAsDateObject).split(",")[1].trim().slice(0, 5)
                 }
             default:
                 return {
