@@ -5,7 +5,11 @@ import PropTypes from 'prop-types'
 
 /**
  * Title, date, and time of an event.
- * @param {{events: OutlookEventDetails[], eventsLoading: boolean, timeLeft: number, darkMode: boolean}}
+ * @param {Object} props
+ * @param {OutlookEventDetails[]} [props.events]
+ * @param {boolean} [props.eventsLoading]
+ * @param {number} [props.timeLeft]
+ * @param {boolean} [props.darkMode]
  */
 function BriefEventDetails({ events, eventsLoading, timeLeft, darkMode }) {
     if(!events) {
@@ -40,13 +44,15 @@ function BriefEventDetails({ events, eventsLoading, timeLeft, darkMode }) {
  
   return (
     <>
-        <p style={{ color: 'black', marginBottom: '10px', fontWeight: 'bold' }}>Upcoming</p>
+        <p style={darkMode ? { color: 'white', marginBottom: '10px', fontWeight: 'bold' } : { color: 'black', marginBottom: '10px', fontWeight: 'bold' }}>
+            Upcoming
+        </p>
         {events.map((event) => (
-            <div key={event.id} className={styles.eventCard}>
-                <p className={styles.eventDate}>{event.startDate}</p>
+            <div key={event.id} className={darkMode ? styles.eventCardDarkMode: styles.eventCard}>
+                <p className={darkMode ? styles.eventDateDarkMode: styles.eventDate}>{event.startDate}</p>
                 <div className={styles.eventContent}>
-                    <p className={styles.eventTitle}>{event.subject}</p>
-                    <p className={styles.eventTime}>{event.getFormattedTimeRange()}</p>
+                    <p className={darkMode ? styles.eventTitleDarkMode: styles.eventTitle}>{event.subject}</p>
+                    <p className={darkMode ? styles.eventTimeDarkMode: styles.eventTime}>{event.getFormattedTimeRange()}</p>
                 </div>
             </div>
         ))}
