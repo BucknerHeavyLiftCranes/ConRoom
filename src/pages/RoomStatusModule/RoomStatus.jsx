@@ -264,18 +264,7 @@ function RoomStatus() {
             label={`Reserve (${DEFAULT_EVENT_LENGTH} minutes)`}
             action={makeStaticEvent}
             isDisabled={isDisabled}
-          />
-
-          {/* <ActionButton
-            label={timeFormat === "12-hour" ? "24 Hour Format": "12 Hour Format"}
-            action={toggleTimeFormat}
-          />
-
-          <ActionButton
-            label={isDarkMode ? "Turn On Light Mode" : "Turn On Dark Mode"}
-            action={toggleDarkMode}
-          /> */}
-          
+          />        
         </div>
       </div>
 
