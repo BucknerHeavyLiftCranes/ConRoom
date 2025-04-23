@@ -6,11 +6,12 @@ import styles from './ActionButton.module.css'
  * A button that performs a specified action.
  * @param {Object} props
  * @param {string} [props.label] Label for the button.
+ * @param {Function} [props.action] Action performed when the button is clicked.
+ * * @param {boolean} [props.isDisabled] Whether button is disabled or not.
  * @param {string} [props.overrideStyles] If given, overrides default styling of the button.
- * @param {Function} [props.action] Action (function) performed when the button is clicked.
  * @returns Functional labeled button that - optionally - performs an action.
  */
-function ActionButton({ label, action, overrideStyles }) {
+function ActionButton({ label, action, isDisabled, overrideStyles }) {
   let styleClass = overrideStyles ? styles[overrideStyles] : styles.actionButton
   
   const handleOnClick = (fn) => {
@@ -21,8 +22,10 @@ function ActionButton({ label, action, overrideStyles }) {
 
   return (
     <button 
+      style={isDisabled ? { backgroundColor: 'gray'} : null}
       className={styleClass} 
-      onClick={() => {handleOnClick(action)}}>
+      onClick={() => {handleOnClick(action)}}
+      disabled={isDisabled}>
         {label}
     </button>
   )
@@ -31,6 +34,7 @@ function ActionButton({ label, action, overrideStyles }) {
 ActionButton.propTypes = {
   label: PropTypes.string.isRequired,  // title is a required string
   action: PropTypes.function,
+  isDisabled: PropTypes.bool,
   overrideStyles: PropTypes.string
 };
 
