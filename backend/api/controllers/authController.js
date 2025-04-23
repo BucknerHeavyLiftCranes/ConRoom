@@ -50,7 +50,7 @@ const getEnv = () => ({
  * @route /api/auth/roomLogin
  */
 export const roomLoginFlow = expressAsyncHandler(async (req, res) => {
-    res.redirect("/api/auth/login?redirectToRoom=true")
+    res.redirect(`/api/auth/login?redirectToRoom=true`)
 })
 
 
@@ -250,7 +250,7 @@ export const createAccessToken = expressAsyncHandler(async (req, res) => {
         setAuthCookies(res, accessToken, savedAdmin.id, accessTokenExperationTime, shouldResetUserId)
 
         // redirect back to finish authentication
-            res.redirect(`/api/auth?code=${authCode}&state=${rawState}`)
+            res.redirect(`${env.apiRoot}/auth?code=${authCode}&state=${rawState}`)
     }
 })
 
