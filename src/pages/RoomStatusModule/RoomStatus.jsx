@@ -89,16 +89,6 @@ function RoomStatus() {
    */
   const updateRoomStatus = async () => {
     try {
-      // let mustChangeEvent = false
-    
-      // setCurrentEvent((prevEvent) => {
-      //   if (prevEvent && prevEvent.status() === "In Progress") {
-      //     return prevEvent; // Don't update if it's already "In Progress"
-      //   }else{
-      //     mustChangeEvent = true
-      //   }
-      // })
-    
       const events = await getAllEvents() // where the magic happens (syncing with Outlook)
 
       if (events.length === 0) {
@@ -108,15 +98,8 @@ function RoomStatus() {
           return []
       }
 
-      // console.log(events)
-
-      // if(!mustChangeEvent){ //if we don't have to update the meeting, just exit the function
-      //   return events
-      // }
-
       for (let event of events) {
         if (event.status() == "In Progress") { // assuming code works as intended, there can only ever be one 'In Progress' meeting.
-          console.log(event)
           setIsBusy(true)
           setCurrentStatus("BUSY")
           setCurrentEvent(event)
@@ -138,19 +121,9 @@ function RoomStatus() {
     }
   }
 
-  // const staticEvent = new StaticEventRequest("Static Meeting", "America/New_York", {}, [], DEFAULT_MEETING_LENGTH)
-  // // console.log(staticEvent)
-  //  const eventDetails = staticEvent.toOutlookEventDetails()
-  // //  console.log("Conflicts: ", eventDetails.conflictsWith(eventDetails))
-  // try {
-  //   // console.log(tzc.americaNewYorkFormatter.format(new Date(staticEvent.start.dateTime)))
-  //   // console.log(staticEvent.start.dateTime)
-  // } catch (err) {
-  //   console.error(err)
-  // }
   
   /**
-   * @param {OutlookEventDetails[]} events all events for a room.
+   * @param {OutlookEventDetails[]} events All events for a room.
    * @returns {boolean} Whether or not a reservation can be made.
    */
   const isReservable = (events) => { // 🚨🚨🚨 CONSIDER REFETCHING EVENTS IN CASE SOMEONE MAKES ONE IN THE 30 SECOND INTERVAL BEFORE THE NEXT SYNC 🚨🚨🚨
@@ -309,12 +282,12 @@ function RoomStatus() {
       <FullScreenPopup isOpen={isSettingsOpen} onClose={() => {setIsSettingsOpen(false)}}>
         <h2 style={{color: "black"}}>Settings</h2>
         <ActionButton
-          label={timeFormat === "12-hour" ? "24 Hour Format": "12 Hour Format"}
+          label={`${timeFormat === "12-hour" ? "24": "12"} Hour Format`}
           action={toggleTimeFormat}
         />
 
         <ActionButton
-          label={isDarkMode ? "Turn On Light Mode" : "Turn On Dark Mode"}
+          label={`Turn on ${isDarkMode ? "Light" : "Dark"} Mode`}
           action={toggleDarkMode}
         />
       </FullScreenPopup>
