@@ -20,7 +20,7 @@ import FullScreenPopup from "../../components/FullScreenPopupModule/FullScreenPo
  */
 function RoomStatus() {
   const REFRESH_INTERVAL = 10000 //30000 // 30 seconds
-  const DEFAULT_MEETING_LENGTH = 30
+  const DEFAULT_EVENT_LENGTH = 30
   const timeLeftRef = useRef(REFRESH_INTERVAL);
   const { user, loading } = useUser()
   const [ timeLeft, setTimeLeft ] = useState(REFRESH_INTERVAL)
@@ -163,7 +163,7 @@ function RoomStatus() {
       // console.log(events.length)
       // console.log("EVENTS:", events[0])
 
-      const staticEvent = new StaticEventRequest("Static Meeting", "America/New_York", {}, [], DEFAULT_MEETING_LENGTH) // even if completed events are returned, don't affect future ones.
+      const staticEvent = new StaticEventRequest("Static Meeting", "America/New_York", {}, [], DEFAULT_EVENT_LENGTH) // even if completed events are returned, don't affect future ones.
       const staticEventDetails = staticEvent.toOutlookEventDetails()
       for (let event of events) {
         // console.log(event)
@@ -229,9 +229,9 @@ function RoomStatus() {
     }
   }
 
-  const makeThirtyMinuteEvent = async () => {
+  const makeStaticEvent = async () => {
     // const staticEvent = new StaticEventRequest()
-    console.log("Resevation Made!")
+    console.log("Reservation Made!")
 
     // const newEvent = await fetchWithAuth(makeRoute("/calendar/create"), {
 
@@ -289,8 +289,8 @@ function RoomStatus() {
           />
 
           <ActionButton
-            label="Reserve (30 minutes)"
-            action={makeThirtyMinuteEvent}
+            label={`Reserve (${DEFAULT_EVENT_LENGTH} minutes)`}
+            action={makeStaticEvent}
             isDisabled={isDisabled}
           />
 
