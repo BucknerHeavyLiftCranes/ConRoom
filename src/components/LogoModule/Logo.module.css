@@ -1,3 +1,14 @@
 .logo {
     width: 100%;
 }
+
+.clickableLogo {
+    cursor: pointer;
+}
+/* .clickableLogo:hover {
+    filter: brightness(10.5)
+} */
+
+.clickableLogo:active{
+    transform: scale(0.95);
+}
