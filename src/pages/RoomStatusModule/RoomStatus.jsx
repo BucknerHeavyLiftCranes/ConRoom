@@ -37,7 +37,6 @@ function RoomStatus() {
     // checks if format is 12-hour or 24-hour, defaults to 12-hour if neither
     return savedTimeFormat === '12-hour' || savedTimeFormat === '24-hour' ? savedTimeFormat : '12-hour'; 
   })
-
   const [ isDarkMode, setIsDarkMode ] = useState(() => {
     // Run only on first render
     const savedMode = localStorage.getItem('darkMode');
@@ -258,7 +257,7 @@ function RoomStatus() {
         {/* <p className={styles.roomName}>{user?.name || (loading ? "" : "Guest")}</p> */}
 
         <div className={currentEvent ?  styles.visibleDetails : styles.hiddenDetails}>
-          <p><span>Meeting: </span>{currentEvent ? currentEvent.subject : ""}</p>
+          <p><span>Subject: </span>{currentEvent ? currentEvent.subject : ""}</p>
           <p><span>Date: </span>
             {currentEvent ?
               (currentEvent.startDate === currentEvent.endDate ? currentEvent.startDate : `${currentEvent.startDate} - ${currentEvent.endDate}`) 
