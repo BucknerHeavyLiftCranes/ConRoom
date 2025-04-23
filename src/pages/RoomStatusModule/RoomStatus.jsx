@@ -8,18 +8,19 @@ import { OutlookEventDetails } from "../../models/OutlookEventDetails.js"
 import { ResponseError } from "../../../errors/ApiError.js"
 import { useUser } from "../../../context/exports/useUser.js"
 import ActionButton from "../../components/ActionButtonModule/ActionButton.jsx"
-// eslint-disable-next-line no-unused-vars
 import { StaticEventRequest } from "../../models/StaticEventRequest.js"
 // eslint-disable-next-line no-unused-vars
 import { EventRequest } from "../../models/EventRequest.js"
 // eslint-disable-next-line no-unused-vars
 import Logo from "../../components/LogoModule/Logo.jsx"
+import FullScreenPopup from "../../components/FullScreenPopupModule/FullScreenPopup.jsx"
 
 /**
  * Page displaying the status of a room and its upcoming meetings.
  */
 function RoomStatus() {
   const REFRESH_INTERVAL = 10000 //30000 // 30 seconds
+  const DEFAULT_MEETING_LENGTH = 30
   const timeLeftRef = useRef(REFRESH_INTERVAL);
   const { user, loading } = useUser()
   const [ timeLeft, setTimeLeft ] = useState(REFRESH_INTERVAL)
@@ -28,6 +29,8 @@ function RoomStatus() {
   const [ currentStatus, setCurrentStatus ] = useState("OPEN") // currentStatus to display "BUSY"
   const [ currentEvent, setCurrentEvent ] = useState(null) // currentEvent to display current meeting data
   const [ events, setEvents ] = useState([OutlookEventDetails])
+  const [ isDisabled, setIsDisabled ] = useState(true)
+  const [ isSettingsOpen, setIsSettingsOpen ] = useState(false)
   const [ timeFormat, setTimeFormat ] = useState(() => {
     // Run only on first render
     const savedTimeFormat = localStorage.getItem('timeFormat');
@@ -136,11 +139,53 @@ function RoomStatus() {
     }
   }
 
+  // const staticEvent = new StaticEventRequest("Static Meeting", "America/New_York", {}, [], DEFAULT_MEETING_LENGTH)
+  // // console.log(staticEvent)
+  //  const eventDetails = staticEvent.toOutlookEventDetails()
+  // //  console.log("Conflicts: ", eventDetails.conflictsWith(eventDetails))
+  // try {
+  //   // console.log(tzc.americaNewYorkFormatter.format(new Date(staticEvent.start.dateTime)))
+  //   // console.log(staticEvent.start.dateTime)
+  // } catch (err) {
+  //   console.error(err)
+  // }
+  
+  /**
+   * @param {OutlookEventDetails[]} events all events for a room.
+   * @returns {boolean} Whether or not a reservation can be made.
+   */
+  const isReservable = (events) => { // 🚨🚨🚨 CONSIDER REFETCHING EVENTS IN CASE SOMEONE MAKES ONE IN THE 30 SECOND INTERVAL BEFORE THE NEXT SYNC 🚨🚨🚨
+    try {
+      if (events.length === 0) {
+        return true
+      }
+
+      // console.log(events.length)
+      // console.log("EVENTS:", events[0])
+
+      const staticEvent = new StaticEventRequest("Static Meeting", "America/New_York", {}, [], DEFAULT_MEETING_LENGTH) // even if completed events are returned, don't affect future ones.
+      const staticEventDetails = staticEvent.toOutlookEventDetails()
+      for (let event of events) {
+        // console.log(event)
+        if (event.conflictsWith(staticEventDetails)) {
+          return false
+        }
+      }
+      return true  
+    } catch (err) {
+      console.error(err)
+      return false // to be safe, disable button if the function breaks
+      
+    }
+  }
+
   useEffect(() => {
     const intervalID = setInterval(() => {
       (async () => {
         try {
           const allEvents = await updateRoomStatus();
+          // console.log(isReservable(allEvents))
+          setIsDisabled(!isReservable(allEvents))
           setEvents(allEvents);   
         } catch (err) {
           console.error(err)
@@ -184,20 +229,33 @@ function RoomStatus() {
     }
   }
 
-  const makeThirtyMinuteEvent = () => {
+  const makeThirtyMinuteEvent = async () => {
     // const staticEvent = new StaticEventRequest()
+    console.log("Resevation Made!")
+
+    // const newEvent = await fetchWithAuth(makeRoute("/calendar/create"), {
+
+    // })
   }
 
 
   return (
     <div className={isDarkMode ? styles.roomStatusContainerDarkMode : styles.roomStatusContainer}>
       <div className={isBusy ? styles.busyStatus : styles.openStatus}>
-        {/* <Logo
-          source="../../../settings_icon.png"
-          alt="settings icon"
-          width={30}
-        /> */}
-        <p className={styles.roomName}>{user?.name || (loading ? "" : "Guest")}</p>
+        <div className={styles.topLine}>
+          <p className={styles.roomName}>{user?.name || (loading ? "" : "Guest")}</p>
+          <div className={styles.settingsIcon}>
+            <Logo
+              source="../../../settings_icon_white.png"
+              alt="settings icon"
+              width={50}
+              clickable={true}
+              action={() => {setIsSettingsOpen(true)}}
+            />
+          </div>
+        </div>
+        
+        {/* <p className={styles.roomName}>{user?.name || (loading ? "" : "Guest")}</p> */}
 
         <div className={currentEvent ?  styles.visibleDetails : styles.hiddenDetails}>
           <p><span>Meeting: </span>{currentEvent ? currentEvent.subject : ""}</p>
@@ -233,9 +291,10 @@ function RoomStatus() {
           <ActionButton
             label="Reserve (30 minutes)"
             action={makeThirtyMinuteEvent}
+            isDisabled={isDisabled}
           />
 
-          <ActionButton
+          {/* <ActionButton
             label={timeFormat === "12-hour" ? "24 Hour Format": "12 Hour Format"}
             action={toggleTimeFormat}
           />
@@ -243,10 +302,23 @@ function RoomStatus() {
           <ActionButton
             label={isDarkMode ? "Turn On Light Mode" : "Turn On Dark Mode"}
             action={toggleDarkMode}
-          />
+          /> */}
           
         </div>
       </div>
+
+      <FullScreenPopup isOpen={isSettingsOpen} onClose={() => {setIsSettingsOpen(false)}}>
+        <h2 style={{color: "black"}}>Settings</h2>
+        <ActionButton
+          label={timeFormat === "12-hour" ? "24 Hour Format": "12 Hour Format"}
+          action={toggleTimeFormat}
+        />
+
+        <ActionButton
+          label={isDarkMode ? "Turn On Light Mode" : "Turn On Dark Mode"}
+          action={toggleDarkMode}
+        />
+      </FullScreenPopup>
     </div>
   )
 }
