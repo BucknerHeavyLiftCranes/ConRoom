@@ -1,4 +1,6 @@
+import { tzc } from "../../constants/constants";
 import { EventRequest } from "./EventRequest";
+import { OutlookEventDetails } from "./OutlookEventDetails";
 
 /**
  * @typedef {Object} emailAddress
@@ -24,8 +26,10 @@ export class StaticEventRequest extends EventRequest{
         subject, 
         // /** @type {emailAddress} */
         // organizer,
+        // /** @type {dateTimeAndZone} */
+        // start, 
         /** @type {string} */
-        start, 
+        timezone,
         /** @type {location} */
         location = {},
         /** @type {emailAddress[]} */
@@ -33,18 +37,66 @@ export class StaticEventRequest extends EventRequest{
         /** @type {number} */
         meetingLength){
             
-        const end = StaticEventRequest.calculateEndTime(start, meetingLength)
+        /** @type {dateTimeAndZone} */
+        const start = {
+            dateTime: EventRequest.toISO({ timezone: timezone }), 
+            timezone: timezone
+        }
+        const endDateTime = StaticEventRequest.calculateEndDateTime(start, meetingLength)
+
+        /** @type {dateTimeAndZone} */
+        const end = {
+            dateTime: endDateTime, 
+            timezone: timezone
+        }
         
         super(subject, start, end, location, attendees)
+        this._rawStart = start.dateTime
+        this._rawEnd = end.dateTime
     }
 
     /**
-     * Calculate event's end time.
-     * @param {string} start - event start time
-     * @param {number} meetingLength -  event length (in minutes)
-     * @returns {string} End time of the meeting (in ISO Format).
+     * Calculate meeting's end time.
+     * @param {dateTimeAndZone} start - meeting start time
+     * @param {number} meetingLength -  meeting length (in minutes)
+     * @returns {string} End time of the meeting (in HH:MM).
      */
-    static calculateEndTime(start, meetingLength) {
+    static calculateEndDateTime(start, meetingLength) {
+        // const [hours, minutes] = start.split(":").map(Number);
+        const now = new Date(start.dateTime)
+        const hours = now.getHours()
+        const minutes = now.getMinutes()
+        const endTime = new Date();
+        endTime.setHours(hours, minutes, 0, 0);
+        endTime.setMinutes(endTime.getMinutes() + meetingLength); // Add meeting length
 
+        const endDateTime = new Date(
+            Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), endTime.getHours(), endTime.getMinutes(), endTime.getSeconds())
+        );
+
+        return EventRequest.toISO({ date: endDateTime })
+        
+        //endTime.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false }); // "HH:mm"
+    }
+
+    toOutlookEventDetails() {
+        const start = {
+            date: tzc.americaNewYorkFormatter.format(new Date(this._rawStart)).split(",")[0],
+            time: tzc.americaNewYorkFormatter.format(new Date(this._rawStart)).split(",")[1].trim().slice(0, 5)
+        }
+
+        const end = {
+            date: tzc.americaNewYorkFormatter.format(new Date(this._rawEnd)).split(",")[0],
+            time: tzc.americaNewYorkFormatter.format(new Date(this._rawEnd)).split(",")[1].trim().slice(0, 5)
+        }
+
+        // return {start, end}
+        
+        return new OutlookEventDetails(
+            null,
+            this.subject,
+            start,
+            end
+        )
     }
 }
