@@ -9,7 +9,7 @@
 }
 
 .roomStatusContainerDarkMode {
-    background-color: hsl(0, 0%, 14%);
+    background-color: hsl(0, 0%, 14%); /* dar mode background color*/
     display: flex;
     justify-content: center;
     /* border: 10px solid black; */
@@ -40,6 +40,26 @@
 
 .closedStatus {
     flex: 3;
+    background-color: hsl(0, 100%, 43%);;
+    display: flex;
+    flex-direction: column;
+    border-right: 10px solid black;
+    height: 100vh;
+    width: 100vw;
+}
+
+.loadingStatus {
+    flex: 3;
+    background-color: hsl(0, 0%, 14%);
+    display: flex;
+    flex-direction: column;
+    border-right: 10px solid black;
+    height: 100vh;
+    width: 100vw;
+}
+
+.closedStatus {
+    flex: 3;
     background-color: #d10913;
     display: flex;
     flex-direction: column;
@@ -52,7 +72,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #0960d1;
+    background-color: hsl(214, 92%, 20%);
     margin-top: 0;
     padding-top: 0;
 }
@@ -115,4 +135,21 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    /* margin-bottom: auto; */
+    min-height: 35rem;
+}
+
+.reserveButton {
+    align-self: flex-end;
+}
+
+.buttonControls {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* border: 3px solid black; */
+    /* border-radius: 5px; */
+    margin-bottom: 50px;
 }

@@ -9,9 +9,6 @@ import { ResponseError } from "../../../errors/ApiError.js"
 import { useUser } from "../../../context/exports/useUser.js"
 import ActionButton from "../../components/ActionButtonModule/ActionButton.jsx"
 import { StaticEventRequest } from "../../models/StaticEventRequest.js"
-// eslint-disable-next-line no-unused-vars
-import { EventRequest } from "../../models/EventRequest.js"
-// eslint-disable-next-line no-unused-vars
 import Logo from "../../components/LogoModule/Logo.jsx"
 import FullScreenPopup from "../../components/FullScreenPopupModule/FullScreenPopup.jsx"
 
@@ -19,24 +16,63 @@ import FullScreenPopup from "../../components/FullScreenPopupModule/FullScreenPo
  * Page displaying the status of a room and its upcoming meetings.
  */
 function RoomStatus() {
-  const REFRESH_INTERVAL = 10000 //30000 // 30 seconds
+  // Outlook calendar sync interval.
+  const SYNC_INTERVAL = 10000 //30000 // 30 seconds
+
+  // length of a static meeting (in minutes).
   const DEFAULT_EVENT_LENGTH = 30
-  const timeLeftRef = useRef(REFRESH_INTERVAL);
-  const { user, loading } = useUser()
-  const [ timeLeft, setTimeLeft ] = useState(REFRESH_INTERVAL)
+
+  // Room open hour
+  const OPEN_HOUR = 9
+
+  // Room close hour
+  const CLOSE_HOUR = 17
+
+  // track time left until events recieved from Outlook.
+  const timeLeftRef = useRef(SYNC_INTERVAL / 1000);
+
+  // track logged-in user info.
+  const { user, loading } = useUser() 
+
+  // track (in real time) time left until events recieved from Outlook.
+  const [ timeLeft, setTimeLeft ] = useState(SYNC_INTERVAL / 1000) 
+
+  // track if events have been received from Outlook.
   const [ eventsLoading, setEventsLoading ] = useState(true)
-  const [ isBusy, setIsBusy ] = useState(false) // isBusy to change styling
-  const [ currentStatus, setCurrentStatus ] = useState("OPEN") // currentStatus to display "BUSY"
-  const [ currentEvent, setCurrentEvent ] = useState(null) // currentEvent to display current meeting data
+
+  // track if room is in use to change styling.
+  const [ isBusy, setIsBusy ] = useState(false) 
+
+  // currentStatus to display "IN USE".
+  const [ currentStatus, setCurrentStatus ] = useState("OPEN")
+
+  // currentEvent to display current meeting data.
+  const [ currentEvent, setCurrentEvent ] = useState(null) 
+
+  // track the events received from Outlook calendar.
   const [ events, setEvents ] = useState([OutlookEventDetails])
+
+  // track if reservation button can be clicked.
   const [ isDisabled, setIsDisabled ] = useState(true)
-  const [ isSettingsOpen, setIsSettingsOpen ] = useState(false)
+
+  // track if settings panel has been opened.
+  const [ isSettingsOpen, setIsSettingsOpen ] = useState(false) 
+
+  // track (in real time) the closed status of a room
+  const isRoomClosedRef = useRef(isInvalidBusinessHours())
+
+  // track if room is closed (a.k.a outside of business hours).
+  const [ isRoomClosed, setIsRoomClosed ] = useState(isRoomClosedRef.current)
+
+  // track user's time format preference.
   const [ timeFormat, setTimeFormat ] = useState(() => {
     // Run only on first render
     const savedTimeFormat = localStorage.getItem('timeFormat');
     // checks if format is 12-hour or 24-hour, defaults to 12-hour if neither
     return savedTimeFormat === '12-hour' || savedTimeFormat === '24-hour' ? savedTimeFormat : '12-hour'; 
   })
+
+  // track user's theme preference.
   const [ isDarkMode, setIsDarkMode ] = useState(() => {
     // Run only on first render
     const savedMode = localStorage.getItem('darkMode');
@@ -44,7 +80,7 @@ function RoomStatus() {
   })
 
   /**
-   * Fetch all calendar events from Outlook for logged in account.
+   * Fetch all calendar events from Outlook.
    * @returns {Promise<OutlookEventDetails[]>} All events
    */
   const getAllEvents = async () => {
@@ -53,22 +89,64 @@ function RoomStatus() {
 
       /** @type {any[]} */
       const eventsInfo = (await verifyAndExtractResponsePayload(response, "Failed to get current user's information."))
-                          .events
+
       if(!eventsInfo) {
-        throw ResponseError("Could not fetch events")
+        throw new ResponseError("Could not fetch events")
       }
 
       if (eventsInfo.length === 0) {
         return []
       }
-      // console.log(eventsInfo)
       /** @type {OutlookEventDetails[]} */
       const events = eventsInfo.map((eventInfo) => OutlookEventDetails.fromObject(eventInfo))
-      // console.log(events)
       return events
     } catch (err) {
       console.error(err)
       return []
+    }
+  }
+
+
+  /**
+   * Check if room is outside of business hours (closed).
+   * @returns 
+   */
+  function isInvalidBusinessHours() {
+    const now = new Date()
+    // const nowCopy = new Date()
+    // const openTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), OPEN_HOUR, 0, 0)
+    const openTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), OPEN_HOUR, 0, 0)
+    const closeTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), CLOSE_HOUR, 0, 0)
+    // console.log(currentTime)
+    // i.e. !(13 > 9 &&  13 < 17) = !true = false
+    return !(now > openTime && now < closeTime)
+  }
+
+
+  /**
+   * Determine if a static reservation can be made.
+   * @param {OutlookEventDetails[]} events All events for a room.
+   * @returns {boolean} Whether or not a reservation can be made.
+   */
+  const isReservable = (events) => { // 🚨🚨🚨 CONSIDER REFETCHING EVENTS IN CASE SOMEONE MAKES ONE IN THE 30 SECOND INTERVAL BEFORE THE NEXT SYNC 🚨🚨🚨
+    try {
+      if (events.length === 0) {
+        return true
+      }
+
+      const staticEvent = new StaticEventRequest("Static Meeting", {}, [], DEFAULT_EVENT_LENGTH) // even if completed events are returned, don't affect future ones.
+      const staticEventDetails = staticEvent.toOutlookEventDetails()
+
+      for (let event of events) {
+        if (event.conflictsWith(staticEventDetails)) {
+          return false
+        }
+      }
+      return true  
+    } catch (err) {
+      console.error(err)
+      return false // to be safe, disable button if the function breaks
+      
     }
   }
 
@@ -85,7 +163,7 @@ function RoomStatus() {
 
 
   /**
-   * 
+   * Update the status of the page.
    */
   const updateRoomStatus = async () => {
     try {
@@ -98,20 +176,25 @@ function RoomStatus() {
           return []
       }
 
-      for (let event of events) {
-        if (event.status() == "In Progress") { // assuming code works as intended, there can only ever be one 'In Progress' meeting.
-          setIsBusy(true)
-          setCurrentStatus("BUSY")
-          setCurrentEvent(event)
-          break;
-        } else {
-          setIsBusy(false)
-          setCurrentStatus("OPEN")
-          setCurrentEvent(null)
+      if (isRoomClosedRef.current) {
+        setIsBusy(false)
+        setCurrentStatus("CLOSED")
+        setCurrentEvent(null)
+      } else {
+        for (let event of events) {
+          if (event.status() == "In Progress") { // assuming code works as intended, there can only ever be one 'In Progress' meeting.
+            setIsBusy(true)
+            setCurrentStatus("IN USE")
+            setCurrentEvent(event)
+            break;
+          } else {
+            setIsBusy(false)
+            setCurrentStatus("OPEN")
+            setCurrentEvent(null)
+          }
         }
       }
 
-      // console.log(events)
       return sortEventsByStartTime(events)
     } catch (err) {
       console.error(err)
@@ -121,60 +204,34 @@ function RoomStatus() {
     }
   }
 
-  
-  /**
-   * @param {OutlookEventDetails[]} events All events for a room.
-   * @returns {boolean} Whether or not a reservation can be made.
-   */
-  const isReservable = (events) => { // 🚨🚨🚨 CONSIDER REFETCHING EVENTS IN CASE SOMEONE MAKES ONE IN THE 30 SECOND INTERVAL BEFORE THE NEXT SYNC 🚨🚨🚨
-    try {
-      if (events.length === 0) {
-        return true
-      }
 
-      // console.log(events.length)
-      // console.log("EVENTS:", events[0])
-
-      const staticEvent = new StaticEventRequest("Static Meeting", "America/New_York", {}, [], DEFAULT_EVENT_LENGTH) // even if completed events are returned, don't affect future ones.
-      const staticEventDetails = staticEvent.toOutlookEventDetails()
-      for (let event of events) {
-        // console.log(event)
-        if (event.conflictsWith(staticEventDetails)) {
-          return false
-        }
-      }
-      return true  
-    } catch (err) {
-      console.error(err)
-      return false // to be safe, disable button if the function breaks
-      
-    }
-  }
+  // console.log("Room Open:", isRoomOpen())
 
   useEffect(() => {
     const intervalID = setInterval(() => {
       (async () => {
         try {
+          isRoomClosedRef.current = isInvalidBusinessHours()
           const allEvents = await updateRoomStatus();
-          // console.log(isReservable(allEvents))
-          setIsDisabled(!isReservable(allEvents))
-          setEvents(allEvents);   
+          setIsDisabled(!isReservable(allEvents) || isInvalidBusinessHours())
+          setEvents(allEvents); 
+          setIsRoomClosed(isRoomClosedRef.current)
         } catch (err) {
           console.error(err)
         }
       })();
-    }, REFRESH_INTERVAL);
+    }, SYNC_INTERVAL);
   
     return () => clearInterval(intervalID);
   }, []);
 
+  /** Create sync countdown for when the webpage first loads. */
   useEffect(() => {
     const intervalID = setInterval(() => {
       if (timeLeftRef.current === 0) {
-        timeLeftRef.current = REFRESH_INTERVAL
+        timeLeftRef.current = (SYNC_INTERVAL / 1000)
       }
-      timeLeftRef.current -= 1000;
-      // console.log("Countdown:", timeLeftRef.current);
+      timeLeftRef.current -= 1;
       setTimeLeft(timeLeftRef.current);
     }, 1000);
   
@@ -202,18 +259,32 @@ function RoomStatus() {
   }
 
   const makeStaticEvent = async () => {
-    // const staticEvent = new StaticEventRequest()
-    console.log("Reservation Made!")
-
-    // const newEvent = await fetchWithAuth(makeRoute("/calendar/create"), {
-
-    // })
+    const staticEvent = new StaticEventRequest("Static Meeting", {displayName: user.name}, [], DEFAULT_EVENT_LENGTH)
+    try {
+      const response = await fetchWithAuth(makeRoute("calendar/create"), {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(staticEvent)
+      })
+  
+      const newEvent = await verifyAndExtractResponsePayload(response, "Failed to add new meeting") 
+      const newOutlookEventDetails = OutlookEventDetails.fromObject(newEvent)
+      // console.log(newOutlookEventDetails)
+      setIsDisabled(true)
+    } catch (err) {
+        console.error(err)
+    }
   }
+
 
 
   return (
     <div className={isDarkMode ? styles.roomStatusContainerDarkMode : styles.roomStatusContainer}>
-      <div className={isBusy ? styles.busyStatus : styles.openStatus}>
+      <div className={eventsLoading ? styles.loadingStatus : 
+        (isRoomClosed ? styles.closedStatus : 
+          (isBusy ? styles.busyStatus : styles.openStatus))}>
         <div className={styles.topLine}>
           <p className={styles.roomName}>{user?.name || (loading ? "" : "Guest")}</p>
           <div className={styles.settingsIcon}>
@@ -240,7 +311,7 @@ function RoomStatus() {
           <p><span>Status: </span>{currentEvent ? currentEvent.status() : ""}</p>
         </div>
 
-        <header className={styles.roomStatus}>{currentStatus}</header>
+        <header className={styles.roomStatus}>{eventsLoading ? timeLeft : currentStatus}</header>
 
       </div>
      
@@ -250,7 +321,8 @@ function RoomStatus() {
             format={timeFormat}
             darkMode={isDarkMode}
           />
-          </div>
+        </div>
+
         <div className={styles.upcomingMeetingsContainer}>
 
           <BriefEventDetails
@@ -259,26 +331,38 @@ function RoomStatus() {
             timeLeft={timeLeft}
             darkMode={isDarkMode}
           />
+        
+        </div>
 
+        <div style={{margin: "auto"}} className={styles.reserveButton}>
           <ActionButton
             label={`Reserve (${DEFAULT_EVENT_LENGTH} minutes)`}
             action={makeStaticEvent}
             isDisabled={isDisabled}
-          />        
+            overrideStyles="biggerButton"
+          />
         </div>
       </div>
 
-      <FullScreenPopup isOpen={isSettingsOpen} onClose={() => {setIsSettingsOpen(false)}}>
-        <h2 style={{color: "black"}}>Settings</h2>
-        <ActionButton
-          label={`${timeFormat === "12-hour" ? "24": "12"} Hour Format`}
-          action={toggleTimeFormat}
-        />
+      <FullScreenPopup 
+        isOpen={isSettingsOpen} 
+        onClose={() => {setIsSettingsOpen(false)}}
+        label="Settings"
+        darkMode={isDarkMode}
+        >
+        <div className={styles.buttonControls}>
+          <ActionButton
+            label={`Turn on ${isDarkMode ? "Light" : "Dark"} Mode`}
+            action={toggleDarkMode}
+            overrideStyles="biggerButton"
+          />
 
-        <ActionButton
-          label={`Turn on ${isDarkMode ? "Light" : "Dark"} Mode`}
-          action={toggleDarkMode}
-        />
+          <ActionButton
+            label={`${timeFormat === "12-hour" ? "24": "12"} Hour Format`}
+            action={toggleTimeFormat}
+            overrideStyles="biggerButton"
+          />
+        </div>
       </FullScreenPopup>
     </div>
   )
