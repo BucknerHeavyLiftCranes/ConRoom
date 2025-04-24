@@ -22,6 +22,30 @@
     transform: scale(0.95);
 }
 
+.biggerButton {
+    width: fit-content; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-weight: bold;
+    background-color: hsl(357, 70%, 41%);
+    border: none;
+    border-radius: 10px;
+    padding: 15px 40px;
+    margin: 5px;
+    cursor: pointer !important;
+    transition: background-color 0.2s ease;
+}
+
+.biggerButton:hover{
+    background-color: hsl(357, 70%, 51%);
+}
+
+.biggerButton:active{
+    transform: scale(0.95);
+}
+
 /*For the front page of the website*/
 .frontPageAdminButton {
     width: 15rem; 
@@ -122,4 +146,29 @@
 
 .noButton:active {
     transform: scale(0.95);
+}
+
+.closePopupButton {
+    width: 0; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-weight: bold;
+    background: transparent;
+    color: red;
+    border: none;
+    border-radius: 1000px;
+    /* padding: 10px 40px; */
+    margin: 5px;
+    cursor: pointer !important;
+    transition: background-color 0.2s ease;
+}
+
+.closePopupButton:hover {
+    background-color: hsla(0, 100%, 50%, 0.255);
+}
+
+.closePopupButton:active {
+    transform: scale(0.85);
 }
