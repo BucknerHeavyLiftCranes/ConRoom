@@ -1,4 +1,4 @@
-import { tzc } from "../../constants/constants"
+import { tzc } from "../../constants/constants.js"
 /**
  * @typedef {Object} emailAddress
  * @property {string} name - Display name of the email sender or recipient.
@@ -59,48 +59,23 @@ export class EventRequest {
     }
 
     /**
-     * @param {Object} obj
-     * @param {Date} [obj.date] date to convert to (defaults to today)
-     * @param {string} [obj.timezone] time zone that the date should be converted to (defaults to UTC)
-     * @returns
+     * @param {Date} date Date to be converted to (defaults to today).
+     * @returns Event date and time as an ISO-like string.
      */
-    static toISO({ timezone, date = new Date() }) { 
+    static toISO(date = new Date()) { 
+        const systemTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         date.setSeconds(0) // ensure that start is always at the beginning of the minute (i.e., `05:00`)
-        let parts = null 
-
-        try {
-            if (timezone) {
-                if (timezone === "America/New_York") {
-                    parts = tzc.americaNewYorkFormatter.formatToParts(date).reduce((acc, part) => {
-                        if (part.type !== 'literal') acc[part.type] = part.value;
-                            return acc;
-                        }, {}
-                    );
-                } else {
-                    throw new Error(`Invalid timezone given: ${timezone}`)
-                }
-            } else {
-                parts = tzc.utcFormatter.formatToParts(date).reduce((acc, part) => {
-                    if (part.type !== 'literal') acc[part.type] = part.value;
-                        return acc;
-                    }, {}
-                );
-            }   
-        } catch (err) {
-            console.log(err)
-            parts = tzc.utcFormatter.formatToParts(date).reduce((acc, part) => {
-                if (part.type !== 'literal') acc[part.type] = part.value;
-                    return acc;
-                }, {}
-            );
-            
-        }
+        const parts = tzc.formatToParts(date).reduce((acc, part) => {
+            if (part.type !== 'literal') acc[part.type] = part.value;
+                return acc;
+            }, {}
+        );
     
         const { year, month, day, hour, minute, second } = parts;
     
         // Figure out the EST/EDT offset (in ±HH:MM format)
-        const estDate = new Date(date.toLocaleString('en-US', { timeZone: 'America/New_York' }));
-        const offsetMinutes = -(estDate.getTimezoneOffset());
+        const localDate = new Date(date.toLocaleString('en-US', { timeZone: systemTimeZone }));
+        const offsetMinutes = -(localDate.getTimezoneOffset());
         const sign = offsetMinutes >= 0 ? '+' : '-';
         const absMinutes = Math.abs(offsetMinutes);
         const offset = `${sign}${String(Math.floor(absMinutes / 60)).padStart(2, '0')}:${String(absMinutes % 60).padStart(2, '0')}`;

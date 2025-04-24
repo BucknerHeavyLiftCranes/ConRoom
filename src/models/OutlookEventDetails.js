@@ -108,7 +108,7 @@ export class OutlookEventDetails { //maybe just use Reservation model instead
     
         // Build a Date object as if it's in the target timezone (America/New_York)
         const localString = new Date(year, month - 1, day, hour, minute).toLocaleString("en-US", {
-        timeZone: "America/New_York"
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
         });
     
         // Convert that localized string to a UTC Date by parsing it again
