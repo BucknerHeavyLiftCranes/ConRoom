@@ -28,7 +28,8 @@ export const verifyAndExtractResponsePayload = async (
         const payload = await response.json();
 
         if (!response.ok) {
-            throw new ResponseError(`${message}: ${JSON.stringify(payload)}`);
+            const errorDetails = payload
+            throw new ResponseError(`${message}: ${JSON.stringify(errorDetails)}`);
         }
 
         return payload;     
