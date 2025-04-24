@@ -241,7 +241,7 @@ export default class Reservation{
     async getRoom(){
         try {
             if (!this.reservationId){
-                throw ReservationDetailsError("This reservation is not in the system")
+                throw new ReservationDetailsError("This reservation is not in the system")
             }
 
             const room = await getRoomById(this.roomId)
