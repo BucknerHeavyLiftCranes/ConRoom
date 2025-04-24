@@ -24,7 +24,7 @@ function BriefEventDetails({ events, eventsLoading, timeLeft, darkMode }) {
     if (eventsLoading) {
         return (
             <p style={ darkMode ? { color: 'white', marginBottom: '10px', fontWeight: 'bold' } : { color: 'black', marginBottom: '10px', fontWeight: 'bold' } }>
-                {timeLeft === 0 ? "Loading now" : `Loading in: ${timeLeft / 1000} seconds`}
+                {timeLeft === 0 ? "Loading now" : `Loading in: ${timeLeft} seconds`}
             </p>
         )
     }
@@ -44,19 +44,20 @@ function BriefEventDetails({ events, eventsLoading, timeLeft, darkMode }) {
  
   return (
     <>
-        <p style={darkMode ? { color: 'white', marginBottom: '10px', fontWeight: 'bold' } : { color: 'black', marginBottom: '10px', fontWeight: 'bold' }}>
-            Upcoming
-        </p>
-        {events.map((event) => (
-            <div key={event.id} className={darkMode ? styles.eventCardDarkMode: styles.eventCard}>
-                <p className={darkMode ? styles.eventDateDarkMode: styles.eventDate}>{event.startDate}</p>
+        <h3 className={darkMode ? styles.upcomingLabelDarkMode : styles.upcomingLabel}>Upcoming Meetings</h3>
+        <div className={styles.scrollContainer}>
+            {events.map((event) => (
+                <div key={event.id} className={darkMode ? styles.eventCardDarkMode : styles.eventCard}>
+                <p className={darkMode ? styles.eventDateDarkMode : styles.eventDate}>{event.startDate}</p>
                 <div className={styles.eventContent}>
-                    <p className={darkMode ? styles.eventTitleDarkMode: styles.eventTitle}>{event.subject}</p>
-                    <p className={darkMode ? styles.eventTimeDarkMode: styles.eventTime}>{event.getFormattedTimeRange()}</p>
+                    <p className={darkMode ? styles.eventTitleDarkMode : styles.eventTitle}>{event.subject}</p>
+                    <p className={darkMode ? styles.eventTimeDarkMode : styles.eventTime}>{event.getFormattedTimeRange()}</p>
                 </div>
-            </div>
-        ))}
+                </div>
+            ))}
+        </div>
     </>
+
   )
 }
 
