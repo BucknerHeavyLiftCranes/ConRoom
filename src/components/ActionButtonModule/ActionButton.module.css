@@ -12,6 +12,7 @@
     margin: 5px;
     cursor: pointer !important;
     transition: background-color 0.2s ease;
+    color: white;
 }
 
 .actionButton:hover{
@@ -36,6 +37,7 @@
     margin: 5px;
     cursor: pointer !important;
     transition: background-color 0.2s ease;
+    color: white;
 }
 
 .biggerButton:hover{
@@ -62,6 +64,7 @@
     cursor: pointer !important;
     font-weight: bold;
     transition: background-color 0.2s ease;
+    color: white;
 }
 
 .frontPageAdminButton:hover{
@@ -88,6 +91,7 @@
     cursor: pointer !important;
     font-weight: bold;
     transition: background-color 0.2s ease;
+    color: white;
 }
 
 .frontPageRoomButton:hover{
@@ -113,6 +117,7 @@
     cursor: pointer !important;
     font-weight: bold;
     transition: background-color 0.2s ease;
+    color: white;
 }
 
 .yesButton:hover {
@@ -138,6 +143,7 @@
     cursor: pointer !important;
     font-weight: bold;
     transition: background-color 0.2s ease;
+    color: white;
 }
 
 .noButton:hover {
