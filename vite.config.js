@@ -9,5 +9,4 @@ export default defineConfig({
     port: 5174,
     allowedHosts: true
   },
-  envPrefix: 'VITE_',
 })
