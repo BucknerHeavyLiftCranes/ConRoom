@@ -288,9 +288,7 @@ function RoomStatus() {
         body: JSON.stringify(staticEvent)
       })
   
-      const newEvent = await verifyAndExtractResponsePayload(response, "Failed to add new meeting") 
-      const newOutlookEventDetails = OutlookEventDetails.fromObject(newEvent)
-      console.log(newOutlookEventDetails)
+      await verifyAndExtractResponsePayload(response, "Failed to add new meeting") // we don't use the data but we need to verify it returned properly.
       setIsDisabled(true)
       setIsEventFormOpen(false)
     } catch (err) {

@@ -1,30 +1,30 @@
 import { makeRoute } from '../../../services/apiService.js'
-import { useAuth } from '../../../../context/exports/useAuth.js'
+// import { useAuth } from '../../../../context/exports/useAuth.js'
 import ActionButton from '../../../components/ActionButtonModule/ActionButton.jsx'
 import styles from './Login.module.css'
-import { Navigate } from 'react-router-dom';
+// import { Navigate } from 'react-router-dom';
 
 function Login() {
 
-    const { authenticated, loading } = useAuth();
+    // const { authenticated, loading } = useAuth();
 
-    if (loading) {
-        return null;
-    }
+    // if (loading) {
+    //     return null;
+    // }
 
-    if (authenticated) {
-        return <Navigate to="/room" replace />; // Might delete this later
-    }
+    // if (authenticated) {
+    //     return <Navigate to="/room" replace />; // Might delete this later
+    // }
     
     /**
      * Redirect current user to external Microsoft login
      */
     const startExternalAdminLogin = async () => {
         try {
-            if (authenticated) {
-                console.log("User is authenticated")
-                return <Navigate to="/home" replace />; // incase app reloads and accidently throws user back to login page when they are already authenticated.
-            }
+            // if (authenticated) {
+            //     console.log("User is authenticated")
+            //     return <Navigate to="/home" replace />; // incase app reloads and accidently throws user back to login page when they are already authenticated.
+            // }
             window.location.href = makeRoute("auth/login");
         } catch (err) {
             console.error({message: err.message, stack: err.stack})
@@ -36,10 +36,10 @@ function Login() {
      */
     const startExternalRoomLogin = async () => {
         try {
-            if (authenticated) {
-                console.log("User is authenticated")
-                return <Navigate to="/room" replace />; // incase app reloads and accidently throws user back to login page when they are already authenticated.
-            }
+            // if (authenticated) {
+            //     console.log("User is authenticated")
+            //     return <Navigate to="/room" replace />; // incase app reloads and accidently throws user back to login page when they are already authenticated.
+            // }
             window.location.href = makeRoute("auth/roomLogin");
         } catch (err) {
             console.error({message: err.message, stack: err.stack})

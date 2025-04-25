@@ -15,7 +15,7 @@ function App() {
   // else, render the login page
 
   return(
-      <AuthProvider>
+      // <AuthProvider>
         <Router>
           <BodyBackgroundWrapper />
           <Routes>
@@ -28,33 +28,33 @@ function App() {
             <Route 
               path="/home" 
               element={
-                <ProtectedRoute redirectTo='/'>
+                //<ProtectedRoute redirectTo='/'>
                   <Home />
-                </ProtectedRoute>
+                //</ProtectedRoute>
               } 
             />
 
             <Route 
               path="/room" 
               element={
-                <ProtectedRoute redirectTo='/'>
+                //<ProtectedRoute redirectTo='/'>
                   <RoomStatus />
-                </ProtectedRoute>
+                //</ProtectedRoute>
               } 
             />
 
             <Route 
               path="/logout" 
               element={
-                <ProtectedRoute redirectTo='/'>
+                //<ProtectedRoute redirectTo='/'>
                   <Logout />
-                </ProtectedRoute>
+                //</ProtectedRoute>
               } 
             />
           
           </Routes>
         </Router>
-      </AuthProvider>
+      // </AuthProvider>
   )
 }
 

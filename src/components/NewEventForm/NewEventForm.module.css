@@ -120,6 +120,7 @@
   
 .addBtn, .removeBtn {
     width: 1px;
+    color: white;
     /* height: fit-content; */
     display: flex;
     justify-content: center;
@@ -138,7 +139,7 @@
 }
 
 .addBtn:active, .removeBtn:active{
-    transform: scale(0.75);
+    transform: scale(0.85);
 }
   
 .controlButtons {
