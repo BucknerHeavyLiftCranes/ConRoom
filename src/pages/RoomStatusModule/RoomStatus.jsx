@@ -11,6 +11,7 @@ import ActionButton from "../../components/ActionButtonModule/ActionButton.jsx"
 import { StaticEventRequest } from "../../models/StaticEventRequest.js"
 import Logo from "../../components/LogoModule/Logo.jsx"
 import FullScreenPopup from "../../components/FullScreenPopupModule/FullScreenPopup.jsx"
+import NewEventForm from "../../components/NewEventForm/NewEventForm.jsx"
 
 /**
  * Page displaying the status of a room and its upcoming meetings.
@@ -57,6 +58,9 @@ function RoomStatus() {
 
   // track if settings panel has been opened.
   const [ isSettingsOpen, setIsSettingsOpen ] = useState(false) 
+
+  // track if settings panel has been opened.
+  const [ isEventFormOpen, setIsEventFormOpen ] = useState(false) 
 
   // track (in real time) the closed status of a room
   const isRoomClosedRef = useRef(isInvalidBusinessHours())
@@ -258,9 +262,24 @@ function RoomStatus() {
     }
   }
 
-  const makeStaticEvent = async () => {
-    const staticEvent = new StaticEventRequest("Static Meeting", {displayName: user.name}, [], DEFAULT_EVENT_LENGTH)
+  /**
+   * Create a new event in Outlook calendar
+   * @param {string} organizer name of the event creator.
+   * @param {string[]} attendees emails of all the attendees.
+   */
+  const makeStaticEvent = async (organizer, attendees) => {
     try {
+      /** @type {any[]} list of attendees for the meeting (including the organizer) */
+      const attendeesEmails = attendees.map( (attendee) => {
+        return {
+          emailAddress: {
+            address: attendee,
+          },
+          // type: 'required'
+        }
+      })
+
+      const staticEvent = new StaticEventRequest(organizer, {displayName: user.name}, attendeesEmails, DEFAULT_EVENT_LENGTH)
       const response = await fetchWithAuth(makeRoute("calendar/create"), {
         method: 'POST',
         headers: {
@@ -271,8 +290,9 @@ function RoomStatus() {
   
       const newEvent = await verifyAndExtractResponsePayload(response, "Failed to add new meeting") 
       const newOutlookEventDetails = OutlookEventDetails.fromObject(newEvent)
-      // console.log(newOutlookEventDetails)
+      console.log(newOutlookEventDetails)
       setIsDisabled(true)
+      setIsEventFormOpen(false)
     } catch (err) {
         console.error(err)
     }
@@ -337,7 +357,7 @@ function RoomStatus() {
         <div style={{margin: "auto"}} className={styles.reserveButton}>
           <ActionButton
             label={`Reserve (${DEFAULT_EVENT_LENGTH} minutes)`}
-            action={makeStaticEvent}
+            action={() => {setIsEventFormOpen(true)}}
             isDisabled={isDisabled}
             overrideStyles="biggerButton"
           />
@@ -363,6 +383,17 @@ function RoomStatus() {
             overrideStyles="biggerButton"
           />
         </div>
+      </FullScreenPopup>
+
+      <FullScreenPopup 
+        isOpen={isEventFormOpen} 
+        onClose={() => {setIsEventFormOpen(false)}}
+        darkMode={isDarkMode}
+      >
+        <NewEventForm
+          onConfirm={makeStaticEvent}
+          darkMode={isDarkMode}
+        />
       </FullScreenPopup>
     </div>
   )

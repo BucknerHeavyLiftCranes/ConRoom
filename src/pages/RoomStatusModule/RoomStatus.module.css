@@ -9,7 +9,7 @@
 }
 
 .roomStatusContainerDarkMode {
-    background-color: hsl(0, 0%, 14%); /* dar mode background color*/
+    background-color: hsl(0, 0%, 14%); /* dark mode background color*/
     display: flex;
     justify-content: center;
     /* border: 10px solid black; */
