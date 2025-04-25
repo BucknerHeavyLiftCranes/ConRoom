@@ -17,7 +17,7 @@ const app = express();
 app.use(cookieParser());
 app.use(express.json());
 app.use(cors({
-    origin: 'http://localhost:5174', // where frontend is hosted
+    origin: true,//'http://localhost:5174', // where frontend is hosted
     credentials: true
 })); // 🚨 Too open, add limits before putting in production
 

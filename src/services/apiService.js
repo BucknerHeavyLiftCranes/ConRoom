@@ -7,6 +7,7 @@ import { ResponseError } from "../../errors/ApiError";
  */
 export const makeRoute = (endpoint) => {
     return `http://localhost:5173/api/${endpoint}` // Change this to production API
+    // return `http://t-book-pro.local:5173/api/${endpoint}`
 }
 
 /**

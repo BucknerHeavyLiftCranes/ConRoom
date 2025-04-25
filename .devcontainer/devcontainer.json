@@ -3,6 +3,13 @@
   "dockerComposeFile": "../docker-compose.yml",
   "workspaceFolder": "/workspace",
   "service": "conroom_app",
+  "forwardPorts": [5174],
+  "portsAttributes": {
+    "5174": {
+      "label": "Vite Dev Server"
+    }
+  },
+
   "customizations": {
     "vscode": {
       "extensions": [
