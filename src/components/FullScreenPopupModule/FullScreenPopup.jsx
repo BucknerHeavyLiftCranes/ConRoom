@@ -16,7 +16,7 @@ function FullScreenPopup ({ isOpen, onClose, label, darkMode, children,  }) {
     if (!isOpen) return null;
     
     return (
-        <div className={styles.overlay} onClick={onClose}>
+        <div className={styles.overlay} /*onClick={onClose}*/>
             <div 
                 className={darkMode ? styles.popupDarkMode : styles.popup} 
                 onClick={(e) => e.stopPropagation()}
@@ -29,9 +29,9 @@ function FullScreenPopup ({ isOpen, onClose, label, darkMode, children,  }) {
                     />
                 </div>
                 
-                <h2 className={darkMode ? styles.labelDarkMode : styles.label}>
+                {label && label !== "" ? <h2 className={darkMode ? styles.labelDarkMode : styles.label}>
                     {label}
-                </h2>
+                </h2> : null}
                 
                 {children}
             </div>
@@ -42,7 +42,7 @@ function FullScreenPopup ({ isOpen, onClose, label, darkMode, children,  }) {
 FullScreenPopup.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    label: PropTypes.string.isRequired,
+    label: PropTypes.string,
     darkMode: PropTypes.bool.isRequired,
     children: PropTypes.node.isRequired
 };
