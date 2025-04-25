@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
  * Displays current date and time (based on local machine).
  * @param {Object} props
  * @param {string} [props.format] Time format (either `12-hour` or `24-hour`)
- * @param {boolean} [props.darkMode] Whether page the date time display is on is in light or dark mode.
+ * @param {boolean} [props.darkMode] Whether the page theme is on is in light or dark mode.
  * @returns A date and time display.
  */
 function DateTimeDisplay({ format="12-hour", darkMode }) {
