@@ -78,7 +78,8 @@ function NewEventForm({ onConfirm, onCancel, darkMode }) {
 
   return (
     <div className={darkMode ? styles.formContainerDarkMode : styles.formContainer}>
-        <h3 style={darkMode ? {color: "white", width: "100%", textAlign: "center"} : {color: "black", width: "100%", textAlign: "center"}}>
+        <h3 style={darkMode ? {color: "white", width: "100%", textAlign: "center", marginBottom: "5px", marginTop: "0"} : 
+        {color: "black", width: "100%", textAlign: "center", marginBottom: "5px", marginTop: "0"}}>
             New Event
         </h3>
         <input

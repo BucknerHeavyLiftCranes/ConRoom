@@ -11,11 +11,12 @@
 .formContainerDarkMode {
     display: flex;
     flex-direction: column;
-    padding: 16px;
+    padding: 0px 16px;
     /* border: 2px solid #ccc;
     border-radius: 8px; */
     width: fit-content;
-    background-color: hsl(0, 0%, 14%);;
+    background-color: hsl(0, 0%, 14%);
+    /* background-color: blue; */
 }
   
 .organizerInput {
