@@ -6,10 +6,10 @@ import PropTypes from 'prop-types'
 /**
  * Title, date, and time of an event.
  * @param {Object} props
- * @param {OutlookEventDetails[]} [props.events]
- * @param {boolean} [props.eventsLoading]
- * @param {number} [props.timeLeft]
- * @param {boolean} [props.darkMode]
+ * @param {OutlookEventDetails[]} [props.events] Outlook calender events.
+ * @param {boolean} [props.eventsLoading] Whether the events have been fetch from Outlook yet.
+ * @param {number} [props.timeLeft] Time remaining before events are fetched.
+ * @param {boolean} [props.darkMode] Whether the page theme is on is in light or dark mode.
  */
 function BriefEventDetails({ events, eventsLoading, timeLeft, darkMode }) {
     if(!events) {
