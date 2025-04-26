@@ -16,7 +16,7 @@ export const makeRoute = (endpoint) => {
  * @throws {ResponseError} when API returns a bad response.
  * @returns {Promise<any>} the data from the response.
  */
-export const verifyAndExtractResponsePayload = async (
+export const validateAndExtractResponsePayload = async (
     response, 
     message = "Failed to extract payload from response"
 ) => {

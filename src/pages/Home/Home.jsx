@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import ReservationDetails from '../../components/ReservationDetailsModule/ReservationDetails'
 import { MeetingDetails } from '../../models/MeetingDetails.js'
 import styles from './Home.module.css'
-import { verifyAndExtractResponsePayload } from '../../services/apiService.js'
+import { validateAndExtractResponsePayload } from '../../services/apiService.js'
 import { useUser } from '../../../context/exports/useUser.js'
 import Navbar from '../../components/NavbarModule/Navbar.jsx'
 
@@ -20,7 +20,7 @@ function Home() {
     try {
       const response = await fetch(makeRoute("reservations"))
       /** @type {any[]} */
-      const allMeetings = await verifyAndExtractResponsePayload(response, "Couldn't fetch meeting details")//await response.json()
+      const allMeetings = await validateAndExtractResponsePayload(response, "Couldn't fetch meeting details")//await response.json()
 
       return allMeetings.map(data => 
         MeetingDetails.fromObject(data)
@@ -56,14 +56,14 @@ function Home() {
   // const getUserInfo = async () => {
   //   const response = await fetchWithAuth(makeRoute("admin/current"));
 
-  //   const userInfo = await verifyAndExtractResponsePayload(response, "Failed to get current user's information.")
+  //   const userInfo = await validateAndExtractResponsePayload(response, "Failed to get current user's information.")
   //   console.log(userInfo)
   // }
 
   // const getAllEvents = async () => {
   //   const response = await fetchWithAuth(makeRoute("calendar/all"));
 
-  //   const eventsInfo = await verifyAndExtractResponsePayload(response, "Failed to get current user's information.")
+  //   const eventsInfo = await validateAndExtractResponsePayload(response, "Failed to get current user's information.")
   //   console.log(eventsInfo)
   // }
 

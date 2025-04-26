@@ -2,7 +2,7 @@ import styles from "./RoomStatus.module.css"
 import DateTimeDisplay from '../../components/DateTimeDisplayModule/DateTimeDisplay'
 import BriefEventDetails from "../../components/BriefEventDetails/BriefEventDetails.jsx"
 import { useEffect, useRef, useState } from "react"
-import { fetchWithAuth, verifyAndExtractResponsePayload } from "../../services/apiService.js"
+import { fetchWithAuth, validateAndExtractResponsePayload } from "../../services/apiService.js"
 import { makeRoute } from '../../services/apiService.js'
 import { OutlookEventDetails } from "../../models/OutlookEventDetails.js"
 import { ResponseError } from "../../../errors/ApiError.js"
@@ -92,7 +92,7 @@ function RoomStatus() {
       const response = await fetchWithAuth(makeRoute("calendar/all"));
 
       /** @type {any[]} */
-      const eventsInfo = (await verifyAndExtractResponsePayload(response, "Failed to get current user's information."))
+      const eventsInfo = (await validateAndExtractResponsePayload(response, "Failed to get current user's information."))
 
       if(!eventsInfo) {
         throw new ResponseError("Could not fetch events")
@@ -288,9 +288,7 @@ function RoomStatus() {
         body: JSON.stringify(staticEvent)
       })
   
-      const newEvent = await verifyAndExtractResponsePayload(response, "Failed to add new meeting") 
-      const newOutlookEventDetails = OutlookEventDetails.fromObject(newEvent)
-      console.log(newOutlookEventDetails)
+      await validateAndExtractResponsePayload(response, "Failed to add new meeting") // nothing is done with the data but reponse must still be validated.
       setIsDisabled(true)
       setIsEventFormOpen(false)
     } catch (err) {
