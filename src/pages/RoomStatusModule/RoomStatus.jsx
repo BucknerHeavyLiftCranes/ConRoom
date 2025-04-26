@@ -105,7 +105,7 @@ function RoomStatus() {
       const events = eventsInfo.map((eventInfo) => OutlookEventDetails.fromObject(eventInfo))
       return events
     } catch (err) {
-      console.error(err)
+      console.error(err.message)
       return []
     }
   }
@@ -148,7 +148,7 @@ function RoomStatus() {
       }
       return true  
     } catch (err) {
-      console.error(err)
+      console.error(err.message)
       return false // to be safe, disable button if the function breaks
       
     }
@@ -201,7 +201,7 @@ function RoomStatus() {
 
       return sortEventsByStartTime(events)
     } catch (err) {
-      console.error(err)
+      console.error(err.message)
       return [] 
     } finally {
       setEventsLoading(false)
@@ -221,7 +221,7 @@ function RoomStatus() {
           setEvents(allEvents); 
           setIsRoomClosed(isRoomClosedRef.current)
         } catch (err) {
-          console.error(err)
+          console.error(err.message)
         }
       })();
     }, SYNC_INTERVAL);
@@ -292,7 +292,7 @@ function RoomStatus() {
       setIsDisabled(true)
       setIsEventFormOpen(false)
     } catch (err) {
-        console.error(err)
+        console.error(err.message)
     }
   }
 

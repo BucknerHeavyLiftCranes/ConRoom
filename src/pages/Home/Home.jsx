@@ -27,7 +27,7 @@ function Home() {
       )
 
     } catch (err) {
-      console.log({message: err.message, stack: err.stack});
+      console.log(err.message);
       window.alert(err.message, err.stack)
         return [] // Return an empty array to avoid issues if fetch fails
     }
@@ -39,7 +39,7 @@ function Home() {
         const meetings = await fetchMeetings();
         setMeetingCards(meetings)
       } catch (err) {
-        console.log({message: err.message, stack: err.stack});
+        console.log(err.message);
       }
     };
   

@@ -34,7 +34,7 @@ export const validateAndExtractResponsePayload = async (
 
         return payload;     
     } catch (err) {
-        console.error({ message: err.message, stack: err.stack });
+        console.error(err.message);
     }
 }
 
@@ -61,7 +61,7 @@ export const fetchWithAuth = async (url, options = {}) => {
         
           return response;
     } catch (err) {
-        console.error({ message: err.message, stack: err.stack });
+        console.error(err.message);
     }
   };
   

@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }) => {
               setAuthenticated(false);
             }
         } catch (err) {
-            console.log({ message: err.message, stack: err.stack });
+            console.error(err.message);
         } finally {
             setLoading(false);
         }

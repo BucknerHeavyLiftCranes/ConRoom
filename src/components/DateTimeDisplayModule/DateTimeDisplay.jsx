@@ -12,11 +12,10 @@ import PropTypes from 'prop-types';
 function DateTimeDisplay({ format="12-hour", darkMode }) {
     try {
         if (format !== "12-hour" && format !== "24-hour") {
-            console.log(format)
-            throw new Error("Invalid time format passed")
+            throw new Error(`Invalid time format passed: ${format}`)
         }
     } catch (err) {
-        console.log(err)
+        console.error(err)
         format = "12-hour"
     }
 
