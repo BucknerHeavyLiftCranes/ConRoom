@@ -12,7 +12,7 @@ const validateAccessToken = expressAsyncHandler(async (req, res, next) => {
     
         // ✅ Access token is still valid — let them through
         if (accessToken) {
-        return next();
+            return next();
         }
     
         // ❌ Can't do anything if userId is missing
@@ -50,7 +50,7 @@ const validateAccessToken = expressAsyncHandler(async (req, res, next) => {
         // 🍪 Set fresh cookies
         setAuthCookies(res, newAccessToken, userId, expiresIn, Boolean(newRefreshToken));
         req.accessToken = newAccessToken
-        // ✅ Proceed to route
+        // ✅ Proceed to next middleware
         next();
         
     } catch (err) {

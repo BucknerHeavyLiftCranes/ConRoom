@@ -1,9 +1,11 @@
+import { tzc } from "../../constants/constants.js"
 /**
  * @typedef {Object} emailAddress
  * @property {string} name - Display name of the email sender or recipient.
  * @property {string} address - Actual email address (e.g., user@abc.com).
  * @property {string} type 
  */
+
 
 /**
  * @typedef {Object} dateTimeAndZone
@@ -41,7 +43,7 @@ export class EventRequest {
 
     /**
      * Return a new EventRequest instance from an object matching its shape.
-     * @param {{subject: string, start: dateTimeAndZone, end: dateTimeAndZone}} object Object of matching shape.
+     * @param {{subject: string, start: dateTimeAndZone, end: dateTimeAndZone}}
      * @returns {EventRequest} An EventRequest instance.
      */
     static fromObject({ 
@@ -54,6 +56,31 @@ export class EventRequest {
             start,
             end
         )
+    }
+
+    /**
+     * @param {Date} date Date to be converted to (defaults to today).
+     * @returns Event date and time as an ISO-like string.
+     */
+    static toISO(date = new Date()) { 
+        const systemTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        date.setSeconds(0) // ensure that start is always at the beginning of the minute (i.e., `05:00`)
+        const parts = tzc.formatToParts(date).reduce((acc, part) => {
+            if (part.type !== 'literal') acc[part.type] = part.value;
+                return acc;
+            }, {}
+        );
+    
+        const { year, month, day, hour, minute, second } = parts;
+    
+        // Figure out the EST/EDT offset (in ±HH:MM format)
+        const localDate = new Date(date.toLocaleString('en-US', { timeZone: systemTimeZone }));
+        const offsetMinutes = -(localDate.getTimezoneOffset());
+        const sign = offsetMinutes >= 0 ? '+' : '-';
+        const absMinutes = Math.abs(offsetMinutes);
+        const offset = `${sign}${String(Math.floor(absMinutes / 60)).padStart(2, '0')}:${String(absMinutes % 60).padStart(2, '0')}`;
+    
+        return `${year}-${month}-${day}T${hour}:${minute}:${second}${offset}`;
     }
 }
 

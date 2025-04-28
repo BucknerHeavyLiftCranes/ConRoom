@@ -14,7 +14,11 @@
 }
 
 .popup {
-    background: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
     padding: 20px;
     border-radius: 10px;
     width: 90%;
@@ -22,4 +26,35 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     text-align: center;
     position: relative;
+}
+
+.popupDarkMode {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: hsl(0, 0%, 14%);
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 0 10px #ffffff4d;
+    text-align: center;
+    position: relative;
+}
+
+.closeButtonContainer {
+    margin-left: auto;
+}
+
+.label {
+    color: black;
+    margin-bottom: 10px; 
+    text-decoration: underline
+}
+
+.labelDarkMode {
+    color: white;
+    margin-bottom: 10px; 
+    text-decoration: underline
 }

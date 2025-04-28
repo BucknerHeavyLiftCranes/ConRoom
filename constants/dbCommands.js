@@ -19,7 +19,7 @@ const DB_COMMANDS = {
                 id VARCHAR(255) PRIMARY KEY NOT NULL,
                 name VARCHAR(255) NOT NULL,
                 email VARCHAR(255) UNIQUE NOT NULL,
-                refresh_token VARCHAR(2000) UNIQUE
+                refresh_token VARCHAR(2000)
             );
         END;
     `,

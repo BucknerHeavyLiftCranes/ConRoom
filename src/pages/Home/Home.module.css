@@ -1,15 +1,17 @@
-/* .homeBody{
-    background-color: green;
+.homePage{
+    background-color: hsl(0, 0%, 14%);
     min-height: 100vh;
+    min-width: 100vw;
     margin: 0;
-} */
+}
 
 .pageTitle{
     font-size: 50px;
-    color: black;
+    color: white;
 }
 
 .dateTime {
-    background-color: #6e8c00;
+    background-color: black;
+    color: white;
     width: 100vw;
 }

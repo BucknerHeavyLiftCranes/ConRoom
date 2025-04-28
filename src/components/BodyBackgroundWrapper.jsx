@@ -14,7 +14,7 @@ function BodyBackgroundWrapper() {
       // Apply a background class based on the route
       switch (location.pathname) {
         case "/home":
-          document.body.classList.add("home-background");
+          // document.body.classList.add("home-background");
           break;
 
           case "/room":

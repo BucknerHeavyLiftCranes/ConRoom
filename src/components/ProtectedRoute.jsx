@@ -14,8 +14,8 @@ import { useAuth } from '../../context/exports/useAuth.js';
 const ProtectedRoute = ({ redirectTo, children }) => {
   const { authenticated, loading } = useAuth();
 
-  if (loading) {
-    return <div>Loading...</div>; // or a spinner
+  if (loading) { 
+    return null; // page will be blank until user is authenticated
   }
 
   if (!authenticated) {

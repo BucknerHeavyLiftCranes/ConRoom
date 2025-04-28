@@ -42,8 +42,7 @@ function ReservationDetails({ meetingDetails, onDelete }) {
             setDeletedMeeting(deletedMeetingData)
 
         } catch (err) {
-            console.error(err)
-            console.error({message: err.message, stack: err.stack});
+            console.error(err.message)
             window.alert("Failed to delete reservation")
         }
     }

@@ -6,7 +6,7 @@ import { ResponseError } from "../../errors/ApiError";
  * @returns Absolute API path.
  */
 export const makeRoute = (endpoint) => {
-    return `http://localhost:5173/api/${endpoint}`
+    return `http://localhost:5173/api/${endpoint}` // Change this to production API
 }
 
 /**
@@ -16,7 +16,7 @@ export const makeRoute = (endpoint) => {
  * @throws {ResponseError} when API returns a bad response.
  * @returns {Promise<any>} the data from the response.
  */
-export const verifyAndExtractResponsePayload = async (
+export const validateAndExtractResponsePayload = async (
     response, 
     message = "Failed to extract payload from response"
 ) => {
@@ -28,12 +28,13 @@ export const verifyAndExtractResponsePayload = async (
         const payload = await response.json();
 
         if (!response.ok) {
-            throw new ResponseError(`${message}: ${JSON.stringify(payload)}`);
+            const errorDetails = payload
+            throw new ResponseError(`${message}: ${JSON.stringify(errorDetails)}`);
         }
 
         return payload;     
     } catch (err) {
-        console.error({ message: err.message, stack: err.stack });
+        console.error(err.message);
     }
 }
 
@@ -60,7 +61,7 @@ export const fetchWithAuth = async (url, options = {}) => {
         
           return response;
     } catch (err) {
-        console.error({ message: err.message, stack: err.stack });
+        console.error(err.message);
     }
   };
   

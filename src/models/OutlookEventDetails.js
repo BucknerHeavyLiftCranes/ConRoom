@@ -5,7 +5,7 @@
  */
 
 /**
- * Details of a event for a room.
+ * Details of an event for a room.
  */
 export class OutlookEventDetails { //maybe just use Reservation model instead
     constructor(id, subject, start, end) {
@@ -24,17 +24,17 @@ export class OutlookEventDetails { //maybe just use Reservation model instead
 
     /**
      * Create a new OutlookEventDetails instance from an object with a similar shape.
-     * @param {Object} obj object containing meeting detials
+     * @param {{id: string, subject: string, start:eventDateTime, end: eventDateTime}} 
      * @return {OutlookEventDetails} a OutlookEventDetails instance.
      */
-    static fromObject(obj) {
+    static fromObject({id, subject, start, end}) {
         return new OutlookEventDetails(
-            obj.id, 
-            obj.subject, 
-            obj.start, 
-            obj.end
+            id, 
+            subject, 
+            start, 
+            end
         );
-  }
+    }
 
     /**
      * Calculates an event's duration. 
@@ -108,7 +108,7 @@ export class OutlookEventDetails { //maybe just use Reservation model instead
     
         // Build a Date object as if it's in the target timezone (America/New_York)
         const localString = new Date(year, month - 1, day, hour, minute).toLocaleString("en-US", {
-        timeZone: "America/New_York"
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
         });
     
         // Convert that localized string to a UTC Date by parsing it again
@@ -131,5 +131,19 @@ export class OutlookEventDetails { //maybe just use Reservation model instead
     if (now < startDate) return "Confirmed";
     if (now >= startDate && now <= endDate) return "In Progress";
     return "Completed";
+  }
+
+  /**
+   * Check whether this event overlaps (conflicts) with another event.
+   * @param {OutlookEventDetails} otherEvent - Another event to compare with.
+   * @returns {boolean} True if the events overlap, false otherwise.
+   */
+  conflictsWith(otherEvent) {
+    const thisStart = new Date(`${this.start.date} ${this.start.time}`);
+    const thisEnd = new Date(`${this.end.date} ${this.end.time}`);
+    const otherStart = new Date(`${otherEvent.start.date} ${otherEvent.start.time}`);
+    const otherEnd = new Date(`${otherEvent.end.date} ${otherEvent.end.time}`);
+
+    return thisStart < otherEnd && thisEnd > otherStart;
   }
 }
