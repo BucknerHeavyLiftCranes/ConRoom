@@ -1,0 +1,176 @@
+.roomStatusContainer,
+.roomStatusContainerDarkMode {
+    background-color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.roomStatusContainerDarkMode {
+    background-color: hsl(0, 0%, 14%);
+}
+
+.busyStatus,
+.openStatus,
+.closedStatus,
+.loadingStatus {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    border-right: 5px solid black;
+    width: 100%;
+    min-height: 100%;
+}
+
+.busyStatus { background-color: hsl(24, 100%, 50%); }
+.openStatus { background-color: hsl(109, 85%, 44%); }
+.closedStatus { background-color: hsl(357, 92%, 43%); }
+.loadingStatus { background-color: hsl(0, 0%, 14%); }
+
+.topLine {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: hsl(214, 92%, 20%);
+}
+
+.settingsIcon {
+    margin-top: 6px;
+    margin-right: 5px;
+    margin-left: auto;
+}
+
+.roomName {
+    font-size: 2.2rem;
+    padding-left: 10px;
+    text-decoration: underline;
+    text-underline-offset: 5px;
+    font-weight: bold;
+}
+
+.hiddenDetails {
+    display: none;
+}
+
+.visibleDetails {
+    display: block;
+    padding-left: 10px;
+    font-weight: bold;
+    font-size: 2.5rem;
+}
+
+.roomStatus {
+    font-size: 10vw; /* responsive big text */
+    font-weight: bold;
+    padding-left: 10px;
+    margin-top: auto;
+}
+
+.infoBox {
+    /* flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    width: 100%;
+    max-width: 100%;
+    overflow-y: auto; */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Distribute space between children */
+    align-items: center;
+    padding: 1rem;
+    width: 100%;
+    max-width: 100%;
+    overflow-y: auto;
+}
+
+.dateTime {
+    width: 100%;
+}
+
+.upcomingMeetingsContainer {
+    /* overflow-y: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 20rem;
+    padding-bottom: 2rem; */
+    flex: 1;
+    overflow-y: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 2rem;
+}
+
+.reserveButton {
+    /* align-self: flex-end; */
+    align-self: center; /* center it horizontally if needed */
+    margin-top: auto;   /* push to bottom if container grows */
+}
+
+.buttonControls {
+    width: 90%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+/* iPad-specific adjustments: landscape and portrait */
+@media screen and (max-width: 1024px) {
+    /* -------- RoomStatus -------- */
+    .roomStatusContainer,
+    .roomStatusContainerDarkMode {
+      flex-direction: column;
+      height: auto;
+    }
+  
+    .busyStatus,
+    .openStatus,
+    .closedStatus,
+    .loadingStatus {
+      width: 100%;
+      height: auto;
+      border-right: none;
+      border-bottom: 5px solid black;
+      padding-bottom: 1rem;
+    }
+  
+    .roomStatus {
+      font-size: 6rem;
+      text-align: center;
+      margin-top: 1rem;
+    }
+  
+    .visibleDetails {
+      font-size: 2rem;
+      padding: 1rem;
+      text-align: center;
+    }
+  
+    .infoBox {
+      width: 100%;
+      height: auto;
+      padding: 1rem;
+      overflow-y: visible;
+    }
+  
+    .upcomingMeetingsContainer {
+      min-height: 15rem;
+      padding: 1rem;
+    }
+  
+    .reserveButton {
+      margin-top: 2rem;
+      align-self: center;
+    }
+}

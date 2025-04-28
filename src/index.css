@@ -13,6 +13,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+::selection {
+  background-color: hsla(56, 100%, 50%, 0.76); /* Yellow highlight */
+  color: black; /* Text color */
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -41,6 +46,15 @@ body {
   min-height: 100vh;
 }
 
+.roomStatus-background{
+  background-color: rgb(255, 255, 255);
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
 /* Different bodys for diff pages */
 
 h1 {
@@ -56,7 +70,7 @@ button {
   font-weight: 500;
   font-family: inherit;
   background-color: #1a1a1a;
-  cursor: pointer;
+  cursor: pointer !important;
   transition: border-color 0.25s;
 }
 button:hover {

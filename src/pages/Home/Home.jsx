@@ -1,43 +1,92 @@
-import ActionButton from '../../components/ActionButtonModule/ActionButton'
+import { makeRoute } from '../../services/apiService.js'
+import { useState, useEffect } from 'react'
 import ReservationDetails from '../../components/ReservationDetailsModule/ReservationDetails'
 import { MeetingDetails } from '../../models/MeetingDetails.js'
 import styles from './Home.module.css'
+import { validateAndExtractResponsePayload } from '../../services/apiService.js'
+import { useUser } from '../../../context/exports/useUser.js'
+import Navbar from '../../components/NavbarModule/Navbar.jsx'
 
 function Home() {
+  const [meetingCards, setMeetingCards] = useState([]);
+  const { user, loading } = useUser()
 
-  const startExternalLogin = () => {
-    console.log("Start log in!")
+  
+  /**
+   * Fetch meeting details for all reservations.
+   * @returns {Promise<MeetingDetails[]>} All reservation meeting details in the system.
+   */
+  const fetchMeetings = async () => {
+    try {
+      const response = await fetch(makeRoute("reservations"))
+      /** @type {any[]} */
+      const allMeetings = await validateAndExtractResponsePayload(response, "Couldn't fetch meeting details")//await response.json()
+
+      return allMeetings.map(data => 
+        MeetingDetails.fromObject(data)
+      )
+
+    } catch (err) {
+      console.log(err.message);
+      window.alert(err.message, err.stack)
+        return [] // Return an empty array to avoid issues if fetch fails
+    }
   }
 
-  const fakeMeetingDetails1 = new MeetingDetails(1, "All-Hands Meeting", "Tarheel", "09:00 AM - 10:30 AM", "01:30:00", "Complete")
-  const fakeMeetingDetails2 = new MeetingDetails(2, "UI Team Weekly Scrum", "Wolfpack", "11:00 AM - 11:45 AM", "00:45:00", "Ongoing")
-  const fakeMeetingDetails3 = new MeetingDetails(3, "Team Strategy Meeting", "Aggies", "02:30 PM - 03:30 AM", "01:00:00", "Pending")
+  useEffect(() => {
+    const getMeetings = async () => {
+      try {
+        const meetings = await fetchMeetings();
+        setMeetingCards(meetings)
+      } catch (err) {
+        console.log(err.message);
+      }
+    };
   
+    getMeetings();
+  }, []);
+  
+  
+  const updateMeetingDetailsList = (reservationId) => {
+    setMeetingCards(prevMeetings =>
+      prevMeetings.filter(meeting => meeting.id !== reservationId)
+    );
+  };
 
-  
+  // const getUserInfo = async () => {
+  //   const response = await fetchWithAuth(makeRoute("admin/current"));
+
+  //   const userInfo = await validateAndExtractResponsePayload(response, "Failed to get current user's information.")
+  //   console.log(userInfo)
+  // }
+
+  // const getAllEvents = async () => {
+  //   const response = await fetchWithAuth(makeRoute("calendar/all"));
+
+  //   const eventsInfo = await validateAndExtractResponsePayload(response, "Failed to get current user's information.")
+  //   console.log(eventsInfo)
+  // }
+
+
 
   return (
     <>
-      <h1 className={styles.pageTitle}>Home</h1>
-      <div>
-        This is the home page
-      </div>    
-      <ActionButton 
-        label="Log In"
-        action={startExternalLogin}
-      />
+      <Navbar/>
+      <div className={styles.homePage}>
+        <header className={styles.pageTitle}>
+          Hello, {user?.name || (loading ? "" : "Guest")}
+        </header>
+      
 
-      <ReservationDetails 
-        meetingDetails={fakeMeetingDetails1}
-      />
+        {meetingCards.map((meeting, id) => (
 
-      <ReservationDetails 
-        meetingDetails={fakeMeetingDetails2}
-      />
-
-      <ReservationDetails 
-        meetingDetails={fakeMeetingDetails3}
-      />
+          <ReservationDetails
+              key={id}
+              meetingDetails={meeting}
+              onDelete={updateMeetingDetailsList}
+          />))
+        }
+      </div>
     </>
   )
 }

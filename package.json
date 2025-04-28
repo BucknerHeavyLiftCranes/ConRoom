@@ -14,11 +14,13 @@
     "install-helpers": "npm install react-router-dom dotenv cors"
   },
   "dependencies": {
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-async-handler": "^1.2.0",
     "jsonwebtoken": "^9.0.2",
+    "ms": "^2.1.3",
     "mssql": "^11.0.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -39,7 +41,6 @@
     "globals": "^15.15.0",
     "nodemon": "^3.1.9",
     "prop-types": "^15.8.1",
-    "typescript": "^5.8.2",
     "vite": "^6.2.0"
   }
 }

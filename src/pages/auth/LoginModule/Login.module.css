@@ -1,0 +1,21 @@
+.loginContainer {
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto
+}
+
+.pageTitle {
+    font-size: 50px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.buttonControls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5em;
+}
