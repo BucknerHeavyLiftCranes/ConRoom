@@ -24,10 +24,10 @@ function RoomStatus() {
   const DEFAULT_EVENT_LENGTH = 30
 
   // Room open hour
-  const OPEN_HOUR = 9
+  const OPEN_HOUR = 8
 
   // Room close hour
-  const CLOSE_HOUR = 17
+  const CLOSE_HOUR = 9
 
   // track time left until events recieved from Outlook.
   const timeLeftRef = useRef(SYNC_INTERVAL / 1000);
@@ -63,10 +63,10 @@ function RoomStatus() {
   const [ isEventFormOpen, setIsEventFormOpen ] = useState(false) 
 
   // track (in real time) the closed status of a room
-  const isRoomClosedRef = useRef(isInvalidBusinessHours())
+  // const isRoomClosedRef = useRef(isInvalidBusinessHours()) 🚨 UNCOMMENT THIS FOR THE ABILITY TO CLOSE ROOMS 🚨
 
   // track if room is closed (a.k.a outside of business hours).
-  const [ isRoomClosed, setIsRoomClosed ] = useState(isRoomClosedRef.current)
+  // const [ isRoomClosed, setIsRoomClosed ] = useState(isRoomClosedRef.current) 🚨 UNCOMMENT THIS FOR THE ABILITY TO CLOSE ROOMS 🚨
 
   // track user's time format preference.
   const [ timeFormat, setTimeFormat ] = useState(() => {
@@ -113,12 +113,12 @@ function RoomStatus() {
 
   /**
    * Check if room is outside of business hours (closed).
-   * @returns 
+   * @returns {boolean} True, if room is closed. Else, false.
    */
+  // eslint-disable-next-line no-unused-vars
   function isInvalidBusinessHours() {
     const now = new Date()
-    // const nowCopy = new Date()
-    // const openTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), OPEN_HOUR, 0, 0)
+
     const openTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), OPEN_HOUR, 0, 0)
     const closeTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), CLOSE_HOUR, 0, 0)
     // console.log(currentTime)
@@ -180,11 +180,11 @@ function RoomStatus() {
           return []
       }
 
-      if (isRoomClosedRef.current) {
-        setIsBusy(false)
-        setCurrentStatus("CLOSED")
-        setCurrentEvent(null)
-      } else {
+      // if (isRoomClosedRef.current) {
+      //   setIsBusy(false)
+      //   setCurrentStatus("CLOSED")
+      //   setCurrentEvent(null)
+      // } else {
         for (let event of events) {
           if (event.status() == "In Progress") { // assuming code works as intended, there can only ever be one 'In Progress' meeting.
             setIsBusy(true)
@@ -197,7 +197,7 @@ function RoomStatus() {
             setCurrentEvent(null)
           }
         }
-      }
+      // }
 
       return sortEventsByStartTime(events)
     } catch (err) {
@@ -215,11 +215,11 @@ function RoomStatus() {
     const intervalID = setInterval(() => {
       (async () => {
         try {
-          isRoomClosedRef.current = isInvalidBusinessHours()
+          // isRoomClosedRef.current = isInvalidBusinessHours()
           const allEvents = await updateRoomStatus();
-          setIsDisabled(!isReservable(allEvents) || isInvalidBusinessHours())
+          setIsDisabled(!isReservable(allEvents)) //setIsDisabled(!isReservable(allEvents) || isInvalidBusinessHours()) // if there's an upcoming meeting or room is closed
           setEvents(allEvents); 
-          setIsRoomClosed(isRoomClosedRef.current)
+          // setIsRoomClosed(isRoomClosedRef.current)
         } catch (err) {
           console.error(err.message)
         }
@@ -301,7 +301,7 @@ function RoomStatus() {
   return (
     <div className={isDarkMode ? styles.roomStatusContainerDarkMode : styles.roomStatusContainer}>
       <div className={eventsLoading ? styles.loadingStatus : 
-        (isRoomClosed ? styles.closedStatus : 
+        (/*isRoomClosed ? styles.closedStatus : */
           (isBusy ? styles.busyStatus : styles.openStatus))}>
         <div className={styles.topLine}>
           <p className={styles.roomName}>{user?.name || (loading ? "" : "Guest")}</p>
