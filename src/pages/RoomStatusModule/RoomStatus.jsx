@@ -227,6 +227,7 @@ function RoomStatus() {
     }, SYNC_INTERVAL);
   
     return () => clearInterval(intervalID);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /** Create sync countdown for when the webpage first loads. */
