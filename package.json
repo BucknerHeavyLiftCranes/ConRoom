@@ -4,9 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "devStart": "nodemon backend/api/server.js",
-    "build:css": "tailwindcss build src/styles/tailwind.css -o dist/styles.css",
+    "viteFrontend": "vite",
+    "expressBackend": "nodemon backend/api/server.js",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
