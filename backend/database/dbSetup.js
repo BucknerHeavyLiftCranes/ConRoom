@@ -43,6 +43,7 @@ async function createAdminsTable() {
 /**
  * Create `rooms` table in the database.
  */
+// eslint-disable-next-line no-unused-vars
 async function createRoomsTable() {
     try {
         // Create a request and execute the SQL command stored in DB_COMMANDS.createRoomsTable
@@ -55,6 +56,7 @@ async function createRoomsTable() {
 /**
  * Create `reservations` table in the database (with the appropriate indexes).
  */
+// eslint-disable-next-line no-unused-vars
 async function createReservationsTable() {
     try {
       /* Create reservations table */
@@ -117,8 +119,8 @@ export async function setupDatabase(){
     try {
         await createBucknerConroomDatabase()
         await createAdminsTable()
-        await createRoomsTable()
-        await createReservationsTable()
+        // await createRoomsTable()
+        // await createReservationsTable()
         console.log("Database setup completed!")
     } catch (err) {
         console.error({ message: err.message, stack: err.stack });   

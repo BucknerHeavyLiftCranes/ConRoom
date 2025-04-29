@@ -33,7 +33,7 @@ app.use(errorHandler)
 
 // try {
     // await setupDatabase() // UNCOMMENT THIS LATER 🚨🚨🚨
-//     // await clearDatabase()
+    // await clearDatabase()
 //     // await dropReservationsTable()
     // await dropAdminsTable()
     
