@@ -57,10 +57,16 @@
 }
 
 .visibleDetails {
-    display: block;
+    display: flex;
+    flex-direction: column;
     padding-left: 10px;
     font-weight: bold;
     font-size: 2.5rem;
+    width: 100%;
+}
+
+.decreaseUnderspace {
+    margin-bottom: 0;
 }
 
 .roomStatus {
@@ -71,14 +77,6 @@
 }
 
 .infoBox {
-    /* flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 1rem;
-    width: 100%;
-    max-width: 100%;
-    overflow-y: auto; */
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -95,13 +93,6 @@
 }
 
 .upcomingMeetingsContainer {
-    /* overflow-y: auto;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 20rem;
-    padding-bottom: 2rem; */
     flex: 1;
     overflow-y: auto;
     width: 100%;

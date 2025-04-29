@@ -320,14 +320,14 @@ function RoomStatus() {
         {/* <p className={styles.roomName}>{user?.name || (loading ? "" : "Guest")}</p> */}
 
         <div className={currentEvent ?  styles.visibleDetails : styles.hiddenDetails}>
-          <p><span>Subject: </span>{currentEvent ? currentEvent.subject : ""}</p>
-          <p><span>Date: </span>
+          <p className={styles.decreaseUnderspace}><span>Subject: </span>{currentEvent ? currentEvent.subject : ""}</p>
+          <p className={styles.decreaseUnderspace}><span>Date: </span>
             {currentEvent ?
               (currentEvent.startDate === currentEvent.endDate ? currentEvent.startDate : `${currentEvent.startDate} - ${currentEvent.endDate}`) 
             : ""}
           </p>
-          <p><span>Time: </span>{currentEvent ? currentEvent.getFormattedTimeRange() : ""}</p>
-          <p><span>Status: </span>{currentEvent ? currentEvent.status() : ""}</p>
+          <p className={styles.decreaseUnderspace}><span>Time: </span>{currentEvent ? currentEvent.getFormattedTimeRange() : ""}</p>
+          <p className={styles.decreaseUnderspace}><span>Status: </span>{currentEvent ? currentEvent.status() : ""}</p>
         </div>
 
         <header className={styles.roomStatus}>{eventsLoading ? timeLeft : currentStatus}</header>
