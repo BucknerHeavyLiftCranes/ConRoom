@@ -381,6 +381,12 @@ function RoomStatus() {
             action={toggleTimeFormat}
             overrideStyles="biggerButton"
           />
+
+          <ActionButton
+            label={"Logout"}
+            action={() => {window.location.href = "/logout"}}
+            overrideStyles="biggerButton"
+          />
         </div>
       </FullScreenPopup>
 
