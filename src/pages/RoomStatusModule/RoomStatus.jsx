@@ -62,6 +62,9 @@ function RoomStatus() {
   // track if settings panel has been opened.
   const [ isEventFormOpen, setIsEventFormOpen ] = useState(false) 
 
+  // track if settings panel has been opened.
+  const [ isRoomDetailsOpen, setIsRoomDetailsOpen ] = useState(false) 
+
   // track (in real time) the closed status of a room
   // const isRoomClosedRef = useRef(isInvalidBusinessHours()) 🚨 UNCOMMENT THIS FOR THE ABILITY TO CLOSE ROOMS 🚨
 
@@ -383,6 +386,12 @@ function RoomStatus() {
           />
 
           <ActionButton
+            label={"Room Details"}
+            action={() => {setIsRoomDetailsOpen(true)}}
+            overrideStyles="biggerButton"
+          />
+
+          <ActionButton
             label={"Logout"}
             action={() => {window.location.href = "/logout"}}
             overrideStyles="biggerButton"
@@ -399,6 +408,22 @@ function RoomStatus() {
           onConfirm={makeStaticEvent}
           darkMode={isDarkMode}
         />
+      </FullScreenPopup>
+
+      
+
+      <FullScreenPopup 
+        isOpen={isRoomDetailsOpen} 
+        onClose={() => {setIsRoomDetailsOpen(false)}}
+        label="Room Details"
+        darkMode={isDarkMode}
+      >
+        <p className={isDarkMode ? styles.roomDetailsDarkMode : styles.roomDetails}>
+          <strong>Name:</strong> {user?.name || (loading ? "" : "Guest")}
+        </p>
+        <p className={isDarkMode ? styles.roomDetailsDarkMode : styles.roomDetails}>
+          <strong>Email:</strong> {user?.email || (loading ? "" : "N/A")}
+        </p>
       </FullScreenPopup>
     </div>
   )

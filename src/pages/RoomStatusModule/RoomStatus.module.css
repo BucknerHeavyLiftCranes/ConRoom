@@ -166,3 +166,14 @@
       align-self: center;
     }
 }
+
+.roomDetails, .roomDetailsDarkMode {
+}
+
+.roomDetails {
+    color: black;
+}
+
+.roomDetailsDarkMode {
+    color: white;
+}
