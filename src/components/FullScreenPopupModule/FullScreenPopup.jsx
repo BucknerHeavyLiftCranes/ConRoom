@@ -8,7 +8,7 @@ import ActionButton from '../ActionButtonModule/ActionButton';
  * @param {boolean} [props.isOpen] whether the popup is open or not.
  * @param {Function} [props.onClose] handler for closing the popup and deleting its information.
  * @param {string} [props.label] title describing the popup's content.
- * @param {boolean} [props.darkMode] Whther or not the display is in dark mode
+ * @param {boolean} [props.darkModeF] Whther or not the display is in dark mode
  * @param {Node} [props.children] information to display on the popup.
  * @returns a popup that covers the entire window.
  */
