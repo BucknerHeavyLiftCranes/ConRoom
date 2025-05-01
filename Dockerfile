@@ -33,4 +33,4 @@ RUN chmod -R 775 /workspace
 USER node
 
 # Start both the back-end and front-end (adjust the command as necessary)
-CMD ["npm", "run", "expressBackend"]
+CMD ["npm", "run", "expressBackend", "dev"]
