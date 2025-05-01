@@ -1,7 +1,7 @@
 # Buckner Conference Room Reservation System
 
 ## Code Repository
-This project is hosted on GitHub: [https://github.com/BucknerHeavyLiftCranes/ConRoom]
+This project is hosted on [GitHub](https://github.com/BucknerHeavyLiftCranes/ConRoom)
 
 Clone the repository via HTTPS or SSH
 For HTTPS:
@@ -38,22 +38,22 @@ Create a `.env` file in `/backend` needed for:
 ### Code Structure
 
 #### **Frontend (React)**
-- `/src/components` – UI elements (e.g. room schedule display)
+- `/src/components` – UI elements (Buttons, Date/Time Display, Reservation Details, New Event Form)
 - `/src/pages` – Main screen views
 - `/src/services` – API calls to the backend
 
 #### **Backend (Node.js + Express)**
-- `backend/api/controllers` – Logic for handling API requests
-- `backend/api/middleware` – Logic for handling errors and access tokens
-- `backend/api/models` – SQL query logic for interacting with tables
-- `backend/api/routes` – Express route definitions
+- `/backend/api/controllers` – Logic for handling API requests
+- `/backend/api/middleware` – Logic for handling errors and access tokens
+- `/backend/api/models` – SQL query logic for interacting with tables
+- `/backend/api/routes` – Express route definitions
 
 
 #### **Database (SQL Server)**
-- `backend/database` – Sets up database and tables
-- `backend/config` – Sets up the DB connection
+- `/backend/database` – Sets up the database and tables
+- `/backend/config` – Sets up the DB connection
 - Tables: `Admins`, `Reservations`, `Rooms`
-- Logic lives in backend `backend/api/models` modules
+- Logic lives in the backend `backend/api/models` modules
 
 ### Module Relationships
 - React **components** → use **services** to talk to backend via REST APIs
@@ -70,8 +70,8 @@ This project is for educational purposes as part of COMP 523 at UNC Chapel Hill.
 ---
 
 ## Contributors
-- [Tobenna Okoli]
-- [Prithvi Adiga]
-- [Luis Fajardo]
-- [Michelle Kieu]
+- [Tobenna Okoli](https://github.com/TJOKOLI17)
+- [Prithvi Adiga](https://github.com/prithviadiga)
+- [Luis Fajardo](https://github.com/lafajardo)
+- [Michelle Kieu](https://github.com/mkieu03)
 
