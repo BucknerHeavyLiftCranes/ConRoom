@@ -45,6 +45,7 @@
 }
 
 .roomName {
+    color: white;
     font-size: 2.2rem;
     padding-left: 10px;
     text-decoration: underline;
@@ -70,6 +71,7 @@
 }
 
 .roomStatus {
+    color: white;
     font-size: 10vw; /* responsive big text */
     font-weight: bold;
     padding-left: 10px;
