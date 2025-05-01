@@ -44,7 +44,7 @@ app.use(errorHandler)
     // await setupDatabase() // UNCOMMENT THIS LATER 🚨🚨🚨
 //     // await clearDatabase()
 //     // await dropReservationsTable()
-    // await dropAdminsTable()
+//     await dropAdminsTable()
     
 // } catch (err) {
 //     console.error({ message: err.message, stack: err.stack });
