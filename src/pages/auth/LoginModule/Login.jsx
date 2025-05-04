@@ -19,6 +19,7 @@ function Login() {
     /**
      * Redirect current user to external Microsoft login
      */
+    // eslint-disable-next-line no-unused-vars
     const startExternalAdminLogin = async () => {
         try {
             if (authenticated) {
@@ -55,16 +56,16 @@ function Login() {
         <br/>
         
         <div className={styles.buttonControls}>
-        <ActionButton 
+        {/* <ActionButton 
             label="Login as Admin"
             action={startExternalAdminLogin}
             overrideStyles="frontPageAdminButton"
-        />
+        /> */}
 
         <ActionButton 
-            label="Login as Room"
+            label="Login" //"Login as Room"
             action={startExternalRoomLogin}
-            overrideStyles="frontPageRoomButton"
+            overrideStyles="frontPageAdminButton"
         />
         </div>
     </div>

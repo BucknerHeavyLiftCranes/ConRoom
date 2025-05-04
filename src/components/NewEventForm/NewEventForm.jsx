@@ -43,7 +43,7 @@ function NewEventForm({ onConfirm, onCancel, darkMode }) {
   
     if (emptyIndexes.length > 0) {
       const firstEmpty = emptyIndexes[0].index;
-      const label = firstEmpty === 0 ? "'Your Email'" : `'Attendee ${firstEmpty} Email'`;
+      const label = firstEmpty === 0 ? `'Your Email'` : `'Attendee ${firstEmpty} Email'`;
       alert(`Please enter a value for ${label}`);
       return false;
     }
@@ -85,6 +85,8 @@ function NewEventForm({ onConfirm, onCancel, darkMode }) {
         <input
           type="text"
           placeholder="Organizer Name"
+          name="organizer"
+          id="organizer"
           value={organizer}
           required
           onChange={(e) => setOrganizer(e.target.value)}
@@ -96,6 +98,8 @@ function NewEventForm({ onConfirm, onCancel, darkMode }) {
           <div key={index} className={styles.attendeeRow}>
             <input
               type="email"
+              name="attendeeEmail"
+              id="attendeeEmail"
               placeholder={index === 0 ? "Your Email" : `Attendee ${index} Email`}
               value={attendee}
               required

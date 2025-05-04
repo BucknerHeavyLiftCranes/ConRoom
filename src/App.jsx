@@ -1,5 +1,6 @@
 import BodyBackgroundWrapper from './components/BodyBackgroundWrapper.jsx';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+// eslint-disable-next-line no-unused-vars
 import Home from './pages/Home/Home.jsx';
 import Login from './pages/auth/LoginModule/Login.jsx';
 import RoomStatus from './pages/RoomStatusModule/RoomStatus.jsx';
@@ -25,14 +26,14 @@ function App() {
               element={<Login />} 
             />
             
-            <Route 
+            {/* <Route 
               path="/home" 
               element={
                 <ProtectedRoute redirectTo='/'>
                   <Home />
                 </ProtectedRoute>
               } 
-            />
+            /> */}
 
             <Route 
               path="/room" 
