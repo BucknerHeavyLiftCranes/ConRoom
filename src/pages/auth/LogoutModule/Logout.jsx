@@ -13,7 +13,6 @@ function Logout() {
    */
   const endUserSession = async () => {
       setUser(null) // remove knowledge of user from the website
-      location.hist
       window.location.replace(makeRoute("auth/logout"))
   
   }

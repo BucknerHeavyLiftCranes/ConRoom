@@ -49,8 +49,8 @@ function Login() {
     <div className={styles.loginContainer}>
         {/* <header className={styles.pageTitle}>Buckner Conference</header>
         <header className={styles.pageTitle}>Room Scheduler</header> */}
-        <header className={styles.pageTitle}>Buckner Heavylift Conference</header>
-        <header className={styles.pageTitle}>Room Scheduler</header>
+        <header className={styles.pageTitle}>Buckner Heavylift Cranes</header>
+        <header className={styles.pageTitle}>Conference Room Scheduler</header>
 
         
         <br/>
